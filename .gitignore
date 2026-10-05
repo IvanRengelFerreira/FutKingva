@@ -1,0 +1,18 @@
+# --- Claude Code (contexto y configuración locales, no se suben) ---
+CLAUDE.md
+CLAUDE.local.md
+**/CLAUDE.md
+.claude/
+.mcp.json
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editores ---
+.vscode/
+.idea/
+
+# --- Obsidian (por si se abre la carpeta como bóveda) ---
+.obsidian/
