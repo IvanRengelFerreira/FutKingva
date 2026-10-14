@@ -1,0 +1,17 @@
+/*
+ * FutKingva · Estilos globales compartidos
+ * ------------------------------------------------------------------
+ * Este archivo empieza vacío a propósito: se va completando entre todos
+ * a medida que se construyen las páginas.
+ *
+ * Qué va aquí: lo que comparten varias páginas o componentes
+ * (estilos base del body y los títulos, contenedor de página, tarjetas,
+ * tablas, botones, adaptación a móvil…).
+ * Qué NO va aquí: lo que es de una sola página (va en su propio .css).
+ *
+ * Reglas:
+ *  - Colores siempre con las variables de colores.css: var(--acento-oro).
+ *  - Antes de añadir algo, mira si ya existe una clase que te sirva.
+ *  - Cada bloque con un comentario que diga qué es y quién lo añadió.
+ *  - Si cambias algo que ya existe, avisa al grupo: afecta a todas las páginas.
+ */

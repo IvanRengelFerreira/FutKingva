@@ -16,3 +16,9 @@ desktop.ini
 
 # --- Obsidian (por si se abre la carpeta como bóveda) ---
 .obsidian/
+
+# --- Front-end (client/) ---
+node_modules/
+dist/
+*.local
+npm-debug.log*
