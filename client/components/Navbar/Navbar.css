@@ -1,0 +1,142 @@
+/*
+ * Navbar de escritorio (Sesión=No)
+ * Figma › Mockups › Componentes de mockup › Cabecera (en Figma se llama así)
+ */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 72px;
+  padding: 0 40px;
+  background: var(--fondo-superficie);
+  border-bottom: 1px solid var(--borde);
+}
+
+/* Marca: logo + nombre */
+.navbar__marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.navbar__logo {
+  display: block;
+}
+
+.navbar__nombre {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.navbar__titulo {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 0.48px;
+  color: var(--texto-principal);
+}
+
+.navbar__subtitulo {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 8px;
+  letter-spacing: 2.4px;
+  color: var(--acento-oro);
+}
+
+/* Menú principal */
+.navbar__menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.navbar__enlace {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar__enlace:hover {
+  color: var(--texto-principal);
+}
+
+/* Buscador y botones */
+.navbar__acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.navbar__buscador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 190px;
+  height: 40px;
+  padding: 0 12px;
+  background: var(--fondo-elevada);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+
+.navbar__buscador:focus-within {
+  border-color: var(--acento-oro);
+}
+
+.navbar__buscador input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--texto-principal);
+}
+
+.navbar__buscador input::placeholder {
+  color: var(--texto-terciario);
+}
+
+.navbar__boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar__boton--secundario {
+  border: 1.5px solid var(--acento-oro);
+  color: var(--acento-oro);
+}
+
+.navbar__boton--secundario:hover {
+  background: var(--acento-oro-suave);
+}
+
+.navbar__boton--primario {
+  background: var(--degradado-oro);
+  color: var(--marca-verde-900);
+}
+
+.navbar__boton--primario:hover {
+  background: var(--acento-ambar);
+}

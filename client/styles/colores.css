@@ -13,7 +13,7 @@
 :root {
   /* Fondos (de más oscuro a más claro) */
   --fondo-base: #07120E;        /* Fondo general de la página */
-  --fondo-superficie: #0D1C16;  /* Tarjetas, tablas, cabecera, pie */
+  --fondo-superficie: #0D1C16;  /* Tarjetas, tablas, navbar, pie */
   --fondo-elevada: #132820;     /* Elementos sobre tarjetas, menús, cabeceras de tabla */
   --fondo-hover: #1A3329;       /* Fila o tarjeta al pasar el ratón */
   --borde: #213D31;             /* Bordes y separadores */
