@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import './Footer.css';
 import logo from '../../assets/logo-footer.svg';
 
@@ -6,16 +7,16 @@ import logo from '../../assets/logo-footer.svg';
 export default function Footer() {
   return (
     <footer className="footer">
-      <a className="footer__brand" href="#/" aria-label="FutKingva, ir a Inicio">
+      <Link className="footer__brand" to="/" aria-label="FutKingva, ir a Inicio">
         <img className="footer__logo" src={logo} alt="" width="28" height="28" />
         <span className="footer__name">FUTKINGVA</span>
-      </a>
+      </Link>
 
       <p className="footer__copyright">© 2026 FutKingva · Sistemas Web I · Datos: football-data.org</p>
 
       <nav className="footer__links" aria-label="Enlaces del pie">
-        <a className="footer__link" href="#/sobre-nosotros">Sobre nosotros</a>
-        <a className="footer__link" href="#/contacto">Contacto</a>
+        <Link className="footer__link" to="/sobre-nosotros">Sobre nosotros</Link>
+        <Link className="footer__link" to="/contacto">Contacto</Link>
       </nav>
     </footer>
   );

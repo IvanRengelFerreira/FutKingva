@@ -70,6 +70,12 @@
   color: var(--text-primary);
 }
 
+/* Enlace de la página actual */
+.navbar__link--active,
+.navbar__link--active:hover {
+  color: var(--accent-gold);
+}
+
 /* Buscador y botones */
 .navbar__actions {
   display: flex;

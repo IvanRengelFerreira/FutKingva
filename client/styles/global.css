@@ -41,3 +41,24 @@ body {
 .content {
   flex: 1;
 }
+
+/* Provisional: vistas todavía sin maquetar; se borra cuando estén las 20 páginas (Ivan) */
+.placeholder {
+  padding: 40px;
+}
+
+.placeholder h1 {
+  margin: 0 0 8px;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+}
+
+.placeholder p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.placeholder a {
+  color: var(--accent-gold);
+}
