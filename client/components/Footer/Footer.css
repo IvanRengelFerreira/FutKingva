@@ -1,0 +1,63 @@
+/*
+ * Footer: pie de página de escritorio
+ * Figma › Mockups › Componentes de mockup › Pie (en Figma se llama así)
+ */
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 96px;
+  padding: 0 40px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+}
+
+/* Marca: logo + nombre */
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.footer__logo {
+  display: block;
+}
+
+.footer__name {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 0.36px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.footer__copyright {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* Enlaces: Sobre nosotros y Contacto */
+.footer__links {
+  display: flex;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+.footer__link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.footer__link:hover {
+  color: var(--text-primary);
+}

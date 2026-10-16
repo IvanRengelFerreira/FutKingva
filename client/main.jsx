@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './styles/colores.css'; // Colores globales: disponibles en toda la web
+import './styles/colors.css'; // Colores globales: disponibles en toda la web
 import './styles/global.css';  // Estilos compartidos (se completan poco a poco)
 import App from './App.jsx';
 

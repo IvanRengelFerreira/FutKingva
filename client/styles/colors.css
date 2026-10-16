@@ -1,0 +1,52 @@
+/*
+ * FutKingva · Colores globales
+ * ------------------------------------------------------------------
+ * Única fuente de los colores de la web. Salen de la guía de estilo de
+ * Figma (colección de variables «FutKingva · Colores», modo «Oscuro»):
+ * https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP
+ *
+ * Regla: en el resto del CSS NO se escriben colores a mano; se usa
+ * siempre la variable, por ejemplo  color: var(--text-primary);
+ * Si hace falta un color nuevo, se añade aquí (y en Figma) primero.
+ *
+ * Los nombres van en inglés; en Figma están en español con la misma
+ * estructura (fondo/base → --bg-base, acento/oro → --accent-gold,
+ * texto/principal → --text-primary, estado/victoria → --status-win…).
+ */
+
+:root {
+  /* Fondos (de más oscuro a más claro) */
+  --bg-base: #07120E;         /* Fondo general de la página */
+  --bg-surface: #0D1C16;      /* Tarjetas, tablas, navbar, pie */
+  --bg-elevated: #132820;     /* Elementos sobre tarjetas, menús, cabeceras de tabla */
+  --bg-hover: #1A3329;        /* Fila o tarjeta al pasar el ratón */
+  --border: #213D31;          /* Bordes y separadores */
+
+  /* Marca */
+  --brand-green-900: #0B3D2E; /* Verde del logo (inicio de degradados) */
+  --brand-green-700: #0E5A40; /* Verde claro (final de degradados) */
+  --accent-gold: #F5C542;     /* Acción principal, líder, destacados, enlace activo */
+  --accent-amber: #F2A000;    /* Hover del oro, final del degradado de la corona */
+  --accent-gold-soft: #2B2814; /* Fondo de chips y etiquetas doradas */
+
+  /* Texto */
+  --text-primary: #F3F6F4;    /* Títulos y texto principal */
+  --text-secondary: #A3B8AD;  /* Texto de apoyo, etiquetas */
+  --text-tertiary: #66806F;   /* Metadatos, placeholders, deshabilitado */
+
+  /* Estados */
+  --status-win: #3DDC97;      /* Victoria, subida, valor positivo, correcto */
+  --status-draw: #9AA8A1;     /* Empate, sin cambios */
+  --status-loss: #FF5C5C;     /* Derrota, bajada, error, eliminar */
+  --status-live: #FF3D57;     /* Partido en directo, avisos nuevos */
+  --status-info: #5CB8FF;     /* Información, zona Champions, rol editor */
+
+  /* Series del comparador (jugador A, B y C) */
+  --series-1: #F5C542;        /* Jugador A · oro */
+  --series-2: #5CB8FF;        /* Jugador B · azul */
+  --series-3: #C08CFF;        /* Jugador C · violeta */
+
+  /* Degradados */
+  --gradient-brand: linear-gradient(135deg, var(--brand-green-900), var(--brand-green-700));
+  --gradient-gold: linear-gradient(90deg, var(--accent-gold), var(--accent-amber));
+}

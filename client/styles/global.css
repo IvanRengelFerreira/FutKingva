@@ -10,7 +10,7 @@
  * Qué NO va aquí: lo que es de una sola página (va en su propio .css).
  *
  * Reglas:
- *  - Colores siempre con las variables de colores.css: var(--acento-oro).
+ *  - Colores siempre con las variables de colors.css: var(--accent-gold).
  *  - Antes de añadir algo, mira si ya existe una clase que te sirva.
  *  - Cada bloque con un comentario que diga qué es y quién lo añadió.
  *  - Si cambias algo que ya existe, avisa al grupo: afecta a todas las páginas.
@@ -26,7 +26,18 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--fondo-base);
-  color: var(--texto-principal);
+  background: var(--bg-base);
+  color: var(--text-primary);
   font-family: 'Schibsted Grotesk', sans-serif;
+}
+
+/* Estructura de la página: navbar arriba, contenido que crece y pie siempre abajo (Ivan) */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
 }

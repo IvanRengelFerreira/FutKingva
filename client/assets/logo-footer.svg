@@ -1,0 +1,20 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Logo">
+<rect x="0.5" y="0.5" width="27" height="27" rx="6.5" fill="url(#paint0_linear_0_4)"/>
+<rect x="0.5" y="0.5" width="27" height="27" rx="6.5" stroke="#F5C542"/>
+<path id="Polygon" d="M14 10.08L20.0622 13.58V20.58L14 24.08L7.93782 20.58V13.58L14 10.08Z" fill="white"/>
+<path id="Polygon_2" d="M14 14.28L16.663 16.2148L15.6458 19.3452H12.3542L11.337 16.2148L14 14.28Z" fill="#0B3D2E"/>
+<g id="Corona" clip-path="url(#clip0_0_4)">
+<path id="Vector" d="M8.708 8.232L9.296 4.116L11.648 6.468L14 2.94L16.352 6.468L18.704 4.116L19.292 8.232H8.708Z" fill="#F5C542"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_4" x1="0" y1="0" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0B3D2E"/>
+<stop offset="1" stop-color="#0E5A40"/>
+</linearGradient>
+<clipPath id="clip0_0_4">
+<rect width="11.76" height="6.16" fill="white" transform="translate(8.12 2.8)"/>
+</clipPath>
+</defs>
+</svg>
