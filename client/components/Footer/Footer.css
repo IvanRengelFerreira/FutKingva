@@ -1,6 +1,6 @@
 /*
- * Footer: pie de página de escritorio
- * Figma › Mockups › Componentes de mockup › Pie (en Figma se llama así)
+ * Footer: pie de página (escritorio y móvil)
+ * Figma › Mockups › Componentes de mockup › Pie y Pie móvil (en Figma se llaman así)
  */
 
 .footer {
@@ -60,4 +60,44 @@
 
 .footer__link:hover {
   color: var(--text-primary);
+}
+
+/*
+ * Versión móvil (hasta 799 px: por debajo de 800 px el pie de escritorio ya no cabe en una línea)
+ * Figma › Mockups › Componentes de mockup › Pie móvil
+ * Orden: marca, enlaces y copyright (sin la fuente de datos).
+ */
+@media (max-width: 799px) {
+  .footer {
+    flex-direction: column;
+    gap: 14px;
+    height: auto;
+    padding: 28px 16px;
+  }
+
+  .footer__logo {
+    width: 26px;
+    height: 26px;
+  }
+
+  .footer__name {
+    font-size: 17px;
+    letter-spacing: 0.34px;
+  }
+
+  .footer__links {
+    order: 1;
+    gap: 24px;
+  }
+
+  .footer__copyright {
+    order: 2;
+    flex: none;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .footer__data-source {
+    display: none;
+  }
 }
