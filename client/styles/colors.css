@@ -46,6 +46,9 @@
   --series-2: #5CB8FF;        /* Jugador B · azul */
   --series-3: #C08CFF;        /* Jugador C · violeta */
 
+  /* Velo detrás del menú móvil y de las ventanas emergentes */
+  --overlay: rgba(0, 0, 0, 0.6);
+
   /* Degradados */
   --gradient-brand: linear-gradient(135deg, var(--brand-green-900), var(--brand-green-700));
   --gradient-gold: linear-gradient(90deg, var(--accent-gold), var(--accent-amber));

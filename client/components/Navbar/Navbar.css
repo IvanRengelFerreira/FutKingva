@@ -146,3 +146,64 @@
 .navbar__button--primary:hover {
   background: var(--accent-amber);
 }
+
+/* Elementos que solo se ven en móvil (☰, lupa y «Entrar») */
+.navbar__menu-button,
+.navbar__search-link,
+.navbar__mobile-only {
+  display: none;
+}
+
+/*
+ * Versión móvil (hasta 1439 px: los enlaces de escritorio necesitan 1440 px para caber sin recortarse)
+ * Figma › Mockups › Componentes de mockup › Cabecera móvil › Sesión=No
+ * Si se cambia el ancho, cambiar también DESKTOP_QUERY en Navbar.jsx.
+ */
+@media (max-width: 1439px) {
+  .navbar {
+    gap: 12px;
+    height: 56px;
+    padding: 0 16px;
+  }
+
+  .navbar__menu-button {
+    display: flex;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .navbar__logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar__title {
+    font-size: 20px;
+    letter-spacing: 0.4px;
+  }
+
+  .navbar__subtitle,
+  .navbar__menu,
+  .navbar__search,
+  .navbar__desktop-only {
+    display: none;
+  }
+
+  .navbar__actions {
+    margin-left: auto;
+  }
+
+  .navbar__search-link {
+    display: flex;
+  }
+
+  .navbar__mobile-only {
+    display: flex;
+  }
+
+  .navbar__mobile-only.navbar__button {
+    height: 34px;
+  }
+}

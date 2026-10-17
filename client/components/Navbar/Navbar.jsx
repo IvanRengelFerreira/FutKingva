@@ -1,7 +1,12 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 import './Navbar.css';
+import MobileMenu from '../MobileMenu/MobileMenu.jsx';
 import logo from '../../assets/logo.svg';
+import logoMobile from '../../assets/logo-mobile.svg';
 import searchIcon from '../../assets/icon-search.svg';
+import searchIconLight from '../../assets/icon-search-light.svg';
+import menuIcon from '../../assets/icon-menu.svg';
 
 // Enlaces del menú principal (mismo orden que en Figma).
 // Las rutas están definidas en App.jsx.
@@ -16,11 +21,32 @@ const LINKS = [
   { label: 'Mi equipo ideal', path: '/equipo-ideal' },
 ];
 
-// Navbar de escritorio (Sesión=No).
-// Diseño: Figma › Mockups › Componentes de mockup › Cabecera (en Figma se llama así) › Sesión=No
+// A partir de este ancho se ve la navbar de escritorio. Tiene que coincidir con el @media de Navbar.css.
+const DESKTOP_QUERY = '(min-width: 1440px)';
+
+// Navbar (Sesión=No): versión de escritorio y, por debajo de 1440 px, versión móvil con ☰.
+// Diseño: Figma › Mockups › Componentes de mockup › Cabecera y Cabecera móvil (en Figma se llaman así) › Sesión=No
 export default function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef(null);
+
+  // Al cerrar el menú, el foco vuelve al botón ☰.
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    menuButtonRef.current?.focus();
+  }, []);
+
+  // Si la ventana se agranda hasta el tamaño de escritorio con el menú abierto, se cierra.
+  useEffect(() => {
+    const desktop = window.matchMedia(DESKTOP_QUERY);
+    function handleChange(e) {
+      if (e.matches) setMenuOpen(false);
+    }
+    desktop.addEventListener('change', handleChange);
+    return () => desktop.removeEventListener('change', handleChange);
+  }, []);
 
   // Al pulsar Enter en el buscador se va a Resultados de búsqueda con el texto en la dirección (?q=…).
   function handleSearch(e) {
@@ -31,8 +57,25 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
+      {/* Solo en móvil: abre el menú lateral */}
+      <button
+        ref={menuButtonRef}
+        className="navbar__menu-button"
+        type="button"
+        onClick={() => setMenuOpen(true)}
+        aria-label="Abrir menú"
+        aria-expanded={menuOpen}
+        aria-controls="mobile-menu"
+      >
+        <img src={menuIcon} alt="" width="22" height="22" />
+      </button>
+
       <Link className="navbar__brand" to="/" aria-label="FutKingva, ir a Inicio">
-        <img className="navbar__logo" src={logo} alt="" width="36" height="36" />
+        {/* En móvil el logo es el de 30 px */}
+        <picture>
+          <source media="(max-width: 1439px)" srcSet={logoMobile} />
+          <img className="navbar__logo" src={logo} alt="" width="36" height="36" />
+        </picture>
         <span className="navbar__name">
           <span className="navbar__title">FUTKINGVA</span>
           <span className="navbar__subtitle">FOOTBALL STATS</span>
@@ -62,9 +105,17 @@ export default function Navbar() {
           <img src={searchIcon} alt="" width="18" height="18" />
           <input type="search" name="q" placeholder="Buscar…" aria-label="Buscar equipos y jugadores" />
         </form>
-        <Link className="navbar__button navbar__button--secondary" to="/acceso">Iniciar sesión</Link>
-        <Link className="navbar__button navbar__button--primary" to="/acceso?registro">Registrarse</Link>
+        <Link className="navbar__button navbar__button--secondary navbar__desktop-only" to="/acceso">Iniciar sesión</Link>
+        <Link className="navbar__button navbar__button--primary navbar__desktop-only" to="/acceso?registro">Registrarse</Link>
+
+        {/* Solo en móvil: lupa (lleva a Resultados de búsqueda) y botón «Entrar» */}
+        <Link className="navbar__search-link" to="/buscar" aria-label="Buscar">
+          <img src={searchIconLight} alt="" width="18" height="18" />
+        </Link>
+        <Link className="navbar__button navbar__button--secondary navbar__mobile-only" to="/acceso">Entrar</Link>
       </div>
+
+      <MobileMenu open={menuOpen} onClose={closeMenu} />
     </header>
   );
 }

@@ -1,0 +1,223 @@
+/*
+ * Menú móvil (cajón lateral que se abre con ☰)
+ * Figma › Mockups › 00 · Componentes interactivos › Menú móvil abierto (Sesión=Sí)
+ */
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+/* Velo que oscurece la página de detrás */
+.mobile-menu__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+}
+
+.mobile-menu__drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 310px;
+  max-width: 85vw;
+  overflow-y: auto;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+}
+
+/* Cabecera del cajón: logo + nombre + X */
+.mobile-menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-menu__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.mobile-menu__brand img {
+  display: block;
+}
+
+.mobile-menu__title {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.mobile-menu__close {
+  display: flex;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Bloque del usuario (solo con sesión) */
+.mobile-menu__profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(90deg, var(--brand-green-900), var(--bg-surface));
+  text-decoration: none;
+}
+
+.mobile-menu__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--brand-green-700);
+  border: 1.5px solid var(--accent-gold);
+  border-radius: 999px;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.mobile-menu__user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-menu__user-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.mobile-menu__user-link {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--accent-gold);
+}
+
+/* Opciones del menú */
+.mobile-menu__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 8px;
+}
+
+.mobile-menu__group--my-zone {
+  padding-top: 0;
+}
+
+.mobile-menu__heading {
+  margin: 0;
+  padding: 10px 20px 6px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  color: var(--text-tertiary);
+}
+
+.mobile-menu__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mobile-menu__link:hover {
+  background: var(--bg-hover);
+}
+
+.mobile-menu__label {
+  flex: 1;
+}
+
+/* Icono pintado con máscara: toma el color del texto de .mobile-menu__icon */
+.mobile-menu__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--text-secondary);
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+/* Opción de la página actual */
+.mobile-menu__link--active,
+.mobile-menu__link--active:hover {
+  background: var(--accent-gold-soft);
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.mobile-menu__link--active .mobile-menu__icon {
+  background: var(--accent-gold);
+}
+
+/* Número de avisos nuevos en «Mi perfil» */
+.mobile-menu__badge {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--status-live);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+/* Parte de abajo: cerrar sesión y enlaces del pie */
+.mobile-menu__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 20px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.mobile-menu__logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--status-loss);
+  cursor: pointer;
+}
+
+.mobile-menu__extra-links {
+  display: flex;
+  gap: 18px;
+}
+
+.mobile-menu__extra-link {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.mobile-menu__extra-link:hover {
+  color: var(--text-primary);
+}
