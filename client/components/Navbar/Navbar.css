@@ -147,7 +147,98 @@
   background: var(--accent-amber);
 }
 
-/* Elementos que solo se ven en móvil (☰, lupa y «Entrar») */
+/* Con sesión: buscador más ancho, campana y usuario (Cabecera › Sesión=Sí) */
+.navbar__search--wide {
+  width: 230px;
+}
+
+.navbar__bell {
+  display: flex;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.navbar__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--brand-green-700);
+  border: 1.5px solid var(--accent-gold);
+  border-radius: 999px;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* Usuario (avatar + nombre + ▾) y su desplegable */
+.user-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-menu__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.user-menu__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.user-menu__dropdown {
+  position: absolute;
+  top: calc(100% + 18px);
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.user-menu__item {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.user-menu__item:hover {
+  background: var(--bg-hover);
+}
+
+.user-menu__item--danger {
+  color: var(--status-loss);
+}
+
+/* Elementos que solo se ven en móvil (☰, lupa, «Entrar» y avatar) */
 .navbar__menu-button,
 .navbar__search-link,
 .navbar__mobile-only {
@@ -157,7 +248,7 @@
 /*
  * Versión móvil (hasta 1439 px: los enlaces de escritorio necesitan 1440 px para caber sin recortarse)
  * Figma › Mockups › Componentes de mockup › Cabecera móvil › Sesión=No
- * Si se cambia el ancho, cambiar también DESKTOP_QUERY en Navbar.jsx.
+ * Si se cambia el ancho, cambiar también DESKTOP_QUERY en breakpoints.js.
  */
 @media (max-width: 1439px) {
   .navbar {
@@ -205,5 +296,11 @@
 
   .navbar__mobile-only.navbar__button {
     height: 34px;
+  }
+
+  .navbar__avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
 }

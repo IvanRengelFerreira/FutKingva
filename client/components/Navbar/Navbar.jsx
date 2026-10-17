@@ -2,11 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 import './Navbar.css';
 import MobileMenu from '../MobileMenu/MobileMenu.jsx';
+import UserMenu from './UserMenu.jsx';
+import { DESKTOP_QUERY } from './breakpoints.js';
+import { useSession } from '../../context/SessionContext.jsx';
 import logo from '../../assets/logo.svg';
 import logoMobile from '../../assets/logo-mobile.svg';
 import searchIcon from '../../assets/icon-search.svg';
 import searchIconLight from '../../assets/icon-search-light.svg';
 import menuIcon from '../../assets/icon-menu.svg';
+import bellIcon from '../../assets/icon-bell.svg';
 
 // Enlaces del menú principal (mismo orden que en Figma).
 // Las rutas están definidas en App.jsx.
@@ -21,13 +25,12 @@ const LINKS = [
   { label: 'Mi equipo ideal', path: '/equipo-ideal' },
 ];
 
-// A partir de este ancho se ve la navbar de escritorio. Tiene que coincidir con el @media de Navbar.css.
-const DESKTOP_QUERY = '(min-width: 1440px)';
-
-// Navbar (Sesión=No): versión de escritorio y, por debajo de 1440 px, versión móvil con ☰.
-// Diseño: Figma › Mockups › Componentes de mockup › Cabecera y Cabecera móvil (en Figma se llaman así) › Sesión=No
+// Navbar: versión de escritorio y, por debajo de 1440 px, versión móvil con ☰.
+// Sin sesión: «Iniciar sesión» y «Registrarse». Con sesión: campana y usuario (sesión simulada, ver SessionContext).
+// Diseño: Figma › Mockups › Componentes de mockup › Cabecera y Cabecera móvil (en Figma se llaman así) › Sesión=No / Sesión=Sí
 export default function Navbar() {
   const navigate = useNavigate();
+  const { user } = useSession();
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef(null);
@@ -101,21 +104,37 @@ export default function Navbar() {
       </nav>
 
       <div className="navbar__actions">
-        <form className="navbar__search" role="search" onSubmit={handleSearch}>
+        <form className={user ? 'navbar__search navbar__search--wide' : 'navbar__search'} role="search" onSubmit={handleSearch}>
           <img src={searchIcon} alt="" width="18" height="18" />
           <input type="search" name="q" placeholder="Buscar…" aria-label="Buscar equipos y jugadores" />
         </form>
-        <Link className="navbar__button navbar__button--secondary navbar__desktop-only" to="/acceso">Iniciar sesión</Link>
-        <Link className="navbar__button navbar__button--primary navbar__desktop-only" to="/acceso?registro">Registrarse</Link>
 
-        {/* Solo en móvil: lupa (lleva a Resultados de búsqueda) y botón «Entrar» */}
+        {/* Solo en móvil: lupa (lleva a Resultados de búsqueda) */}
         <Link className="navbar__search-link" to="/buscar" aria-label="Buscar">
           <img src={searchIconLight} alt="" width="18" height="18" />
         </Link>
-        <Link className="navbar__button navbar__button--secondary navbar__mobile-only" to="/acceso">Entrar</Link>
+
+        {user ? (
+          <>
+            {/* El panel de avisos se abrirá aquí cuando esté el componente Notifications */}
+            <button className="navbar__bell" type="button" aria-label={`Notificaciones: ${user.notifications} nuevas`}>
+              <img src={bellIcon} alt="" width="28" height="28" />
+            </button>
+            <UserMenu user={user} />
+            {/* Solo en móvil: el avatar lleva a Mi perfil */}
+            <Link className="navbar__avatar navbar__mobile-only" to="/perfil" aria-label="Mi perfil">{user.initials}</Link>
+          </>
+        ) : (
+          <>
+            <Link className="navbar__button navbar__button--secondary navbar__desktop-only" to="/acceso">Iniciar sesión</Link>
+            <Link className="navbar__button navbar__button--primary navbar__desktop-only" to="/acceso?registro">Registrarse</Link>
+            {/* Solo en móvil */}
+            <Link className="navbar__button navbar__button--secondary navbar__mobile-only" to="/acceso">Entrar</Link>
+          </>
+        )}
       </div>
 
-      <MobileMenu open={menuOpen} onClose={closeMenu} />
+      <MobileMenu open={menuOpen} onClose={closeMenu} user={user} />
     </header>
   );
 }

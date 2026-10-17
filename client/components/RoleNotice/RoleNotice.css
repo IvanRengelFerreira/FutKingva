@@ -1,0 +1,42 @@
+/*
+ * Aviso de rol (zona de editor / zona de administración)
+ * Figma › Mockups › 17 · Panel de editor y 20 · Panel de administración › Aviso de rol
+ */
+
+.role-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.role-notice img {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Editor: azul de información */
+.role-notice--editor {
+  background: color-mix(in srgb, var(--status-info) 10%, transparent);
+  border-color: color-mix(in srgb, var(--status-info) 35%, transparent);
+  color: var(--status-info);
+}
+
+/* Administrador: rojo */
+.role-notice--admin {
+  background: color-mix(in srgb, var(--status-loss) 8%, transparent);
+  border-color: color-mix(in srgb, var(--status-loss) 35%, transparent);
+  color: var(--status-loss);
+}
+
+/* En móvil solo «Zona de editor» / «Zona de administración» */
+@media (max-width: 799px) {
+  .role-notice__detail {
+    display: none;
+  }
+}

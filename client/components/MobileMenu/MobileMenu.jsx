@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router';
+import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
 import './MobileMenu.css';
 import logo from '../../assets/logo-menu.svg';
 import closeIcon from '../../assets/icon-close.svg';
@@ -13,6 +14,8 @@ import compareIcon from '../../assets/icon-compare.svg';
 import pitchIcon from '../../assets/icon-pitch.svg';
 import userIcon from '../../assets/icon-user.svg';
 import logoutIcon from '../../assets/icon-logout.svg';
+import editIcon from '../../assets/icon-edit.svg';
+import shieldIcon from '../../assets/icon-shield.svg';
 
 // Opciones del menú (mismo orden que en Figma). «also»: igual que en la Navbar.
 const MAIN_LINKS = [
@@ -28,12 +31,17 @@ const MY_ZONE_LINKS = [
   { label: 'Mi equipo ideal', path: '/equipo-ideal', icon: pitchIcon },
 ];
 
+// Icono del panel de cada rol (el panel en sí está en ROLE_PANELS; no está en Figma).
+const PANEL_ICONS = { editor: editIcon, admin: shieldIcon };
+
 // Cajón lateral que se abre con ☰ en móvil.
 // Diseño: Figma › Mockups › 00 · Componentes interactivos › Menú móvil abierto (Sesión=Sí)
 // Sin sesión (user = null) no se muestran el bloque del perfil, «Mi perfil» ni «Cerrar sesión».
-// user: { name, initials, notifications } cuando esté la sesión simulada.
+// user: el usuario de la sesión simulada (ver SessionContext).
 export default function MobileMenu({ open, onClose, user = null }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useSession();
   const closeButtonRef = useRef(null);
 
   // Mientras está abierto: Esc lo cierra, la página de detrás no hace scroll y el foco va a la X.
@@ -55,6 +63,12 @@ export default function MobileMenu({ open, onClose, user = null }) {
   }, [open, onClose]);
 
   if (!open) return null;
+
+  function handleLogout() {
+    onClose();
+    logout();
+    navigate('/');
+  }
 
   // Opción del menú: icono + texto + flecha (o el número de avisos en «Mi perfil»).
   // El icono se pinta con máscara para que cambie a oro en la opción activa.
@@ -117,13 +131,13 @@ export default function MobileMenu({ open, onClose, user = null }) {
           <div className="mobile-menu__group mobile-menu__group--my-zone">
             {MY_ZONE_LINKS.map((link) => renderLink(link))}
             {user && renderLink({ label: 'Mi perfil', path: '/perfil', icon: userIcon }, user.notifications)}
+            {user && ROLE_PANELS[user.role] && renderLink({ ...ROLE_PANELS[user.role], icon: PANEL_ICONS[user.role] })}
           </div>
         </nav>
 
         <div className="mobile-menu__footer">
-          {/* Cerrar sesión: pendiente de la sesión simulada */}
           {user && (
-            <button className="mobile-menu__logout" type="button">
+            <button className="mobile-menu__logout" type="button" onClick={handleLogout}>
               <img src={logoutIcon} alt="" width="18" height="18" />
               Cerrar sesión
             </button>
