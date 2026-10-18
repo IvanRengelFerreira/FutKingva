@@ -4,6 +4,7 @@
  */
 
 .navbar {
+  position: relative; /* El desplegable de notificaciones se coloca respecto a la navbar */
   display: flex;
   align-items: center;
   gap: 28px;
@@ -150,15 +151,6 @@
 /* Con sesión: buscador más ancho, campana y usuario (Cabecera › Sesión=Sí) */
 .navbar__search--wide {
   width: 230px;
-}
-
-.navbar__bell {
-  display: flex;
-  flex-shrink: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
 }
 
 .navbar__avatar {

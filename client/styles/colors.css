@@ -40,11 +40,13 @@
   --status-loss: #FF5C5C;     /* Derrota, bajada, error, eliminar */
   --status-live: #FF3D57;     /* Partido en directo, avisos nuevos */
   --status-info: #5CB8FF;     /* Información, zona Champions, rol editor */
+  --card-yellow: #FFD43B;     /* Tarjetas amarillas (árbitros); las rojas usan --status-loss */
 
-  /* Series del comparador (jugador A, B y C) */
+  /* Series del comparador (jugador A, B, C y D; máximo 4 jugadores) */
   --series-1: #F5C542;        /* Jugador A · oro */
   --series-2: #5CB8FF;        /* Jugador B · azul */
   --series-3: #C08CFF;        /* Jugador C · violeta */
+  --series-4: #FF8F5C;        /* Jugador D · coral */
 
   /* Velo detrás del menú móvil y de las ventanas emergentes */
   --overlay: rgba(0, 0, 0, 0.6);

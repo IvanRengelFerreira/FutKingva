@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 import './Navbar.css';
 import MobileMenu from '../MobileMenu/MobileMenu.jsx';
 import UserMenu from './UserMenu.jsx';
+import Notifications from '../Notifications/Notifications.jsx';
 import { DESKTOP_QUERY } from './breakpoints.js';
 import { useSession } from '../../context/SessionContext.jsx';
 import logo from '../../assets/logo.svg';
@@ -10,7 +11,6 @@ import logoMobile from '../../assets/logo-mobile.svg';
 import searchIcon from '../../assets/icon-search.svg';
 import searchIconLight from '../../assets/icon-search-light.svg';
 import menuIcon from '../../assets/icon-menu.svg';
-import bellIcon from '../../assets/icon-bell.svg';
 
 // Enlaces del menú principal (mismo orden que en Figma).
 // Las rutas están definidas en App.jsx.
@@ -116,10 +116,7 @@ export default function Navbar() {
 
         {user ? (
           <>
-            {/* El panel de avisos se abrirá aquí cuando esté el componente Notifications */}
-            <button className="navbar__bell" type="button" aria-label={`Notificaciones: ${user.notifications} nuevas`}>
-              <img src={bellIcon} alt="" width="28" height="28" />
-            </button>
+            <Notifications />
             <UserMenu user={user} />
             {/* Solo en móvil: el avatar lleva a Mi perfil */}
             <Link className="navbar__avatar navbar__mobile-only" to="/perfil" aria-label="Mi perfil">{user.initials}</Link>

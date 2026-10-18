@@ -306,9 +306,12 @@ export const EDITOR_STATS = { published: 12, drafts: 3, monthlyVisits: 18420, vi
 
 // Hechos reales; la hora es la del momento congelado (sábado, 17:00).
 // type: 'goal' (balón) o 'standings' (tendencia) · unread: sin leer
+// type: 'goal' (balón, oro) · 'standings' (subida en la tabla, verde) · 'rival' (un rival se acerca, rojo)
+// toast: texto del aviso emergente (abajo a la izquierda), solo en los avisos que lo tienen
 export const NOTIFICATIONS = [
-  { id: 1, type: 'goal', title: '¡Gol de Baena!', detail: "Espanyol 0 – 1 Atlético · 89'", time: 'hace 1 h', unread: true },
-  { id: 2, type: 'standings', title: 'El Atlético se pone 2.º', detail: 'A 2 puntos del Barça, que juega a las 18:30', time: 'hace 1 h', unread: true },
+  { id: 1, type: 'goal', title: '¡Gol de Baena!', detail: "Espanyol 0 – 1 Atlético · 89'", time: 'hace 1 h', unread: true,
+    toast: { title: "¡GOL! Baena · 89'", detail: 'Espanyol 0 – 1 Atlético' } }, // también sale como aviso emergente
+  { id: 2, type: 'rival', title: 'El Atlético se pone 2.º', detail: 'A 2 puntos del Barça, que juega a las 18:30', time: 'hace 1 h', unread: true },
   { id: 3, type: 'goal', title: 'Empate en Riazor', detail: 'Deportivo 1 – 1 Levante', time: 'ayer', unread: true },
   { id: 4, type: 'goal', title: 'Doblete de Isco', detail: 'Real Betis 5 – 2 Osasuna', time: 'hace 6 días', unread: false },
   { id: 5, type: 'standings', title: 'Barça: ocho de ocho', detail: 'Pleno de victorias tras el 3 – 0 al Getafe', time: 'hace 7 días', unread: false },

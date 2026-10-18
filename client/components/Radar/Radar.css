@@ -1,0 +1,83 @@
+/*
+ * Gráfico radar del comparador
+ * Figma › Mockups › 10 · Comparador › Gráfico radar
+ */
+
+.radar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.radar__chart {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  overflow: visible;
+}
+
+/* Guía */
+.radar__ring,
+.radar__axis {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.radar__ring--outer {
+  fill: color-mix(in srgb, var(--bg-elevated) 60%, transparent);
+}
+
+.radar__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--text-secondary);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Áreas de los jugadores: el color sale de --series-N */
+.radar__series--1 { --radar-color: var(--series-1); }
+.radar__series--2 { --radar-color: var(--series-2); }
+.radar__series--3 { --radar-color: var(--series-3); }
+.radar__series--4 { --radar-color: var(--series-4); }
+
+.radar__area {
+  fill: color-mix(in srgb, var(--radar-color) 16%, transparent);
+  stroke: var(--radar-color);
+  stroke-width: 2;
+}
+
+.radar__dot {
+  fill: var(--radar-color);
+}
+
+/* Leyenda */
+.radar__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.radar__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.radar__legend-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--radar-color);
+}

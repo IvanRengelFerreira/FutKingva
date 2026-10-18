@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
 import './MobileMenu.css';
-import logo from '../../assets/logo-menu.svg';
+import logo from '../../assets/logo-mobile.svg'; // Mismo logo que la navbar móvil
 import closeIcon from '../../assets/icon-close.svg';
 import chevronIcon from '../../assets/icon-chevron-right.svg';
 import homeIcon from '../../assets/icon-home.svg';
@@ -41,7 +41,7 @@ const PANEL_ICONS = { editor: editIcon, admin: shieldIcon };
 export default function MobileMenu({ open, onClose, user = null }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { logout } = useSession();
+  const { logout, unreadCount } = useSession();
   const closeButtonRef = useRef(null);
 
   // Mientras está abierto: Esc lo cierra, la página de detrás no hace scroll y el foco va a la X.
@@ -130,7 +130,7 @@ export default function MobileMenu({ open, onClose, user = null }) {
           <p className="mobile-menu__heading">MI ZONA</p>
           <div className="mobile-menu__group mobile-menu__group--my-zone">
             {MY_ZONE_LINKS.map((link) => renderLink(link))}
-            {user && renderLink({ label: 'Mi perfil', path: '/perfil', icon: userIcon }, user.notifications)}
+            {user && renderLink({ label: 'Mi perfil', path: '/perfil', icon: userIcon }, unreadCount)}
             {user && ROLE_PANELS[user.role] && renderLink({ ...ROLE_PANELS[user.role], icon: PANEL_ICONS[user.role] })}
           </div>
         </nav>

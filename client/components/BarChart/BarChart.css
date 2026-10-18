@@ -1,0 +1,117 @@
+/*
+ * Gráfico de barras por jornada
+ * Figma › Mockups › 04 · Ficha de jugador, 07 · Ficha de árbitro y 09 · Artículo
+ */
+
+.bar-chart {
+  padding-top: 22px; /* Hueco para la cifra de la barra más alta */
+}
+
+.bar-chart__plot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: var(--bar-chart-height);
+}
+
+/* Líneas de guía y de media: detrás de las barras */
+.bar-chart__grid-line,
+.bar-chart__average {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.bar-chart__grid-line {
+  height: 1px;
+  background: var(--border);
+}
+
+.bar-chart__average {
+  border-top: 1.5px dashed;
+}
+
+.bar-chart__average--gold {
+  border-color: var(--accent-gold);
+}
+
+.bar-chart__average--neutral {
+  border-color: var(--text-secondary);
+}
+
+/* Una columna por jornada; la barra va centrada */
+.bar-chart__column {
+  position: relative; /* Por encima de las líneas */
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+}
+
+.bar-chart__bar {
+  position: relative;
+  width: min(var(--bar-chart-bar-width), 70%);
+}
+
+.bar-chart__fill {
+  display: flex;
+  flex-direction: column-reverse; /* El primer segmento abajo */
+  height: 100%;
+  border-radius: 6px 6px 0 0;
+  overflow: hidden;
+}
+
+.bar-chart__segment {
+  flex-basis: 0;
+}
+
+/* Colores de las barras */
+.bar-chart__segment--gold {
+  background: var(--accent-gold);
+}
+
+.bar-chart__segment--gold-soft {
+  background: color-mix(in srgb, var(--accent-gold) 85%, transparent);
+}
+
+.bar-chart__segment--win {
+  background: color-mix(in srgb, var(--status-win) 85%, transparent);
+}
+
+.bar-chart__segment--yellow-card {
+  background: color-mix(in srgb, var(--card-yellow) 90%, transparent);
+}
+
+.bar-chart__segment--red-card {
+  background: var(--status-loss);
+}
+
+/* Cifra encima de la barra */
+.bar-chart__value {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: normal;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Jornadas debajo del gráfico, alineadas con las columnas */
+.bar-chart__labels {
+  display: flex;
+  margin-top: 4px;
+}
+
+.bar-chart__labels span {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--text-tertiary);
+  text-align: center;
+}
