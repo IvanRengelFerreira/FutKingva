@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useSession } from '../../context/SessionContext.jsx';
+import Button from '../../components/Button/Button.jsx';
+import './Access.css';
 
 // 14 · Acceso
 // Diseño: Figma › Mockups › 14 · Acceso
@@ -19,10 +21,10 @@ export default function Access() {
     <section className="placeholder">
       <h1>Acceso</h1>
       <p>Página 14 · pendiente de maquetar. Acceso rápido (provisional):</p>
-      <p>
-        <button type="button" onClick={() => handleQuickAccess('user')}>Usuario</button>{' '}
-        <button type="button" onClick={() => handleQuickAccess('editor')}>Editor</button>{' '}
-        <button type="button" onClick={() => handleQuickAccess('admin')}>Admin</button>
+      <p className="access__quick">
+        <Button variant="tertiary" onClick={() => handleQuickAccess('user')}>Usuario</Button>
+        <Button variant="tertiary" onClick={() => handleQuickAccess('editor')}>Editor</Button>
+        <Button variant="tertiary" onClick={() => handleQuickAccess('admin')}>Admin</Button>
       </p>
     </section>
   );

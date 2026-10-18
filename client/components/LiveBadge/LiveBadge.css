@@ -1,0 +1,42 @@
+/*
+ * Etiqueta «EN DIRECTO»
+ * Figma › Guía de estilo › 3. Componentes › Indicadores › Badge/En directo
+ */
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--status-live) 16%, transparent);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--status-live);
+  white-space: nowrap;
+}
+
+.live-badge__dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--status-live);
+  animation: live-badge-pulse 1.6s ease-in-out infinite;
+}
+
+/* El punto late para que se note que el partido está en juego */
+@keyframes live-badge-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-badge__dot {
+    animation: none;
+  }
+}

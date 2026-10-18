@@ -1,0 +1,12 @@
+/*
+ * 14 · Acceso
+ * Figma › Mockups › 14 · Acceso
+ */
+
+/* Provisional: botones de acceso rápido por rol */
+.placeholder .access__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}

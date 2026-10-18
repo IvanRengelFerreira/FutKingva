@@ -1,0 +1,43 @@
+/*
+ * Pestañas con subrayado oro
+ * Figma › Guía de estilo › 3. Componentes › Pestañas
+ */
+
+.tabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;   /* En móvil, si no caben, se deslizan de lado */
+  scrollbar-width: none;
+}
+
+.tabs__tab {
+  flex-shrink: 0;
+  padding: 0 0 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs__tab:hover {
+  color: var(--text-primary);
+}
+
+.tabs__tab:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.tabs__tab--active,
+.tabs__tab--active:hover {
+  border-bottom-color: var(--accent-gold);
+  font-weight: 700;
+  color: var(--accent-gold);
+}

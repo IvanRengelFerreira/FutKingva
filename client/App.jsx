@@ -9,6 +9,7 @@ import IdealTeam from './views/IdealTeam/IdealTeam.jsx';
 import Access from './views/Access/Access.jsx';
 import AdminDashboard from './views/AdminDashboard/AdminDashboard.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
+import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
 // Componente principal: define las rutas de la web (las páginas del sitemap).
 // HashRouter usa direcciones con # (index.html#/clasificaciones), así funciona sin servidor.
@@ -33,6 +34,9 @@ export default function App() {
 
             {/* Administrador */}
             <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />  {/* 20 */}
+
+            {/* TEMPORAL: escaparate de componentes; se borra antes de la entrega */}
+            <Route path="componentes" element={<ComponentGallery />} />
 
             <Route path="*" element={<NotFound />} />
           </Route>

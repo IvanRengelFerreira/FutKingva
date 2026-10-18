@@ -1,0 +1,79 @@
+/*
+ * Botón (primario, secundario, terciario, peligro y deshabilitado)
+ * Figma › Guía de estilo › 3. Componentes › Botones
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px; /* Altura fija: todas las variantes miden lo mismo, tengan el borde que tengan */
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Primario: degradado oro, la acción principal de la pantalla */
+.button--primary {
+  background: var(--gradient-gold);
+  color: var(--brand-green-900);
+}
+
+.button--primary:hover {
+  background: var(--accent-amber);
+}
+
+/* Secundario: borde oro */
+.button--secondary {
+  border: 1.5px solid var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.button--secondary:hover {
+  background: var(--accent-gold-soft);
+}
+
+/* Terciario: acciones normales sobre tarjetas */
+.button--tertiary {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.button--tertiary:hover {
+  background: var(--bg-hover);
+}
+
+/* Peligro: eliminar, bloquear… */
+.button--danger {
+  background: color-mix(in srgb, var(--status-loss) 14%, transparent);
+  border-color: var(--status-loss);
+  color: var(--status-loss);
+}
+
+.button--danger:hover {
+  background: color-mix(in srgb, var(--status-loss) 24%, transparent);
+}
+
+/* Deshabilitado: igual para todas las variantes */
+.button:disabled,
+.button:disabled:hover {
+  background: var(--bg-elevated);
+  border-color: transparent;
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
