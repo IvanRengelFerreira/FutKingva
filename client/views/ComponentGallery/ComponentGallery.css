@@ -107,6 +107,23 @@
   width: 220px;
 }
 
+/* Rejilla de tarjetas e ilustraciones; miniaturas y lista estrecha como en móvil (Carlota) */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.gallery__thumb {
+  width: 96px;
+  border-radius: 8px;
+}
+
+.gallery__stack--narrow {
+  max-width: 358px;
+}
+
 @media (max-width: 799px) {
   .gallery__row--fields {
     grid-template-columns: 1fr;

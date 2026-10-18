@@ -1,0 +1,123 @@
+/*
+ * Tarjeta de artículo (vertical y compacta)
+ * Figma › Mockups › 08 · Análisis › «Últimos análisis»
+ */
+
+.article-card {
+  position: relative; /* Para que el enlace del titular cubra toda la tarjeta */
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.article-card:hover {
+  background: var(--bg-hover);
+}
+
+/* Se ve el foco del teclado alrededor de toda la tarjeta */
+.article-card:has(.article-card__link:focus-visible) {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.article-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.article-card__title {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.article-card__link {
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+/* El enlace se estira por encima de toda la tarjeta: se puede pulsar en cualquier sitio */
+.article-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.article-card__excerpt {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-secondary);
+}
+
+.article-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto; /* En una rejilla, el pie queda abajo aunque el texto sea más corto */
+}
+
+.article-card__meta {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.article-card__more {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--accent-gold);
+  white-space: nowrap;
+}
+
+/* Vertical: ilustración arriba (200 px) y texto debajo */
+.article-card--vertical {
+  flex-direction: column;
+}
+
+.article-card--vertical .article-card__body {
+  padding: 16px 20px 18px;
+}
+
+.article-card--vertical .article-card__title {
+  font-size: 26px;
+  line-height: 1.08;
+}
+
+/* Compacta (móvil): miniatura de 96 × 84 a la izquierda */
+.article-card--compact {
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 10px;
+}
+
+.article-card--compact .article-card__illustration {
+  flex-shrink: 0;
+  width: 96px;
+  height: 84px;
+  border-radius: 8px;
+}
+
+.article-card--compact .article-card__body {
+  gap: 6px;
+}
+
+.article-card--compact .article-card__title {
+  font-size: 19px;
+  line-height: 1.05;
+}
+
+.article-card--compact .article-card__meta {
+  font-size: 11px;
+}

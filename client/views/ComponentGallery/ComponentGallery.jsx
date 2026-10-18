@@ -8,6 +8,11 @@ import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import Select from '../../components/Select/Select.jsx';
 import Checkbox from '../../components/Checkbox/Checkbox.jsx';
+import Tag from '../../components/Tag/Tag.jsx';
+import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx';
+import Illustration from '../../components/Illustration/Illustration.jsx';
+import ArticleCard from '../../components/ArticleCard/ArticleCard.jsx';
+import { getArticle } from '../../data/mockData.js';
 import searchIcon from '../../assets/icon-search.svg';
 
 // TEMPORAL · Escaparate de componentes compartidos (no está en el sitemap ni en el menú).
@@ -235,6 +240,83 @@ export default function ComponentGallery() {
         >
           Acepto las condiciones de uso y la política de privacidad
         </Checkbox>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Tag"
+        owner="Carlota"
+        usage={'<Tag category="Táctica" />\n<Tag category={article.category} />   // Táctica, Crónica, Previa o Datos (ARTICLES)\n<Tag featured>Destacado</Tag>'}
+      >
+        <div className="gallery__row">
+          <Tag category="Táctica" />
+          <Tag category="Crónica" />
+          <Tag category="Previa" />
+          <Tag category="Datos" />
+          <Tag featured>Destacado</Tag>
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="StatusBadge"
+        owner="Carlota"
+        usage={"<StatusBadge status={article.status} />   // 'published' | 'scheduled' | 'draft'\n<StatusBadge status={user.status} />      // 'active' | 'blocked'"}
+      >
+        <div className="gallery__row">
+          <StatusBadge status="published" />
+          <StatusBadge status="scheduled" />
+          <StatusBadge status="draft" />
+          <StatusBadge status="active" />
+          <StatusBadge status="blocked" />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Illustration"
+        owner="Carlota"
+        usage={"<Illustration type=\"Táctica\" />\n<Illustration type=\"Táctica\" stat=\"91 %\" />                 // con hexágono (destacado)\n<Illustration type=\"Crónica\" score=\"3 – 0\" caption=\"FINAL · 90+2'\" />\n<Illustration type=\"Previa\" home=\"real-madrid\" away=\"sevilla\" />   // ids de TEAMS\n<Illustration type=\"Datos\" />\n<Illustration type=\"Datos\" size=\"thumb\" />                  // miniatura de móvil (96 × 84)\nEl alto lo pone quien la usa: className con height (por defecto 200 px)."}
+      >
+        <div className="gallery__grid">
+          <Illustration type="Táctica" stat="91 %" />
+          <Illustration type="Crónica" score="3 – 0" caption="FINAL · 90+2'" />
+          <Illustration type="Previa" home="real-madrid" away="sevilla" />
+          <Illustration type="Datos" />
+        </div>
+        <div className="gallery__row">
+          <Illustration className="gallery__thumb" type="Táctica" size="thumb" />
+          <Illustration className="gallery__thumb" type="Crónica" size="thumb" score="3 – 0" caption="FINAL · 90+2'" />
+          <Illustration className="gallery__thumb" type="Previa" size="thumb" home="real-madrid" away="sevilla" />
+          <Illustration className="gallery__thumb" type="Datos" size="thumb" />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="ArticleCard"
+        owner="Carlota"
+        usage={"<ArticleCard article={getArticle('barca-ocho-de-ocho')} excerpt=\"El 3 – 0 al Getafe…\" illustration={{ score: '3 – 0', caption: \"FINAL · 90+2'\" }} />\n<ArticleCard article={article} layout=\"compact\" />   // lista de móvil\nillustration: lo que necesita <Illustration> según la categoría. Lleva a /analisis/<id> (o a «to»)."}
+      >
+        <div className="gallery__grid">
+          <ArticleCard
+            article={getArticle('madrid-de-mourinho')}
+            excerpt="Qué ha cambiado en el Madrid en sus primeras ocho jornadas con Mourinho."
+          />
+          <ArticleCard
+            article={getArticle('barca-ocho-de-ocho')}
+            excerpt="El 3 – 0 al Getafe completa un pleno de victorias en LaLiga."
+            illustration={{ score: '3 – 0', caption: "FINAL · 90+2'" }}
+          />
+          <ArticleCard
+            article={getArticle('previa-real-madrid-sevilla')}
+            excerpt="Lo que dicen los datos antes del partido del domingo."
+            illustration={{ home: 'real-madrid', away: 'sevilla' }}
+          />
+        </div>
+        <div className="gallery__stack gallery__stack--narrow">
+          <ArticleCard article={getArticle('madrid-de-mourinho')} layout="compact" />
+          <ArticleCard
+            article={getArticle('celta-athletic-defensas')}
+            layout="compact"
+          />
+        </div>
       </GalleryItem>
 
       <GalleryItem
