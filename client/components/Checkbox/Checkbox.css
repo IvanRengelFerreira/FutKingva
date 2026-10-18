@@ -1,0 +1,96 @@
+/*
+ * Casilla de verificación (sin marcar, marcada, foco, error y deshabilitada)
+ * Figma › Mockups › 16 · Contacto y 14 · Acceso
+ */
+
+.checkbox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkbox__label {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* El input de verdad queda invisible encima del cuadrado: recibe los clics y el teclado */
+.checkbox__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* Sin marcar: cuadrado vacío con borde */
+.checkbox__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-base);
+}
+
+.checkbox__box img {
+  visibility: hidden;
+}
+
+.checkbox__label:hover .checkbox__box {
+  border-color: var(--text-tertiary);
+}
+
+/* Marcada: degradado oro con ✓ */
+.checkbox__input:checked + .checkbox__box {
+  border-color: transparent;
+  background: var(--gradient-gold);
+}
+
+.checkbox__input:checked + .checkbox__box img {
+  visibility: visible;
+}
+
+.checkbox__input:focus-visible + .checkbox__box {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Error (por ejemplo, sin aceptar la política al enviar) */
+.checkbox__label--error .checkbox__input:not(:checked) + .checkbox__box {
+  border-color: var(--status-loss);
+}
+
+.checkbox__text {
+  padding-top: 2px; /* Centra la primera línea con el cuadrado de 20 px */
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+
+.checkbox__text a {
+  color: var(--accent-gold);
+}
+
+/* Deshabilitada */
+.checkbox__label:has(.checkbox__input:disabled) {
+  cursor: not-allowed;
+}
+
+.checkbox__input:disabled + .checkbox__box {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+}
+
+.checkbox__input:disabled ~ .checkbox__text {
+  color: var(--text-tertiary);
+}

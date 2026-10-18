@@ -96,7 +96,39 @@
   overflow-x: auto;
 }
 
+/* Campos de formulario de dos en dos; en móvil, uno debajo de otro (Carlota) */
+.gallery__row--fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.gallery__filter {
+  width: 220px;
+}
+
+/* Rejilla de tarjetas e ilustraciones; miniaturas y lista estrecha como en móvil (Carlota) */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.gallery__thumb {
+  width: 96px;
+  border-radius: 8px;
+}
+
+.gallery__stack--narrow {
+  max-width: 358px;
+}
+
 @media (max-width: 799px) {
+  .gallery__row--fields {
+    grid-template-columns: 1fr;
+  }
+
   .gallery {
     padding: 24px 16px;
   }

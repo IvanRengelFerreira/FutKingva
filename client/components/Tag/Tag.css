@@ -1,0 +1,43 @@
+/*
+ * Etiqueta de categoría de artículo
+ * Figma › Mockups › 08 · Análisis › Etiqueta TÁCTICA / CRÓNICA / PREVIA / DATOS / DESTACADO
+ */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* Cada categoría pone su color; el fondo es ese mismo color al 14 % */
+  color: var(--tag-color, var(--text-secondary));
+  background: color-mix(in srgb, var(--tag-color, var(--text-secondary)) 14%, transparent);
+}
+
+.tag--tactica {
+  --tag-color: var(--accent-gold);
+}
+
+.tag--cronica {
+  --tag-color: var(--status-live);
+}
+
+.tag--previa {
+  --tag-color: var(--series-3);
+}
+
+.tag--datos {
+  --tag-color: var(--status-info);
+}
+
+/* Destacado: degradado oro con texto verde oscuro */
+.tag--featured {
+  background: var(--gradient-gold);
+  color: var(--brand-green-900);
+}

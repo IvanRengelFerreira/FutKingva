@@ -1,0 +1,19 @@
+/*
+ * Mensaje de error de un campo de formulario
+ * Figma › Mockups › 14 · Acceso › Repetir contraseña
+ */
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--status-loss);
+}
+
+.field-error img {
+  flex-shrink: 0;
+}

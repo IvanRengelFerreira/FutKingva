@@ -1,0 +1,106 @@
+/*
+ * Ilustración de artículo (sin fotos): táctica, crónica, previa y datos
+ * Figma › Mockups › 08 · Análisis › «Ilustración … (sin foto)»
+ */
+
+.illustration {
+  display: flex;
+  height: 200px; /* Alto de la tarjeta; quien la usa lo cambia con className */
+  background: var(--gradient-brand);
+  overflow: hidden;
+}
+
+/* Miniatura de móvil */
+.illustration--thumb {
+  height: 84px;
+}
+
+.illustration__svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Táctica: líneas del campo, jugada discontinua y puntos */
+.illustration__line {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-opacity: 0.14;
+  stroke-width: 2;
+}
+
+.illustration__play {
+  fill: none;
+  stroke: var(--accent-gold);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 8 6;
+}
+
+.illustration__dot {
+  fill: var(--accent-gold);
+}
+
+.illustration__hexagon {
+  fill: var(--accent-gold);
+  fill-opacity: 0.92;
+}
+
+.illustration__hexagon-text {
+  fill: var(--brand-green-900);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 30px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Crónica: marcador */
+.illustration__score {
+  fill: var(--text-primary);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.illustration__caption {
+  fill: var(--accent-gold);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-anchor: middle;
+}
+
+/* Previa: escudos (borde del color del club y fondo de ese color al 16 %) */
+.illustration__crest {
+  fill: var(--crest-color, var(--border));
+  fill-opacity: 0.16;
+  stroke: var(--crest-color, var(--border));
+  stroke-width: 3;
+}
+
+.illustration__crest-text,
+.illustration__vs {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.illustration__crest-text {
+  fill: var(--text-primary);
+}
+
+.illustration__vs {
+  fill: var(--accent-gold);
+}
+
+/* Datos: barras blancas suaves y la última en oro */
+.illustration__bar {
+  fill: var(--text-primary);
+  fill-opacity: 0.18;
+}
+
+.illustration__bar--highlight {
+  fill: var(--accent-gold);
+  fill-opacity: 1;
+}

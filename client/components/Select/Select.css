@@ -1,0 +1,102 @@
+/*
+ * Desplegable con flecha (tamaño formulario y tamaño filtro)
+ * Figma › Mockups › 16 · Contacto › Asunto · 02 · Equipos y jugadores › Filtros
+ */
+
+.select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.select__label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--text-secondary);
+}
+
+/* Etiqueta oculta a la vista pero no a los lectores de pantalla (filtros sin etiqueta) */
+.select__label--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* La flecha va encima del <select>, a la derecha; los clics la atraviesan */
+.select__control {
+  position: relative;
+  display: flex;
+}
+
+.select__chevron {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select__input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  font: inherit;
+  line-height: normal;
+  color: var(--text-primary);
+  appearance: none; /* Quita la flecha del navegador para poner la nuestra */
+  cursor: pointer;
+}
+
+/* Formulario (Contacto): fondo base, texto 15 px, 45 px de alto */
+.select__control--md .select__input {
+  padding: 12px 40px 12px 14px;
+  background: var(--bg-base);
+  font-size: 15px;
+}
+
+/* Filtro (Equipos y jugadores): fondo superficie, texto 14 px, 41 px de alto */
+.select__control--sm .select__input {
+  padding: 11px 36px 11px 14px;
+  background: var(--bg-surface);
+  font-size: 14px;
+}
+
+.select__input:hover {
+  border-color: var(--text-tertiary);
+}
+
+.select__input:focus-visible {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 0.5px var(--accent-gold);
+}
+
+.select__control--error .select__input {
+  border-color: var(--status-loss);
+  box-shadow: 0 0 0 0.5px var(--status-loss);
+}
+
+/* La lista desplegada la pinta el navegador: al menos que sea oscura */
+.select__input option {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* Primera opción vacía (placeholder) en gris */
+.select__input:has(option[value='']:checked) {
+  color: var(--text-tertiary);
+}
+
+.select__input:disabled {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
