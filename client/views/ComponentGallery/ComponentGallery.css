@@ -96,7 +96,22 @@
   overflow-x: auto;
 }
 
+/* Campos de formulario de dos en dos; en móvil, uno debajo de otro (Carlota) */
+.gallery__row--fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.gallery__filter {
+  width: 220px;
+}
+
 @media (max-width: 799px) {
+  .gallery__row--fields {
+    grid-template-columns: 1fr;
+  }
+
   .gallery {
     padding: 24px 16px;
   }

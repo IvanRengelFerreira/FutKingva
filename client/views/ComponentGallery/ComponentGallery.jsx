@@ -5,11 +5,22 @@ import Button from '../../components/Button/Button.jsx';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import LiveBadge from '../../components/LiveBadge/LiveBadge.jsx';
 import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
+import TextField from '../../components/TextField/TextField.jsx';
+import Select from '../../components/Select/Select.jsx';
+import Checkbox from '../../components/Checkbox/Checkbox.jsx';
+import searchIcon from '../../assets/icon-search.svg';
 
 // TEMPORAL · Escaparate de componentes compartidos (no está en el sitemap ni en el menú).
 // Dirección: #/componentes. Sirve para ver cómo queda cada componente y copiar cómo se usa.
 // Cuando hagas un componente compartido, añade aquí su bloque (con el mismo formato).
 // Se borra antes de la entrega, junto con su ruta en App.jsx.
+
+const SUBJECTS_EXAMPLE = [
+  { value: 'datos', label: 'Error en los datos' },
+  { value: 'sugerencia', label: 'Sugerencia' },
+  { value: 'cuenta', label: 'Problema con mi cuenta' },
+  { value: 'otro', label: 'Otro' },
+];
 
 const TABS_EXAMPLE = [
   { id: 'summary', label: 'Resumen' },
@@ -34,6 +45,18 @@ function GalleryItem({ name, owner, usage, children }) {
 export default function ComponentGallery() {
   const { user, login, logout } = useSession();
   const [tab, setTab] = useState('summary');
+  const [name, setName] = useState('Carlota');
+  const [message, setMessage] = useState(
+    'En la ficha de Pedri aparecen 2 tarjetas, pero en el último partido vio otra amarilla. ¿Podéis revisarlo?'
+  );
+  const [password, setPassword] = useState('futking');
+  const [search, setSearch] = useState('');
+  const [subject, setSubject] = useState('datos');
+  const [subjectRequired, setSubjectRequired] = useState('');
+  const [league, setLeague] = useState('LaLiga');
+  const [accepted, setAccepted] = useState(true);
+  const [remember, setRemember] = useState(false);
+  const [terms, setTerms] = useState(false);
 
   return (
     <section className="gallery">
@@ -104,6 +127,114 @@ export default function ComponentGallery() {
           <RoleNotice role="editor" />
           <RoleNotice role="admin" />
         </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="TextField"
+        owner="Carlota"
+        usage={"const [name, setName] = useState('');\n<TextField label=\"Nombre\" value={name} onChange={(e) => setName(e.target.value)} />\n<TextField label=\"Contraseña\" type=\"password\" error=\"Las contraseñas no coinciden\" … />   // con botón de ojo\n<TextField label=\"Mensaje\" multiline maxLength={1000} … />                 // con contador\n<TextField size=\"sm\" label=\"Buscar\" hideLabel icon={searchIcon} placeholder=\"Buscar por nombre…\" … />\n<TextField label=\"Correo\" hint=\"No lo compartimos con nadie\" disabled … />"}
+      >
+        <div className="gallery__row gallery__row--fields">
+          <TextField label="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+          <TextField
+            size="sm"
+            label="Buscar"
+            hideLabel
+            icon={searchIcon}
+            placeholder="Buscar por nombre…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="gallery__row gallery__row--fields">
+          <TextField
+            label="Repetir contraseña"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            hint="Pista: la contraseña buena es «futkingva»"
+            error={password === 'futkingva' ? '' : 'Las contraseñas no coinciden'}
+          />
+          <TextField
+            label="Correo electrónico"
+            value="carlota.r@ejemplo.com"
+            hint="Deshabilitado"
+            disabled
+            readOnly
+          />
+        </div>
+        <TextField
+          label="Mensaje"
+          multiline
+          maxLength={1000}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </GalleryItem>
+
+      <GalleryItem
+        name="Select"
+        owner="Carlota"
+        usage={"const [subject, setSubject] = useState('datos');\n<Select label=\"Asunto\" options={[{ value: 'datos', label: 'Error en los datos' }, …]} value={subject} onChange={(e) => setSubject(e.target.value)} />\n<Select size=\"sm\" label=\"Liga\" hideLabel options={['LaLiga', 'Premier League', …]} … />   // filtros\n<Select label=\"Asunto\" placeholder=\"Elige un asunto\" error=\"Elige un asunto\" … />"}
+      >
+        <div className="gallery__row gallery__row--fields">
+          <Select
+            label="Asunto"
+            options={SUBJECTS_EXAMPLE}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+          />
+          <Select
+            label="Asunto (con error)"
+            options={SUBJECTS_EXAMPLE}
+            placeholder="Elige un asunto"
+            value={subjectRequired}
+            onChange={(e) => setSubjectRequired(e.target.value)}
+            error={subjectRequired ? '' : 'Elige un asunto'}
+          />
+        </div>
+        <div className="gallery__row">
+          <Select
+            className="gallery__filter"
+            size="sm"
+            label="Liga"
+            hideLabel
+            options={['LaLiga', 'Premier League', 'Serie A', 'Bundesliga', 'Ligue 1'].map((l) => ({ value: l, label: `Liga: ${l}` }))}
+            value={league}
+            onChange={(e) => setLeague(e.target.value)}
+          />
+          <Select
+            className="gallery__filter"
+            size="sm"
+            label="Temporada"
+            hideLabel
+            options={['Temporada 2026/27', 'Temporada 2025/26']}
+          />
+          <Select className="gallery__filter" size="sm" label="Ordenar" hideLabel options={['Ordenar: Clasificación']} disabled />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Checkbox"
+        owner="Carlota"
+        usage={"const [accepted, setAccepted] = useState(false);\n<Checkbox checked={accepted} onChange={(e) => setAccepted(e.target.checked)}>Acepto la política de privacidad</Checkbox>\n<Checkbox error=\"Tienes que aceptar la política\" …>…</Checkbox>"}
+      >
+        <div className="gallery__row">
+          <Checkbox checked={accepted} onChange={(e) => setAccepted(e.target.checked)}>
+            Acepto la política de privacidad
+          </Checkbox>
+          <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>
+            Recordarme
+          </Checkbox>
+          <Checkbox disabled>Deshabilitada</Checkbox>
+        </div>
+        <Checkbox
+          checked={terms}
+          onChange={(e) => setTerms(e.target.checked)}
+          error={terms ? '' : 'Tienes que aceptar la política de privacidad'}
+        >
+          Acepto las condiciones de uso y la política de privacidad
+        </Checkbox>
       </GalleryItem>
 
       <GalleryItem

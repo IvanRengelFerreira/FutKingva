@@ -1,0 +1,143 @@
+/*
+ * Campo de texto con etiqueta (normal, foco, error, deshabilitado, texto largo y contraseña)
+ * Figma › Mockups › 16 · Contacto y 14 · Acceso › «Campo con etiqueta»
+ */
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.text-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--text-secondary);
+}
+
+/* Etiqueta oculta a la vista pero no a los lectores de pantalla (buscadores sin etiqueta) */
+.text-field__label--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* La caja: fondo base, borde fino; el borde se engorda a 1,5 px con una sombra para no mover nada */
+.text-field__control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-base);
+  cursor: text;
+}
+
+.text-field__control:focus-within {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 0.5px var(--accent-gold);
+}
+
+.text-field__control--error,
+.text-field__control--error:focus-within {
+  border-color: var(--status-loss);
+  box-shadow: 0 0 0 0.5px var(--status-loss);
+}
+
+.text-field__icon {
+  flex-shrink: 0;
+}
+
+.text-field__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  line-height: normal;
+  color: var(--text-primary);
+}
+
+.text-field__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Contraseña: puntos más separados, como en el mockup de Acceso */
+.text-field__input[type='password'] {
+  font-weight: 500;
+  letter-spacing: 3px;
+}
+
+/* Filtro (buscador de Equipos y jugadores): fondo superficie, texto 14 px, 41 px de alto */
+.text-field__control--sm {
+  gap: 8px;
+  padding: 11px 14px;
+  background: var(--bg-surface);
+}
+
+.text-field__control--sm .text-field__input {
+  font-size: 14px;
+}
+
+/* Texto largo (Mensaje de Contacto): caja alta y el texto empieza arriba */
+.text-field__control--multiline {
+  align-items: flex-start;
+  height: 180px;
+}
+
+.text-field__control--multiline .text-field__input {
+  align-self: stretch;
+  line-height: 23px;
+  resize: none;
+}
+
+/* Botón del ojo para ver u ocultar la contraseña */
+.text-field__toggle {
+  display: flex;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.text-field__toggle:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Deshabilitado */
+.text-field__control--disabled {
+  background: var(--bg-elevated);
+  cursor: not-allowed;
+}
+
+.text-field__control--disabled .text-field__input {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+/* Texto de ayuda y contador debajo del campo */
+.text-field__hint {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 799px) {
+  .text-field__control--multiline {
+    height: 150px;
+  }
+}
