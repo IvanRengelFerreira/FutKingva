@@ -144,3 +144,28 @@
     padding: 24px 16px;
   }
 }
+
+/* MatchCard: 4 en fila como en Inicio; en móvil, carrusel con scroll lateral */
+.gallery__match-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 1100px) {
+  .gallery__match-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 799px) {
+  .gallery__match-cards {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+  }
+
+  .gallery__match-cards > * {
+    flex: 0 0 290px;
+  }
+}

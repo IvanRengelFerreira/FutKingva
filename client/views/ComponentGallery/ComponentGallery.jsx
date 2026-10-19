@@ -4,6 +4,8 @@ import { useSession } from '../../context/SessionContext.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import LiveBadge from '../../components/LiveBadge/LiveBadge.jsx';
+import MatchCard from '../../components/MatchCard/MatchCard.jsx';
+import Pitch, { POSITION_NAMES, slotPosition } from '../../components/Pitch/Pitch.jsx';
 import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
 import BarChart from '../../components/BarChart/BarChart.jsx';
 import Radar from '../../components/Radar/Radar.jsx';
@@ -22,7 +24,7 @@ import StatCard from '../../components/StatCard/StatCard.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import StandingsTable from '../../components/StandingsTable/StandingsTable.jsx';
-import { getPlayer, getReferee, getArticle, LEAGUE_CARDS_PER_MATCH, COMPARISON_EXAMPLE } from '../../data/mockData.js';
+import { getPlayer, getReferee, getArticle, LEAGUE_CARDS_PER_MATCH, COMPARISON_EXAMPLE, LIVE_MATCHES, IDEAL_TEAM_EXAMPLE } from '../../data/mockData.js';
 import searchIcon from '../../assets/icon-search.svg';
 
 // TEMPORAL · Escaparate de componentes compartidos (no está en el sitemap ni en el menú).
@@ -108,6 +110,7 @@ export default function ComponentGallery() {
   const [terms, setTerms] = useState(false);
   const [page, setPage] = useState(1);
   const [longPage, setLongPage] = useState(5);
+  const [slot, setSlot] = useState('EI');
 
   return (
     <section className="gallery">
@@ -188,6 +191,35 @@ El aviso emergente de gol sale una vez por visita; para verlo otra vez, pulsa el
           <LiveBadge minute={67} />
           <LiveBadge />
         </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="MatchCard"
+        owner="Ivan"
+        usage={`{LIVE_MATCHES.map((match) => <MatchCard key={match.id} match={match} />)}
+La página pone la rejilla: 4 en fila en escritorio, carrusel en móvil.`}
+      >
+        <div className="gallery__match-cards">
+          {LIVE_MATCHES.map((match) => <MatchCard key={match.id} match={match} />)}
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Pitch"
+        owner="Ivan"
+        usage={`// 11 · Mi equipo ideal: cada posición es un botón
+const [slot, setSlot] = useState('EI');
+<Pitch formation="4-3-3" players={IDEAL_TEAM_EXAMPLE.players} activeSlot={slot} onSlotClick={setSlot} />
+
+// 12 · Mi perfil: solo para ver
+<Pitch formation="4-3-3" players={team.players} />
+
+// También: FORMATIONS ('4-3-3', '4-4-2', '3-5-2'), POSITION_NAMES y slotPosition('DFC1') → 'DFC'`}
+      >
+        <p className="gallery__note">
+          Eligiendo para: <strong>{POSITION_NAMES[slotPosition(slot)]} ({slotPosition(slot)})</strong> (pulsa otra posición).
+        </p>
+        <Pitch formation={IDEAL_TEAM_EXAMPLE.formation} players={IDEAL_TEAM_EXAMPLE.players} activeSlot={slot} onSlotClick={setSlot} />
       </GalleryItem>
 
       <GalleryItem

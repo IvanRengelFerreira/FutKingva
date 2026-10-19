@@ -1,0 +1,220 @@
+/*
+ * Campo con el once ideal
+ * Figma › Mockups › 11 · Mi equipo ideal › Campo (once ideal)
+ * Escritorio 860 × 680 (avatar 58 px) · móvil 358 × 500 (avatar 40 px).
+ * Las líneas del campo van en % para que valgan en los dos tamaños.
+ */
+
+.pitch {
+  --pitch-line: color-mix(in srgb, var(--text-primary) 22%, transparent);
+  --pitch-inset: 12px;
+  --token-size: 58px;
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 860 / 680;
+  border-radius: 16px;
+  overflow: hidden;
+  /* 8 franjas de césped alternas */
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--brand-green-700) 20%, var(--brand-green-900)) 0 12.5%,
+    color-mix(in srgb, var(--brand-green-700) 55%, var(--brand-green-900)) 12.5% 25%
+  );
+}
+
+/* Líneas: banda exterior, medio campo, círculo central, áreas y áreas pequeñas */
+.pitch__lines {
+  position: absolute;
+  inset: var(--pitch-inset);
+  border: 2px solid var(--pitch-line);
+  border-radius: 4px;
+}
+
+.pitch__lines span {
+  position: absolute;
+  border: 2px solid var(--pitch-line);
+}
+
+.pitch__halfway {
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-width: 2px 0 0 !important;
+  transform: translateY(-1px);
+}
+
+.pitch__circle {
+  top: 50%;
+  left: 50%;
+  height: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pitch__box,
+.pitch__goal-area {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pitch__box {
+  width: 37%;
+  height: 13.5%;
+}
+
+.pitch__goal-area {
+  width: 16.7%;
+  height: 5.4%;
+}
+
+.pitch__box--top,
+.pitch__goal-area--top {
+  top: -2px;
+}
+
+.pitch__box--bottom,
+.pitch__goal-area--bottom {
+  bottom: -2px;
+}
+
+/* Jugadores: el centro del avatar cae en (--x, --y) */
+.pitch__slots {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pitch__slot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, calc(var(--token-size) / -2));
+}
+
+.pitch__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+}
+
+button.pitch__player {
+  cursor: pointer;
+}
+
+button.pitch__player:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.pitch__token {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--token-size);
+  height: var(--token-size);
+}
+
+/* El avatar de Angel, con el borde del color del club sobre verde */
+.pitch .avatar.pitch__avatar {
+  --avatar-size: var(--token-size) !important;
+  --avatar-font-size: calc(var(--token-size) * 0.4) !important;
+  border: 2px solid var(--team-color, var(--border));
+  background: var(--brand-green-900);
+}
+
+/* Valoración pequeña en la esquina de arriba a la derecha */
+.pitch .rating.pitch__rating {
+  --rating-height: 28px;
+  --rating-font-size: 11px;
+  position: absolute;
+  top: -4px;
+  left: calc(var(--token-size) - 12px);
+}
+
+/* Posición vacía: círculo dorado discontinuo con «+» */
+.pitch__add {
+  border: 2px dashed var(--accent-gold);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-gold) 12%, transparent);
+}
+
+button.pitch__player:hover .pitch__add {
+  background: color-mix(in srgb, var(--accent-gold) 22%, transparent);
+}
+
+button.pitch__player:hover .pitch__avatar {
+  border-color: var(--accent-gold);
+}
+
+/* Posición elegida (para la que se está buscando jugador) */
+.pitch__player--active .pitch__token::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+}
+
+.pitch__player--empty.pitch__player--active .pitch__token::after {
+  display: none;
+}
+
+.pitch__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.pitch__player--empty .pitch__name {
+  color: var(--accent-gold);
+}
+
+.pitch__position {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: color-mix(in srgb, var(--text-primary) 30%, var(--text-secondary));
+}
+
+/* Móvil: campo más alto que ancho y fichas de 40 px */
+@media (max-width: 799px) {
+  .pitch {
+    --token-size: 40px;
+    aspect-ratio: 358 / 500;
+  }
+
+  .pitch__player {
+    gap: 2px;
+  }
+
+  .pitch .rating.pitch__rating {
+    --rating-height: 22px;
+    --rating-font-size: 9px;
+    left: calc(var(--token-size) - 10px);
+  }
+
+  .pitch__add img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .pitch__name {
+    font-size: 11px;
+  }
+
+  .pitch__position {
+    font-size: 9px;
+  }
+}

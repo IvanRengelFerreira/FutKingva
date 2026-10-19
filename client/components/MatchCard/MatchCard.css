@@ -1,0 +1,160 @@
+/*
+ * Tarjeta de partido en juego
+ * Figma › Mockups › 01 · Inicio › Partidos en juego (escritorio 325 px de ancho, móvil 290 px)
+ */
+
+.match-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 14px 18px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* Competición y minuto */
+.match-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.match-card__competition {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.match-card__short {
+  display: none;
+}
+
+.match-card__minute {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--status-live);
+}
+
+/* Punto que late, como el de LiveBadge */
+.match-card__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: match-card-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes match-card-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match-card__dot {
+    animation: none;
+  }
+}
+
+/* Escudos y marcador */
+.match-card__score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.match-card__team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 60px;
+}
+
+.match-card__team-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.match-card__score {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 44px;
+  font-weight: 900;
+  line-height: normal;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Lo que va de partido (de 90 minutos) */
+.match-card__progress {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.match-card__progress-fill {
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  background: var(--gradient-gold);
+}
+
+/* Móvil: tarjeta más compacta, escudos de 36 px y competición abreviada */
+@media (max-width: 799px) {
+  .match-card {
+    gap: 12px;
+    padding: 13px 17px 15px;
+  }
+
+  .match-card__competition {
+    font-size: 10px;
+  }
+
+  .match-card__long {
+    display: none;
+  }
+
+  .match-card__short {
+    display: inline;
+  }
+
+  .match-card__minute {
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  .match-card__dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .match-card__team {
+    gap: 5px;
+    width: 72px;
+  }
+
+  .match-card__crest {
+    --crest-size: 36px !important;
+    --crest-font-size: 14px !important;
+  }
+
+  .match-card__team-name {
+    font-size: 12px;
+  }
+
+  .match-card__score {
+    font-size: 38px;
+  }
+}

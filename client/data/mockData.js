@@ -160,6 +160,7 @@ export const LATEST_RESULTS = [
 // Estadísticas: ESTIMADAS (no se han podido consultar), coherentes con los partidos de su equipo.
 // matches: partidos jugados · minutes · goals · assists · xg: goles esperados
 // shotsOnTarget: tiros a puerta · passAccuracy: % de pases acertados · cards: tarjetas
+// shortName: nombre corto (campo del equipo ideal); si no tiene, se usa name
 // rating: valoración media · ratingsByRound: valoración por jornada (J1…J8)
 export const PLAYERS = {
   pedri: {
@@ -177,7 +178,7 @@ export const PLAYERS = {
     ],
   },
   bellingham: {
-    id: 'bellingham', name: 'Jude Bellingham', teamId: 'real-madrid', position: 'Centrocampista', age: 23, country: 'Inglaterra', number: 5,
+    id: 'bellingham', name: 'Jude Bellingham', shortName: 'Bellingham', teamId: 'real-madrid', position: 'Centrocampista', age: 23, country: 'Inglaterra', number: 5,
     matches: 8, minutes: 701, goals: 5, assists: 2, xg: 4.0, shotsOnTarget: 11, passAccuracy: 86, cards: 3, rating: 7.8,
   },
   'lamine-yamal': {
@@ -185,7 +186,7 @@ export const PLAYERS = {
     matches: 8, minutes: 650, goals: 4, assists: 6, xg: 3.2, shotsOnTarget: 14, passAccuracy: 82, cards: 1, rating: 8.0,
   },
   mbappe: {
-    id: 'mbappe', name: 'Kylian Mbappé', teamId: 'real-madrid', position: 'Delantero', age: 27, country: 'Francia', number: 10,
+    id: 'mbappe', name: 'Kylian Mbappé', shortName: 'Mbappé', teamId: 'real-madrid', position: 'Delantero', age: 27, country: 'Francia', number: 10,
     matches: 8, minutes: 712, goals: 7, assists: 2, xg: 6.9, shotsOnTarget: 20, passAccuracy: 79, cards: 1, rating: 8.2,
   },
   isco: {
@@ -193,26 +194,26 @@ export const PLAYERS = {
   },
 
   // Plantilla del Real Madrid en su ficha (dorsales reales; estadísticas estimadas)
-  courtois: { id: 'courtois', name: 'Thibaut Courtois', teamId: 'real-madrid', position: 'Portero', number: 1, matches: 8, goals: 0, assists: 0, rating: 7.3 },
-  'alexander-arnold': { id: 'alexander-arnold', name: 'Trent Alexander-Arnold', teamId: 'real-madrid', position: 'Defensa', number: 12, matches: 7, goals: 0, assists: 2, rating: 7.1 },
-  militao: { id: 'militao', name: 'Éder Militão', teamId: 'real-madrid', position: 'Defensa', number: 3, matches: 7, goals: 1, assists: 0, rating: 7.0 },
-  huijsen: { id: 'huijsen', name: 'Dean Huijsen', teamId: 'real-madrid', position: 'Defensa', number: 4, matches: 8, goals: 0, assists: 0, rating: 7.1 },
-  valverde: { id: 'valverde', name: 'Federico Valverde', teamId: 'real-madrid', position: 'Centrocampista', number: 8, matches: 8, goals: 1, assists: 3, rating: 7.5 },
+  courtois: { id: 'courtois', name: 'Thibaut Courtois', shortName: 'Courtois', teamId: 'real-madrid', position: 'Portero', number: 1, matches: 8, goals: 0, assists: 0, rating: 7.3 },
+  'alexander-arnold': { id: 'alexander-arnold', name: 'Trent Alexander-Arnold', shortName: 'Alexander-Arnold', teamId: 'real-madrid', position: 'Defensa', number: 12, matches: 7, goals: 0, assists: 2, rating: 7.1 },
+  militao: { id: 'militao', name: 'Éder Militão', shortName: 'Militão', teamId: 'real-madrid', position: 'Defensa', number: 3, matches: 7, goals: 1, assists: 0, rating: 7.0 },
+  huijsen: { id: 'huijsen', name: 'Dean Huijsen', shortName: 'Huijsen', teamId: 'real-madrid', position: 'Defensa', number: 4, matches: 8, goals: 0, assists: 0, rating: 7.1 },
+  valverde: { id: 'valverde', name: 'Federico Valverde', shortName: 'Valverde', teamId: 'real-madrid', position: 'Centrocampista', number: 8, matches: 8, goals: 1, assists: 3, rating: 7.5 },
   vinicius: { id: 'vinicius', name: 'Vinícius Jr.', teamId: 'real-madrid', position: 'Delantero', number: 7, matches: 8, goals: 3, assists: 4, rating: 7.9 },
-  'raul-asencio': { id: 'raul-asencio', name: 'Raúl Asencio', teamId: 'real-madrid', position: 'Defensa', number: 2, goals: 0, assists: 0 },
+  'raul-asencio': { id: 'raul-asencio', name: 'Raúl Asencio', shortName: 'Asencio', teamId: 'real-madrid', position: 'Defensa', number: 2, goals: 0, assists: 0 },
 
   // Resto del equipo ideal de ejemplo
-  aramburu: { id: 'aramburu', name: 'Jon Aramburu', teamId: 'real-sociedad', position: 'Defensa', goals: 0, assists: 1, rating: 7.0 },
-  laporte: { id: 'laporte', name: 'Aymeric Laporte', teamId: 'athletic-club', position: 'Defensa', number: 14, rating: 7.2 },
-  balde: { id: 'balde', name: 'Alejandro Balde', teamId: 'barcelona', position: 'Defensa', number: 3, rating: 7.0 },
-  baena: { id: 'baena', name: 'Álex Baena', teamId: 'atletico-madrid', position: 'Centrocampista', rating: 7.6 },
+  aramburu: { id: 'aramburu', name: 'Jon Aramburu', shortName: 'Aramburu', teamId: 'real-sociedad', position: 'Defensa', goals: 0, assists: 1, rating: 7.0 },
+  laporte: { id: 'laporte', name: 'Aymeric Laporte', shortName: 'Laporte', teamId: 'athletic-club', position: 'Defensa', number: 14, rating: 7.2 },
+  balde: { id: 'balde', name: 'Alejandro Balde', shortName: 'Balde', teamId: 'barcelona', position: 'Defensa', number: 3, rating: 7.0 },
+  baena: { id: 'baena', name: 'Álex Baena', shortName: 'Baena', teamId: 'atletico-madrid', position: 'Centrocampista', rating: 7.6 },
 
   // Otros que salen en la búsqueda «ra» y en el buscador del equipo ideal (estadísticas estimadas)
   raphinha: { id: 'raphinha', name: 'Raphinha', teamId: 'barcelona', position: 'Extremo', number: 11, goals: 5, assists: 3, rating: 7.8 },
-  'gerard-martin': { id: 'gerard-martin', name: 'Gerard Martín', teamId: 'barcelona', position: 'Defensa', number: 18, goals: 0, assists: 1 },
+  'gerard-martin': { id: 'gerard-martin', name: 'Gerard Martín', shortName: 'Gerard Martín', teamId: 'barcelona', position: 'Defensa', number: 18, goals: 0, assists: 1 },
   'nico-williams': { id: 'nico-williams', name: 'Nico Williams', teamId: 'athletic-club', position: 'Extremo', goals: 3, assists: 3, rating: 7.5 },
   kubo: { id: 'kubo', name: 'Take Kubo', teamId: 'real-sociedad', position: 'Extremo', goals: 2, rating: 7.1 },
-  'giuliano-simeone': { id: 'giuliano-simeone', name: 'Giuliano Simeone', teamId: 'atletico-madrid', position: 'Extremo', goals: 2, rating: 7.0 },
+  'giuliano-simeone': { id: 'giuliano-simeone', name: 'Giuliano Simeone', shortName: 'Giuliano', teamId: 'atletico-madrid', position: 'Extremo', goals: 2, rating: 7.0 },
 };
 
 // Jugador de la jornada 8: Isco, doblete en el Betis 5-2 Osasuna (real; la nota es estimada)
