@@ -1,0 +1,58 @@
+/*
+ * Indicador (cifra grande + etiqueta)
+ * Figma › Mockups › 03 · Ficha de equipo › Indicadores
+ */
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 16px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  text-align: center;
+}
+
+.stat-card__value {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: normal;
+  color: var(--stat-color, var(--text-primary));
+  white-space: nowrap;
+}
+
+.stat-card__label {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.stat-card--gold {
+  --stat-color: var(--accent-gold);
+}
+
+.stat-card--win {
+  --stat-color: var(--status-win);
+}
+
+.stat-card--loss {
+  --stat-color: var(--status-loss);
+}
+
+.stat-card--info {
+  --stat-color: var(--status-info);
+}
+
+/* Móvil: cifra más pequeña (Figma › 03 · Ficha de equipo · Móvil) */
+@media (max-width: 799px) {
+  .stat-card__value {
+    font-size: 34px;
+  }
+}

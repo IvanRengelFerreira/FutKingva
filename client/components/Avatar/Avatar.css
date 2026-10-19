@@ -1,0 +1,23 @@
+/*
+ * Avatar con iniciales
+ * Figma › Mockups › 03 · Ficha de equipo › Avatar KM
+ */
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: var(--avatar-font-size);
+  font-weight: 800;
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+}

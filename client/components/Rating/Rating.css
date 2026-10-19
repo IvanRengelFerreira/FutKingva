@@ -1,0 +1,55 @@
+/*
+ * Valoración en hexágono
+ * Figma › Guía de estilo › 3. Componentes › Indicadores › Valoración 8,4 / 7,2 / 6,5 / 5,8
+ */
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* Hexágono con la punta arriba, igual de proporcionado que en Figma (ancho = 80 % del alto) */
+  height: var(--rating-height);
+  width: calc(var(--rating-height) * 0.8);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: var(--rating-color);
+  color: var(--bg-base);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: var(--rating-font-size);
+  font-weight: 800;
+  line-height: normal;
+}
+
+/* Tamaños */
+.rating--sm {
+  --rating-height: 32px;
+  --rating-font-size: 13px;
+}
+
+.rating--md {
+  --rating-height: 37px;
+  --rating-font-size: 14px;
+}
+
+.rating--lg {
+  --rating-height: 52px;
+  --rating-font-size: 22px;
+}
+
+/* Colores según la nota */
+.rating--gold {
+  --rating-color: var(--accent-gold);
+  color: var(--brand-green-900);
+}
+
+.rating--win {
+  --rating-color: var(--status-win);
+}
+
+.rating--draw {
+  --rating-color: var(--status-draw);
+}
+
+.rating--loss {
+  --rating-color: var(--status-loss);
+}

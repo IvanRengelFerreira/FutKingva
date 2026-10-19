@@ -1,0 +1,23 @@
+/*
+ * Escudo de equipo (círculo con siglas y color del club)
+ * Figma › Mockups › 03 · Ficha de equipo › Escudo RMA y 05 · Clasificaciones › Escudo FCB
+ */
+
+.crest {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--crest-size);
+  height: var(--crest-size);
+  border: var(--crest-border) solid var(--crest-color, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--crest-color, var(--border)) 16%, transparent);
+  color: var(--text-primary);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: var(--crest-font-size);
+  font-weight: 800;
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+}

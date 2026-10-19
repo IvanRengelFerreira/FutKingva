@@ -124,9 +124,20 @@
   max-width: 358px;
 }
 
+/* Rejilla de indicadores: 6 en fila como en la ficha de equipo, de 2 en 2 en móvil (Angel) */
+.gallery__stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
 @media (max-width: 799px) {
   .gallery__row--fields {
     grid-template-columns: 1fr;
+  }
+
+  .gallery__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .gallery {

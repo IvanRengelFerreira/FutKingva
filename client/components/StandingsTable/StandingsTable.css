@@ -1,0 +1,345 @@
+/*
+ * Tabla de clasificación
+ * Figma › Mockups › 05 · Clasificaciones › Tabla LaLiga (completa)
+ * Figma › Guía de estilo › 3. Componentes › Tabla de clasificación (compacta)
+ */
+
+.standings-table__wrapper {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.standings-table__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: normal;
+}
+
+/* El título de la tabla solo lo leen los lectores de pantalla (la página ya tiene su título) */
+.standings-table__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Cabecera */
+.standings-table thead th {
+  padding: 11px 8px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--text-tertiary);
+}
+
+.standings-table abbr {
+  text-decoration: none;
+}
+
+/* Celdas */
+.standings-table td,
+.standings-table tbody th {
+  padding: 10px 8px;
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+.standings-table th:first-child,
+.standings-table td:first-child {
+  padding-left: 20px;
+}
+
+.standings-table th:last-child,
+.standings-table td:last-child {
+  padding-right: 20px;
+}
+
+.standings-table__row:hover,
+.standings-table__row--highlight {
+  background: var(--bg-hover);
+}
+
+/* Columnas. La del equipo se queda con todo el ancho que sobra (y corta el nombre con «…» si no cabe) */
+.standings-table .standings-table__team {
+  width: 100%;
+  max-width: 0;
+}
+
+.standings-table__pos {
+  width: 28px;
+}
+
+td.standings-table__pos {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.standings-table__team-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.standings-table__team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.standings-table__team-name:hover {
+  text-decoration: underline;
+}
+
+.standings-table__team-name:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.standings-table .standings-table__num {
+  width: 36px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.standings-table .standings-table__diff {
+  width: 48px;
+}
+
+.standings-table td.standings-table__diff--positive {
+  color: var(--status-win);
+}
+
+.standings-table td.standings-table__diff--negative {
+  color: var(--status-loss);
+}
+
+.standings-table .standings-table__points {
+  width: 52px;
+}
+
+td.standings-table__points {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.standings-table .standings-table__form {
+  width: 136px;
+  text-align: right;
+}
+
+/* Líder: nombre en negrita, chip «LÍDER» y puntos en oro */
+.standings-table__row--leader .standings-table__team-name {
+  font-weight: 700;
+}
+
+.standings-table__row--leader td.standings-table__points {
+  color: var(--accent-gold);
+}
+
+.standings-table__leader {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Franja de la izquierda según la zona de la tabla */
+.standings-table__row--champions { --zone-color: var(--status-info); }
+.standings-table__row--europa { --zone-color: var(--accent-amber); }
+.standings-table__row--conference { --zone-color: var(--status-win); }
+.standings-table__row--relegation { --zone-color: var(--status-loss); }
+
+.standings-table__row td:first-child {
+  box-shadow: inset 3px 0 0 var(--zone-color, transparent);
+}
+
+/* Compacta: más pequeña, sin zonas y con el líder marcado con línea dorada (la «corona») */
+.standings-table--compact thead th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.standings-table--compact th:first-child,
+.standings-table--compact td:first-child {
+  padding-left: 16px;
+}
+
+.standings-table--compact th:last-child,
+.standings-table--compact td:last-child {
+  padding-right: 16px;
+}
+
+.standings-table--compact td,
+.standings-table--compact tbody th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.standings-table--compact td.standings-table__pos {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.standings-table--compact .standings-table__team-cell {
+  gap: 10px;
+}
+
+.standings-table--compact .standings-table__team-name {
+  font-size: 14px;
+}
+
+.standings-table--compact .standings-table__row--leader .standings-table__team-name {
+  font-weight: 600;
+}
+
+.standings-table--compact .standings-table__num,
+.standings-table--compact .standings-table__diff {
+  width: 40px;
+  color: var(--text-primary);
+}
+
+.standings-table--compact .standings-table__points {
+  width: 48px;
+}
+
+.standings-table--compact .standings-table__row--leader td:first-child {
+  box-shadow: inset 3px 0 0 var(--accent-gold);
+}
+
+/* Leyenda de zonas */
+.standings-table__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.standings-table__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--text-secondary);
+}
+
+.standings-table__legend-item::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--zone-color);
+}
+
+.standings-table__legend-item--champions { --zone-color: var(--status-info); }
+.standings-table__legend-item--europa { --zone-color: var(--accent-amber); }
+.standings-table__legend-item--conference { --zone-color: var(--status-win); }
+.standings-table__legend-item--relegation { --zone-color: var(--status-loss); }
+
+/* Móvil: solo # · Equipo · PJ · DG · PTS (Figma › 05 · Clasificaciones · Móvil) */
+@media (max-width: 799px) {
+  .standings-table__extra {
+    display: none;
+  }
+
+  .standings-table thead th,
+  .standings-table td,
+  .standings-table tbody th {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .standings-table td,
+  .standings-table tbody th {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .standings-table th:first-child,
+  .standings-table td:first-child {
+    padding-left: 14px;
+  }
+
+  .standings-table th:last-child,
+  .standings-table td:last-child {
+    padding-right: 14px;
+  }
+
+  .standings-table .standings-table__pos {
+    width: 20px;
+  }
+
+  td.standings-table__pos {
+    font-size: 17px;
+  }
+
+  .standings-table__team-cell {
+    gap: 8px;
+  }
+
+  .standings-table .crest {
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+  }
+
+  .standings-table__team-name {
+    font-size: 14px;
+  }
+
+  .standings-table__leader {
+    display: none;
+  }
+
+  .standings-table .standings-table__num {
+    width: 22px;
+  }
+
+  .standings-table .standings-table__diff,
+  .standings-table .standings-table__points {
+    width: 32px;
+  }
+
+  td.standings-table__diff {
+    font-size: 13px;
+  }
+
+  td.standings-table__points {
+    font-size: 19px;
+  }
+
+  .standings-table__legend {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

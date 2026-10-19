@@ -14,6 +14,14 @@ import Tag from '../../components/Tag/Tag.jsx';
 import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx';
 import Illustration from '../../components/Illustration/Illustration.jsx';
 import ArticleCard from '../../components/ArticleCard/ArticleCard.jsx';
+import Crest from '../../components/Crest/Crest.jsx';
+import Avatar from '../../components/Avatar/Avatar.jsx';
+import FormGuide from '../../components/FormGuide/FormGuide.jsx';
+import Rating from '../../components/Rating/Rating.jsx';
+import StatCard from '../../components/StatCard/StatCard.jsx';
+import Pagination from '../../components/Pagination/Pagination.jsx';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
+import StandingsTable from '../../components/StandingsTable/StandingsTable.jsx';
 import { getPlayer, getReferee, getArticle, LEAGUE_CARDS_PER_MATCH, COMPARISON_EXAMPLE } from '../../data/mockData.js';
 import searchIcon from '../../assets/icon-search.svg';
 
@@ -98,6 +106,8 @@ export default function ComponentGallery() {
   const [accepted, setAccepted] = useState(true);
   const [remember, setRemember] = useState(false);
   const [terms, setTerms] = useState(false);
+  const [page, setPage] = useState(1);
+  const [longPage, setLongPage] = useState(5);
 
   return (
     <section className="gallery">
@@ -408,6 +418,117 @@ El aviso emergente de gol sale una vez por visita; para verlo otra vez, pulsa el
             layout="compact"
           />
         </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Crest"
+        owner="Angel"
+        usage={"<Crest teamId=\"real-madrid\" />              // 28 px (tablas)\n<Crest teamId={match.homeId} size={36} />\n<Crest teamId=\"real-madrid\" size={128} />   // cabecera de la ficha de equipo\n<Crest teamId=\"barcelona\" labelled />      // si va solo, sin el nombre al lado"}
+      >
+        <div className="gallery__row">
+          <Crest teamId="real-madrid" size={128} />
+          <Crest teamId="barcelona" size={52} />
+          <Crest teamId="atletico-madrid" size={36} />
+          <Crest teamId="villarreal" size={36} />
+          <Crest teamId="real-betis" />
+          <Crest teamId="sevilla" />
+          <Crest teamId="celta" size={24} />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Avatar"
+        owner="Angel"
+        usage={"<Avatar name={player.name} />          // «Kylian Mbappé» → KM (32 px)\n<Avatar name=\"Pedri\" size={44} />\n<Avatar initials={user.initials} name={user.name} size={36} />"}
+      >
+        <div className="gallery__row">
+          <Avatar name={getPlayer('mbappe').name} />
+          <Avatar name={getPlayer('alexander-arnold').name} />
+          <Avatar name={getPlayer('pedri').name} />
+          <Avatar name={getPlayer('bellingham').name} size={44} />
+          <Avatar initials="IR" name="Iván Rengel" size={36} />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="FormGuide"
+        owner="Angel"
+        usage={"<FormGuide form=\"DVVDV\" />                // 24 px\n<FormGuide form={row.form} size={22} />   // tabla de clasificación\n<FormGuide form={row.form} size={20} />   // móvil\n<FormGuide form=\"V\" size={20} />          // un solo resultado"}
+      >
+        <div className="gallery__row">
+          <FormGuide form="DVVDV" />
+          <FormGuide form="VVVVV" size={22} />
+          <FormGuide form="EDEDE" size={20} />
+          <FormGuide form="V" size={20} />
+          <FormGuide form="D" size={20} />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Rating"
+        owner="Angel"
+        usage={"<Rating value={player.rating} />            // md (37 px)\n<Rating value={7.3} size=\"sm\" />            // tablas (32 px)\n<Rating value={9.1} size=\"lg\" />            // destacados (52 px)\nOro ≥ 8 · verde 7–8 · gris 6–7 · rojo < 6. Sin valoración (undefined) no pinta nada."}
+      >
+        <div className="gallery__row">
+          <Rating value={8.4} size="lg" />
+          <Rating value={7.2} size="lg" />
+          <Rating value={6.5} size="lg" />
+          <Rating value={5.8} size="lg" />
+          <Rating value={getPlayer('mbappe').rating} />
+          <Rating value={getPlayer('bellingham').rating} />
+          <Rating value={getPlayer('courtois').rating} size="sm" />
+          <Rating value={getPlayer('militao').rating} size="sm" />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="StatCard"
+        owner="Angel"
+        usage={"<StatCard value=\"4º\" label=\"Posición\" tone=\"gold\" />\n<StatCard value={18} label=\"Puntos\" />\n<StatCard value={19} label=\"Goles a favor\" tone=\"win\" />\n<StatCard value={8} label=\"Goles en contra\" tone=\"loss\" />\ntone: 'default' | 'gold' | 'win' | 'loss' | 'info'. La rejilla la pone la página."}
+      >
+        <div className="gallery__stats">
+          <StatCard value="4º" label="Posición" tone="gold" />
+          <StatCard value={18} label="Puntos" />
+          <StatCard value={8} label="Partidos" />
+          <StatCard value="6-0-2" label="V - E - D" />
+          <StatCard value={19} label="Goles a favor" tone="win" />
+          <StatCard value={8} label="Goles en contra" tone="loss" />
+        </div>
+      </GalleryItem>
+
+      <GalleryItem
+        name="Pagination"
+        owner="Angel"
+        usage={"const [page, setPage] = useState(1);\n<Pagination page={page} totalPages={2} onChange={setPage} />\nCon más de 7 páginas: 1 … 4 5 6 … 12"}
+      >
+        <Pagination page={page} totalPages={2} onChange={setPage} />
+        <p className="gallery__note">Con muchas páginas (página {longPage} de 12):</p>
+        <Pagination page={longPage} totalPages={12} onChange={setLongPage} />
+      </GalleryItem>
+
+      <GalleryItem
+        name="Breadcrumbs"
+        owner="Angel"
+        usage={"<Breadcrumbs items={[\n  { label: 'Equipos y jugadores', shortLabel: 'Equipos', to: '/equipos' },\n  { label: 'LaLiga', to: '/clasificaciones', hideOnMobile: true },\n  { label: team.name },   // la última, sin «to»: es la página actual\n]} />\nEstrecha la ventana por debajo de 800 px para ver la versión móvil."}
+      >
+        <Breadcrumbs
+          items={[
+            { label: 'Equipos y jugadores', shortLabel: 'Equipos', to: '/equipos' },
+            { label: 'LaLiga', to: '/clasificaciones', hideOnMobile: true },
+            { label: 'Real Madrid' },
+          ]}
+        />
+      </GalleryItem>
+
+      <GalleryItem
+        name="StandingsTable"
+        owner="Angel"
+        usage={"<StandingsTable />                                // 05 · LaLiga completa con zonas y leyenda\n<StandingsTable variant=\"compact\" limit={5} />    // clasificación rápida (Inicio)\n<StandingsTable highlightTeamId=\"real-madrid\" />  // resalta una fila\nCada equipo enlaza a /equipos/<id>. En móvil (< 800 px) solo # · Equipo · PJ · DG · PTS."}
+      >
+        <p className="gallery__note">Compacta (los 5 primeros):</p>
+        <StandingsTable variant="compact" limit={5} />
+        <p className="gallery__note">Completa:</p>
+        <StandingsTable />
       </GalleryItem>
 
       <GalleryItem

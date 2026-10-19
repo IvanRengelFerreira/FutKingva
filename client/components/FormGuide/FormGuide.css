@@ -1,0 +1,37 @@
+/*
+ * Forma (últimos resultados V / E / D)
+ * Figma › Guía de estilo › 3. Componentes › Indicadores › Forma
+ */
+
+.form-guide {
+  display: inline-flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.form-guide__result {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--form-size);
+  height: var(--form-size);
+  border-radius: var(--form-radius);
+  font-size: var(--form-font-size);
+  font-weight: 700;
+  line-height: normal;
+  /* Cada resultado pone su color; el fondo es ese mismo color al 18 % */
+  color: var(--form-color);
+  background: color-mix(in srgb, var(--form-color) 18%, transparent);
+}
+
+.form-guide__result--win {
+  --form-color: var(--status-win);
+}
+
+.form-guide__result--draw {
+  --form-color: var(--status-draw);
+}
+
+.form-guide__result--loss {
+  --form-color: var(--status-loss);
+}

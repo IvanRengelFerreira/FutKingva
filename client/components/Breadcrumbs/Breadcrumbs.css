@@ -1,0 +1,74 @@
+/*
+ * Migas de pan
+ * Figma › Mockups › 03 · Ficha de equipo › Migas
+ */
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: normal;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+/* Separador «/» entre pasos */
+.breadcrumbs__item + .breadcrumbs__item::before {
+  content: '/';
+  color: var(--text-tertiary);
+}
+
+.breadcrumbs__link {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.breadcrumbs__link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+.breadcrumbs__link:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.breadcrumbs__current {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.breadcrumbs__short {
+  display: none;
+}
+
+/* Móvil: textos cortos y sin los pasos marcados con hideOnMobile */
+@media (max-width: 799px) {
+  .breadcrumbs__long {
+    display: none;
+  }
+
+  .breadcrumbs__short {
+    display: inline;
+  }
+
+  .breadcrumbs__item--desktop {
+    display: none;
+  }
+
+  /* Si se quita el primer paso, el siguiente no debe empezar con «/» */
+  .breadcrumbs__item--desktop:first-child + .breadcrumbs__item::before {
+    content: none;
+  }
+}
