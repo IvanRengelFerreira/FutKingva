@@ -62,3 +62,86 @@ body {
 .placeholder a {
   color: var(--accent-gold);
 }
+
+/* Contenedor de página y cabecera con antetítulo, título y subtítulo (Ivan)
+ * Figma › Mockups › «Título de página» (10, 11, 12, 20…): 40 px de margen en escritorio, 16 px en móvil.
+ * Uso:
+ *   <section className="page">
+ *     <header className="page-header">
+ *       <div className="page-header__text">
+ *         <p className="page-header__eyebrow">Temporada 2026/27</p>
+ *         <h1 className="page-header__title">Mi equipo ideal</h1>
+ *         <p className="page-header__subtitle">Arma tu once…</p>
+ *       </div>
+ *       <div className="page-header__actions">…botones…</div>
+ *     </header>
+ */
+.page {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 40px 64px;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.page-header__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.page-header__title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.page-header__subtitle {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 799px) {
+  .page {
+    padding: 24px 16px 48px;
+  }
+
+  .page-header__eyebrow {
+    font-size: 11px;
+  }
+
+  .page-header__title {
+    font-size: 38px;
+  }
+
+  .page-header__subtitle {
+    font-size: 14px;
+  }
+}
