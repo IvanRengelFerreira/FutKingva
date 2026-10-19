@@ -74,6 +74,7 @@
 
 .access__heading p {
   margin: 0;
+  text-wrap: balance;
   font-size: 14px;
   color: var(--text-secondary);
 }
@@ -87,6 +88,7 @@
 
 .access__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
@@ -227,7 +229,7 @@
 /* Móvil: tarjeta más estrecha y título más pequeño */
 @media (max-width: 799px) {
   .access {
-    justify-content: flex-start;
+    gap: 16px;
     padding: 24px 16px;
   }
 
