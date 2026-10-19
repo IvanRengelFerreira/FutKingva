@@ -41,3 +41,15 @@
   font-weight: 700;
   color: var(--accent-gold);
 }
+
+/* Pestañas a todo el ancho (14 · Acceso) */
+.tabs--fill {
+  gap: 0;
+}
+
+.tabs--fill .tabs__tab {
+  flex: 1;
+  padding-bottom: 12px;
+  font-size: 15px;
+  text-align: center;
+}

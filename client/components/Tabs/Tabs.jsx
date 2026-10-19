@@ -13,7 +13,8 @@ import './Tabs.css';
 //     onChange={setTab}
 //   />
 //   {tab === 'summary' && <Resumen />}
-export default function Tabs({ tabs, active, onChange, label, className = '' }) {
+// fill: las pestañas se reparten todo el ancho, centradas (como en 14 · Acceso).
+export default function Tabs({ tabs, active, onChange, label, fill = false, className = '' }) {
   const tabRefs = useRef([]);
 
   // Con el teclado: las flechas mueven a la pestaña de al lado (como en las pestañas del sistema)
@@ -27,7 +28,7 @@ export default function Tabs({ tabs, active, onChange, label, className = '' }) 
   }
 
   return (
-    <div className={`tabs ${className}`.trim()} role="tablist" aria-label={label}>
+    <div className={`tabs${fill ? ' tabs--fill' : ''} ${className}`.trim()} role="tablist" aria-label={label}>
       {tabs.map((tab, index) => {
         const selected = tab.id === active;
         return (

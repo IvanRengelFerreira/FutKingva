@@ -17,16 +17,19 @@ import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; //
 // Para añadir una página: importar su vista y añadir su <Route> con la ruta acordada (README, apartado 6).
 // SessionProvider: la sesión simulada (useSession) está disponible en todas las páginas.
 // RequireRole: páginas privadas; sin sesión o sin el rol necesario llevan a Acceso.
+// Las rutas fuera de <Layout> (Acceso) se ven sin navbar ni pie.
 export default function App() {
   return (
     <SessionProvider>
       <HashRouter>
         <Routes>
+          {/* Páginas propias, sin navbar ni pie */}
+          <Route path="acceso" element={<Access />} />                        {/* 14 */}
+
           <Route element={<Layout />}>
             {/* Públicas */}
             <Route index element={<Home />} />                                {/* 01 */}
             <Route path="jugadores/:playerId" element={<PlayerProfile />} />  {/* 04 */}
-            <Route path="acceso" element={<Access />} />                      {/* 14 */}
 
             {/* Usuario registrado */}
             <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />    {/* 10 */}

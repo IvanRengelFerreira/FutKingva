@@ -1,12 +1,241 @@
 /*
  * 14 · Acceso
- * Figma › Mockups › 14 · Acceso
+ * Figma › Mockups › 14 · Acceso (página propia, sin navbar ni pie)
  */
 
-/* Provisional: botones de acceso rápido por rol */
-.placeholder .access__quick {
+/* Toda la pantalla, con la tarjeta en el centro */
+.access {
   display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 100vh;
+  padding: 40px 16px;
+  background:
+    radial-gradient(ellipse at top, color-mix(in srgb, var(--brand-green-700) 25%, transparent), transparent 60%),
+    var(--bg-base);
+}
+
+.access__back {
+  align-self: center;
+  width: 100%;
+  max-width: 500px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.access__back:hover {
+  color: var(--accent-gold);
+}
+
+/* Tarjeta */
+.access__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 500px;
+  padding: 36px 40px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.access__card > a img {
+  display: block;
+}
+
+.access__card [role='tabpanel'],
+.access__card .tabs {
+  align-self: stretch;
+}
+
+.access__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.access__heading h1 {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 34px;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.access__heading p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Formularios */
+.access__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.access__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
-  margin-top: 16px;
+}
+
+.access__submit {
+  width: 100%;
+  height: 43px;
+  font-size: 15px;
+}
+
+/* Enlaces dorados («¿Olvidaste tu contraseña?», «Regístrate»…) */
+.access__link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.access__row .access__link {
+  font-weight: 600;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+.access__link:hover {
+  text-decoration: underline;
+}
+
+.access__switch {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Barra de seguridad de la contraseña: 4 tramos */
+.access__password {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.access__strength {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  --strength-color: var(--status-loss);
+}
+
+.access__strength--2 {
+  --strength-color: var(--accent-gold);
+}
+
+.access__strength--3,
+.access__strength--4 {
+  --strength-color: var(--status-win);
+}
+
+.access__strength-bars {
+  display: flex;
+  gap: 4px;
+}
+
+.access__strength-bars span {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.access__strength-bars .access__strength-bar--on {
+  background: var(--strength-color);
+}
+
+.access__strength p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--strength-color);
+}
+
+/* Acceso rápido de prueba (un botón por rol, con el color de cada uno) */
+.access__quick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: stretch;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.access__quick-title {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.access__quick-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.access__quick-button {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--role-color) 50%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--role-color) 12%, transparent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--role-color);
+  cursor: pointer;
+}
+
+.access__quick-button:hover {
+  background: color-mix(in srgb, var(--role-color) 22%, transparent);
+}
+
+.access__quick-button:focus-visible {
+  outline: 2px solid var(--role-color);
+  outline-offset: 2px;
+}
+
+.access__quick-button--user { --role-color: var(--status-win); }
+.access__quick-button--editor { --role-color: var(--status-info); }
+.access__quick-button--admin { --role-color: var(--status-loss); }
+
+/* Móvil: tarjeta más estrecha y título más pequeño */
+@media (max-width: 799px) {
+  .access {
+    justify-content: flex-start;
+    padding: 24px 16px;
+  }
+
+  .access__card {
+    padding: 25px 21px;
+  }
+
+  .access__heading h1 {
+    font-size: 30px;
+  }
 }

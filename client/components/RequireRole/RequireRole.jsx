@@ -1,16 +1,17 @@
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import { useSession } from '../../context/SessionContext.jsx';
 
 // Página solo para usuarios con sesión (y, si se indica, con ciertos roles).
-// Si no hay sesión o el rol no vale, lleva a Acceso.
+// Si no hay sesión o el rol no vale, lleva a Acceso; al entrar, Acceso vuelve a esta página.
 // Uso en App.jsx:
 //   <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />
 //   <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />
 export default function RequireRole({ roles, children }) {
   const { user } = useSession();
+  const location = useLocation();
 
   if (!user || (roles && !roles.includes(user.role))) {
-    return <Navigate to="/acceso" replace />;
+    return <Navigate to="/acceso" replace state={{ from: location.pathname }} />;
   }
 
   return children;
