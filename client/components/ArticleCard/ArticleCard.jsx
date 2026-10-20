@@ -15,6 +15,7 @@ import Illustration from '../Illustration/Illustration.jsx';
 //   <ArticleCard article={getArticle('barca-ocho-de-ocho')} />
 //   <ArticleCard article={article} excerpt="El 3 – 0 al Getafe…" illustration={{ score: '3 – 0', caption: "FINAL · 90+2'" }} />
 //   <ArticleCard article={article} layout="compact" />
+//   <ArticleCard article={article} minimal />   → solo ilustración, etiqueta y titular («Análisis relacionados» de 09)
 // illustration: lo que necesita <Illustration> según la categoría (score, home/away, stat, values…).
 // to: dirección del artículo; por defecto /analisis/<id del artículo>.
 export default function ArticleCard({
@@ -22,6 +23,7 @@ export default function ArticleCard({
   excerpt,
   illustration = {},
   layout = 'vertical',
+  minimal = false,
   to,
   className = '',
 }) {
@@ -45,14 +47,16 @@ export default function ArticleCard({
         <h3 className="article-card__title">
           <Link className="article-card__link" to={href}>{title}</Link>
         </h3>
-        {!compact && excerpt && <p className="article-card__excerpt">{excerpt}</p>}
-        <div className="article-card__footer">
-          <span className="article-card__meta">
-            {author}
-            {shownDate && ` · ${shownDate}`}
-          </span>
-          {!compact && <span className="article-card__more" aria-hidden="true">Leer →</span>}
-        </div>
+        {!compact && !minimal && excerpt && <p className="article-card__excerpt">{excerpt}</p>}
+        {!minimal && (
+          <div className="article-card__footer">
+            <span className="article-card__meta">
+              {author}
+              {shownDate && ` · ${shownDate}`}
+            </span>
+            {!compact && <span className="article-card__more" aria-hidden="true">Leer →</span>}
+          </div>
+        )}
       </div>
     </article>
   );

@@ -16,6 +16,7 @@ import RefereeProfile from './views/RefereeProfile/RefereeProfile.jsx';
 import Profile from './views/Profile/Profile.jsx';
 import SearchResults from './views/SearchResults/SearchResults.jsx';
 import Analysis from './views/Analysis/Analysis.jsx';
+import Article from './views/Article/Article.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
 import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="arbitros" element={<Referees />} />                  {/* 06 */}
             <Route path="arbitros/:refereeId" element={<RefereeProfile />} /> {/* 07 */}
             <Route path="analisis" element={<Analysis />} />                  {/* 08 */}
+            <Route path="analisis/:articleId" element={<Article />} />        {/* 09 */}
             <Route path="buscar" element={<SearchResults />} />               {/* 13 (texto buscado en ?q=) */}
 
             {/* Usuario registrado */}

@@ -1,0 +1,277 @@
+/*
+ * 09 · Artículo
+ * Figma › Mockups › 09 · Artículo · Escritorio
+ */
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+/* Columna de lectura: 800 px centrada */
+.article__column {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Etiqueta, titular y entradilla */
+.article__header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article__title {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 68px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.article__lead {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* Autor, fecha y botones de guardar y compartir */
+.article__byline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.article__author-avatar {
+  border-color: var(--accent-gold);
+  font-size: 18px;
+}
+
+.article__author {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.article__author-name,
+.article__author-meta {
+  margin: 0;
+}
+
+.article__author-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.article__author-meta {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.article__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.article__share-message {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--status-win);
+}
+
+/* Los iconos se pintan con una máscara: así cambian de color con CSS */
+.article__action {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: var(--text-secondary);
+  mask-position: center;
+  mask-size: 20px 20px;
+  mask-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.article__action:hover {
+  background: var(--text-primary);
+}
+
+.article__action:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 4px;
+}
+
+.article__action--bookmark {
+  mask-image: url('../../assets/icon-bookmark.svg');
+}
+
+.article__action--share {
+  mask-image: url('../../assets/icon-share.svg');
+}
+
+.article__action--active,
+.article__action--active:hover {
+  background: var(--accent-gold);
+}
+
+/* Ilustración grande */
+.article__illustration {
+  height: 440px;
+  border-radius: 14px;
+}
+
+/* Texto */
+.article__paragraph {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--text-primary) 60%, var(--text-secondary));
+}
+
+.article__quote {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 34px;
+  line-height: 1.15;
+  color: var(--accent-gold);
+}
+
+/* Dato destacado: tres cifras en un recuadro dorado */
+.article__stats {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 35%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(90deg, var(--accent-gold-soft), var(--bg-surface));
+}
+
+.article__stat {
+  display: flex;
+  flex: 1;
+  flex-direction: column-reverse; /* La cifra arriba y la etiqueta debajo */
+  gap: 2px;
+  min-width: 0;
+}
+
+.article__stat-value {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent-gold);
+}
+
+.article__stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Recuadros: jugadores mencionados y gráfico */
+.article__box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 16px 20px 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.article__box-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.article__mentions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article__mention {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.article__mention:hover {
+  background: var(--bg-hover);
+}
+
+.article__mention:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.article__figure {
+  gap: 14px;
+  padding-top: 18px;
+  padding-bottom: 16px;
+}
+
+.article__figure .article__box-title {
+  font-size: 14px;
+}
+
+.article__source {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Análisis relacionados: tres tarjetas sencillas */
+.article__related {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.article__related-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.article__related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
+}
+
+.article__related-grid .article-card__illustration {
+  height: 190px;
+}
