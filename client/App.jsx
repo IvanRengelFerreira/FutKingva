@@ -15,6 +15,7 @@ import Referees from './views/Referees/Referees.jsx';
 import RefereeProfile from './views/RefereeProfile/RefereeProfile.jsx';
 import Profile from './views/Profile/Profile.jsx';
 import SearchResults from './views/SearchResults/SearchResults.jsx';
+import Analysis from './views/Analysis/Analysis.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
 import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="clasificaciones" element={<Standings />} />          {/* 05 */}
             <Route path="arbitros" element={<Referees />} />                  {/* 06 */}
             <Route path="arbitros/:refereeId" element={<RefereeProfile />} /> {/* 07 */}
+            <Route path="analisis" element={<Analysis />} />                  {/* 08 */}
             <Route path="buscar" element={<SearchResults />} />               {/* 13 (texto buscado en ?q=) */}
 
             {/* Usuario registrado */}

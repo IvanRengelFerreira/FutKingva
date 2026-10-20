@@ -1,0 +1,153 @@
+/*
+ * 08 · Análisis
+ * Figma › Mockups › 08 · Análisis · Escritorio
+ */
+
+.analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Chips de categoría a la izquierda y buscador a la derecha */
+.analysis__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analysis__chips {
+  display: flex;
+  gap: 8px;
+}
+
+.analysis__chip {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.analysis__chip:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.analysis__chip:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.analysis__chip--active,
+.analysis__chip--active:hover {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+}
+
+.analysis__search {
+  width: 320px;
+  margin-left: auto;
+}
+
+/* Artículo destacado: ilustración grande a la izquierda y texto a la derecha */
+.analysis__featured {
+  display: grid;
+  grid-template-columns: minmax(0, 780fr) minmax(0, 578fr);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.analysis__featured-illustration {
+  height: 420px;
+}
+
+.analysis__featured-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 40px;
+}
+
+.analysis__featured-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.analysis__featured-title {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.analysis__featured-excerpt {
+  margin: 0;
+  font-size: 16px;
+  line-height: 25px;
+  color: var(--text-secondary);
+}
+
+.analysis__featured-meta {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+/* Últimos análisis: título, rejilla de 3 columnas y paginación */
+.analysis__latest {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.analysis__latest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.analysis__latest-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.analysis__sort {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.analysis__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start; /* Como en Figma: cada tarjeta con su alto */
+  gap: 24px;
+}
+
+.analysis__empty {
+  margin: 0;
+  padding: 40px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--text-secondary);
+}
