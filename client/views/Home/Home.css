@@ -1,0 +1,579 @@
+/*
+ * 01 · Inicio
+ * Figma › Mockups › 01 · Inicio (escritorio 1440 y móvil 390)
+ * https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=40-20
+ */
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.home__mobile {
+  display: none !important;
+}
+
+.home__empty {
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Chips de competición */
+.home-chip {
+  padding: 8px 17px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.home-chip:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.home-chip:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.home-chip--active,
+.home-chip--active:hover {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+}
+
+.home__chips {
+  gap: 8px;
+}
+
+/* Cabecera de cada bloque: título, línea y enlace */
+.home-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.home-section-header__title {
+  margin: 0;
+  white-space: nowrap;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.home-section-header__line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.home-section-header__link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home-section-header__link:hover {
+  color: var(--accent-amber);
+}
+
+.home-section-header__link:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* «4 EN DIRECTO» */
+.home__live-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--status-live) 16%, transparent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--status-live);
+  white-space: nowrap;
+}
+
+.home__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-live);
+}
+
+/* Partidos en juego: 4 en fila */
+.home__live-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* Columnas: resultados y clasificación | destacados */
+.home__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 908fr) minmax(0, 420fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.home__main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 0;
+}
+
+/* Lista de partidos */
+.match-list {
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.match-list__head,
+.match-list__row {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) 90px minmax(0, 1fr) 140px;
+  align-items: center;
+  column-gap: 16px;
+  padding: 0 20px;
+}
+
+.match-list__head {
+  height: 38px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.match-list__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.match-list__row {
+  height: 53px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.match-list__row:hover {
+  background: var(--bg-hover);
+}
+
+.match-list__date,
+.match-list__competition {
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.match-list__competition {
+  color: var(--text-secondary);
+}
+
+.match-list__competition-mobile {
+  display: none;
+}
+
+.match-list__team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text-secondary);
+}
+
+.match-list__team--winner {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.match-list__team-name {
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-list__team-name:hover {
+  color: var(--accent-gold);
+}
+
+.match-list__team-name:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.match-list__center {
+  justify-self: center;
+  min-width: 76px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 24px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Destacados */
+.home-featured {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.home-featured .home-section-header__title {
+  margin-bottom: 0;
+}
+
+.home-featured__article .illustration {
+  height: 220px;
+}
+
+.home-star {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 19px 20px;
+  background: linear-gradient(90deg, var(--accent-gold-soft), var(--bg-surface));
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 45%, transparent);
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-star:hover {
+  border-color: var(--accent-gold);
+}
+
+.home-star:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.home-star .avatar.home-star__avatar {
+  border: 2px solid var(--accent-gold);
+}
+
+.home-star__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.home-star__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.home-star__name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.home-star__note {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.home-favorites {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 19px 20px 20px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+.home-favorites__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.home-favorites__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-secondary);
+}
+
+/* Pantallas medianas: destacados debajo, en dos columnas */
+@media (max-width: 1279px) {
+  .home__live-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-featured {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .home-featured .home-section-header__title {
+    grid-column: 1 / -1;
+  }
+
+  .home-featured__article {
+    grid-row: span 2;
+  }
+}
+
+/* Móvil: una columna, chips y partidos en juego con scroll lateral */
+@media (max-width: 799px) {
+  .home {
+    gap: 32px;
+  }
+
+  .home__desktop {
+    display: none !important;
+  }
+
+  .home__mobile {
+    display: inline !important;
+  }
+
+  .home__chips {
+    flex-wrap: nowrap;
+    width: calc(100% + 16px); /* Llegan hasta el borde derecho para que se vea que se desplazan */
+    margin-right: -16px;
+    padding-right: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .home__chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-chip {
+    padding: 7px 15px;
+    font-size: 13px;
+  }
+
+  .home__main {
+    gap: 32px;
+  }
+
+  .home-section-header {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .home-section-header__title {
+    font-size: 24px;
+  }
+
+  .home-section-header__link {
+    font-size: 13px;
+  }
+
+  /* En móvil «Partidos en juego» no lleva enlace */
+  .home__live .home-section-header__link {
+    display: none;
+  }
+
+  .home__live-count {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .home__live-list {
+    display: flex;
+    gap: 12px;
+    margin: 0 -16px;
+    padding: 0 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .home__live-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home__live-list .match-card {
+    flex: 0 0 290px;
+    scroll-snap-align: start;
+  }
+
+  /* Cada partido pasa a ser una tarjeta: competición y fecha arriba, equipos y marcador debajo */
+  .match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: visible;
+    background: none;
+    border: none;
+    border-radius: 0;
+  }
+
+  .match-list__head {
+    display: none;
+  }
+
+  .match-list__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .match-list__row {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-areas:
+      'date date date'
+      'home center away';
+    row-gap: 10px;
+    height: auto;
+    padding: 11px 15px 13px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .match-list__row--desktop-only {
+    display: none;
+  }
+
+  .match-list__date {
+    grid-area: date;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .match-list__competition-mobile {
+    display: inline;
+  }
+
+  .match-list__competition {
+    display: none;
+  }
+
+  .match-list__row > :nth-child(2) { grid-area: home; }
+  .match-list__center { grid-area: center; }
+  .match-list__row > :nth-child(4) { grid-area: away; }
+
+  .match-list__team {
+    gap: 8px;
+    font-size: 15px;
+  }
+
+  .match-list__team--away {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    text-align: right;
+  }
+
+  .match-list__team--away .match-list__team-name {
+    margin-left: auto;
+  }
+
+  .match-list__center {
+    min-width: 0;
+    background: none;
+    font-size: 24px;
+  }
+
+  .home-featured {
+    display: flex;
+    align-items: stretch; /* La franja media lo deja en start y los bloques se encogían al contenido */
+    gap: 16px;
+  }
+
+  .home-featured__article .illustration {
+    height: 180px;
+  }
+
+  .home-featured__article .article-card__excerpt {
+    display: none;
+  }
+
+  .home-featured__article .article-card__body {
+    padding: 14px 16px 16px;
+  }
+
+  .home-featured__article .article-card__title {
+    font-size: 24px;
+  }
+
+  .home-star {
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .home-star .avatar.home-star__avatar {
+    --avatar-size: 48px !important;
+    --avatar-font-size: 20px !important;
+  }
+
+  .home-star__name {
+    font-size: 16px;
+  }
+
+  .home-star__note {
+    font-size: 12px;
+  }
+
+  .home-star .rating {
+    --rating-height: 45px;
+    --rating-font-size: 19px;
+  }
+
+  .home-favorites {
+    align-items: stretch;
+    padding: 17px;
+  }
+
+  .home-favorites__title {
+    font-size: 16px;
+  }
+
+  .home-favorites__text {
+    font-size: 13px;
+    line-height: 16px;
+  }
+}

@@ -375,3 +375,16 @@ export function getPlayersByTeam(teamId) {
 export function getStandingsZone(position) {
   return STANDINGS_ZONES.find((zone) => position >= zone.from && position <= zone.to);
 }
+
+// --- Página 01 · Inicio ---
+// Análisis destacado de Inicio: artículo de ARTICLES con su entradilla, la cifra del hexágono
+// y los minutos de lectura. Entradilla, cifra (91 %) y minutos son ESTIMADOS (no hay texto real del artículo).
+export const HOME_FEATURED_ARTICLE = {
+  articleId: 'pedri-arte-de-no-perder-el-balon',
+  excerpt: 'Cinco partidos seguidos por encima del 90 % de acierto en el pase. Qué ha cambiado en su posición esta temporada.',
+  stat: '91 %',
+  readingMinutes: 6,
+};
+
+// Texto corto de PLAYER_OF_THE_ROUND para el móvil de Inicio (Isco marcó dos goles al Osasuna)
+export const HOME_PLAYER_NOTE_SHORT = '2 goles';
