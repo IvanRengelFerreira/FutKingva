@@ -1,0 +1,396 @@
+/*
+ * 20 · Panel de administración
+ * Figma › Mockups › 20 · Panel de administración (escritorio 1440 y móvil 390)
+ * https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=64-1365
+ */
+
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Indicadores: 4 en fila en escritorio, 2 × 2 en móvil */
+.admin__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Globo rojo con los reportes pendientes, dentro de la pestaña «Moderación» */
+.admin__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 16px;
+  margin-left: 8px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--status-live);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 1px;
+}
+
+/* Cada panel de pestaña */
+.admin-users,
+.admin-reports {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Buscador y filtros */
+.admin-users__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-users__filters > * {
+  width: 180px;
+}
+
+.admin-users__filters > .admin-users__search {
+  width: 420px;
+}
+
+/* Tabla (escritorio) */
+.admin-table {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.admin-table table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  padding: 11px 20px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.admin-table th.admin-table__end,
+.admin-table td.admin-table__end {
+  text-align: right;
+}
+
+.admin-table__muted {
+  color: var(--text-secondary);
+}
+
+/* Fila de una cuenta bloqueada: velo rojo suave */
+.admin-row--blocked td {
+  background: color-mix(in srgb, var(--status-loss) 6%, transparent);
+}
+
+.admin-users__mobile,
+.admin-reports__mobile {
+  display: none;
+}
+
+/* Usuario: avatar con el color de su rol + nombre */
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-user__name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-user__you {
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.admin .admin-avatar--editor {
+  border-color: var(--status-info);
+}
+
+.admin .admin-avatar--admin {
+  border-color: var(--status-loss);
+}
+
+/* Selector de rol: el color del texto y del borde sigue al rol */
+.admin-role {
+  width: 180px;
+}
+
+.admin-role .select__input {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 13px;
+}
+
+.admin-role--editor .select__input {
+  border-color: var(--status-info);
+  color: var(--status-info);
+}
+
+.admin-role--admin .select__input {
+  border-color: var(--status-loss);
+  color: var(--status-loss);
+}
+
+.admin-role .select__input:disabled {
+  background: var(--bg-surface);
+  cursor: not-allowed;
+}
+
+/* Botones pequeños de acción: Bloquear (oro), Desbloquear y Aprobar (verde), Eliminar (rojo) */
+.admin-actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.admin-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--action-color) 14%, transparent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--action-color);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-action:hover {
+  background: color-mix(in srgb, var(--action-color) 26%, transparent);
+}
+
+.admin-action:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.admin-action svg {
+  flex-shrink: 0;
+}
+
+.admin-action--gold { --action-color: var(--accent-gold); }
+.admin-action--win { --action-color: var(--status-win); }
+.admin-action--loss { --action-color: var(--status-loss); }
+
+.admin-users__none {
+  color: var(--text-tertiary);
+}
+
+/* Moderación */
+.admin-reports__message {
+  margin: 0;
+  min-height: 20px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.admin-reports__message:empty {
+  display: none;
+}
+
+.admin-report__content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.admin-report__flag {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--status-loss);
+}
+
+.admin-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.admin-empty {
+  margin: 0;
+  padding: 32px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Móvil: tarjetas en lugar de tablas, indicadores 2 × 2 */
+@media (max-width: 799px) {
+  .admin {
+    gap: 24px;
+  }
+
+  .admin__stats {
+    gap: 12px;
+  }
+
+  .admin-users,
+  .admin-reports {
+    gap: 16px;
+  }
+
+  .admin-users__filters > * {
+    width: calc(50% - 6px);
+  }
+
+  .admin-users__filters > .admin-users__search {
+    width: 100%;
+  }
+
+  .admin-users__desktop,
+  .admin-reports__desktop {
+    display: none;
+  }
+
+  .admin-users__mobile,
+  .admin-reports__mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .admin-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-surface);
+  }
+
+  .admin-card--blocked {
+    border-color: color-mix(in srgb, var(--status-loss) 50%, transparent);
+    background: color-mix(in srgb, var(--status-loss) 6%, var(--bg-surface));
+  }
+
+  .admin-card__top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .admin-card__who {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .admin-card__who .admin-user__name {
+    font-size: 14px;
+  }
+
+  .admin-card__email {
+    overflow: hidden;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-overflow: ellipsis;
+  }
+
+  .admin-card__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .admin-card__bottom .admin-role {
+    width: 150px;
+  }
+
+  /* En las tarjetas de usuario las acciones son solo el icono */
+  .admin-card__bottom .admin-action {
+    padding: 6px 8px;
+  }
+
+  .admin-card__bottom .admin-action__text {
+    display: none;
+  }
+
+  /* Reportes: cabecera, texto, motivo y dos botones a todo el ancho */
+  .admin-report__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .admin-report__date {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .admin-report__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .admin-report__meta {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .admin-card--report .admin-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-card--report .admin-action {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 799px) {
+  .admin__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Etiquetas de los indicadores más cortas y título en una línea, como en el mockup */
+  .admin__more {
+    display: none;
+  }
+
+  .admin .page-header__title {
+    font-size: 32px;
+  }
+}
