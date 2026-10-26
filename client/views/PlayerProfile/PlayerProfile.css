@@ -1,0 +1,632 @@
+/*
+ * 04 · Ficha de jugador
+ * Figma › Mockups › 04 · Ficha de jugador (escritorio 1440 y móvil 390)
+ * https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=45-221
+ */
+
+.player-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Tarjeta base (gráfico y tabla de partidos) */
+.player-card {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.player-card__empty {
+  margin: 0;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Cabecera de la ficha                                              */
+/* ---------------------------------------------------------------- */
+
+.player-hero {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 36px 40px;
+  /* El color del club (viene de los datos) tiñe la cabecera */
+  background: linear-gradient(135deg, color-mix(in srgb, var(--team-color, var(--brand-green-700)) 28%, var(--bg-surface)), var(--bg-surface) 70%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.player-hero__photo {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.player-hero .avatar.player-hero__avatar {
+  border: 4px solid var(--accent-gold);
+  background: var(--bg-base);
+}
+
+.player-hero__crest {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  border-radius: 50%;
+  background: var(--bg-base);
+}
+
+.player-hero__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.player-hero__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--accent-gold);
+}
+
+.player-hero__name {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.player-hero__details {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* Valoración media */
+.player-hero__rating-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 150px;
+  text-align: center;
+}
+
+.player-hero__rating.rating {
+  --rating-height: 82px;
+  --rating-font-size: 40px;
+  width: 76px; /* Figma: 76 × 82 */
+  margin-bottom: 4px;
+}
+
+.player-hero__no-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 82px;
+  margin-bottom: 4px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: var(--bg-elevated);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+}
+
+.player-hero__rating-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-hero__rating-text p {
+  margin: 0;
+}
+
+.player-hero__rating-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-tertiary);
+}
+
+.player-hero__rating-rank {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+/* Botones */
+.player-hero__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  width: 185px;
+  margin-left: 4px;
+}
+
+.player-hero__actions .button {
+  width: 100%;
+}
+
+.player-hero__star {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.player-hero__follow--on {
+  background: var(--accent-gold-soft);
+}
+
+/* ---------------------------------------------------------------- */
+/* Indicadores                                                       */
+/* ---------------------------------------------------------------- */
+
+.player-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 16px 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.player-stat--gold { --stat-color: var(--accent-gold); }
+.player-stat--win { --stat-color: var(--status-win); }
+
+.player-stat__value {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 53px;
+  color: var(--stat-color, var(--text-primary));
+  white-space: nowrap;
+}
+
+.player-stat__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.player-stat__detail {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Gráfico y últimos partidos                                        */
+/* ---------------------------------------------------------------- */
+
+.player-profile__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 828fr) minmax(0, 500fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.player-performance,
+.player-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Título + línea + control a la derecha */
+.player-section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+}
+
+.player-section-head__title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.player-section-head__line {
+  flex: 1;
+  min-width: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.player-section-head__link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.player-section-head__link:hover {
+  color: var(--accent-amber);
+}
+
+.player-section-head__link:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.player-performance__season {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.player-performance__card {
+  padding: 4px 25px 17px;
+}
+
+/* Leyenda del gráfico */
+.player-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.player-legend__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.player-legend__swatch--gold { background: var(--accent-gold); }
+.player-legend__swatch--win { background: var(--status-win); }
+
+.player-legend__dash {
+  width: 14px;
+  border-top: 1.5px dashed var(--accent-gold);
+}
+
+/* Tabla de últimos partidos (escritorio) */
+.player-matches__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.player-matches__table th {
+  padding: 11px 6px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.player-matches__table td {
+  padding: 0 6px;
+  height: 55px;
+  border-top: 1px solid var(--border);
+}
+
+.player-matches__table tbody tr:first-child td {
+  border-top: none;
+}
+
+.player-matches__table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.player-matches__table th:first-child,
+.player-matches__table td:first-child {
+  padding-left: 16px;
+}
+
+.player-matches__table th:last-child,
+.player-matches__table td:last-child {
+  padding-right: 16px;
+}
+
+.player-matches__num {
+  width: 32px;
+  text-align: center !important;
+}
+
+.player-matches__min {
+  width: 44px;
+  text-align: center !important;
+  color: var(--text-secondary);
+}
+
+.player-matches__rating {
+  width: 50px;
+  text-align: right !important;
+}
+
+.player-matches__goals,
+.player-matches__assists {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+}
+
+.player-matches__goals--on { color: var(--accent-gold); }
+.player-matches__assists--on { color: var(--text-primary); }
+
+.player-match__rival {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.player-match__result {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.player-match__score {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.player-match__none {
+  color: var(--text-tertiary);
+}
+
+/* Lista de últimos partidos (móvil) */
+.player-match-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+}
+
+.player-match-item + .player-match-item {
+  border-top: 1px solid var(--border);
+}
+
+.player-match-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-match-item__info p {
+  margin: 0;
+}
+
+.player-match-item__name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-match-item__stats {
+  margin-top: 3px !important;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Jugador no encontrado                                             */
+/* ---------------------------------------------------------------- */
+
+.player-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.player-missing__title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.player-missing__text {
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------- */
+/* Pantallas medianas: cabecera en dos filas, gráfico y partidos apilados */
+/* ---------------------------------------------------------------- */
+
+@media (max-width: 1279px) {
+  .player-hero {
+    flex-wrap: wrap;
+    gap: 24px 28px;
+    padding: 28px;
+  }
+
+  .player-hero__text {
+    flex-basis: 300px;
+  }
+
+  .player-hero__name {
+    font-size: 56px;
+  }
+
+  .player-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .player-profile__columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Móvil                                                             */
+/* ---------------------------------------------------------------- */
+
+@media (max-width: 799px) {
+  .player-profile {
+    gap: 28px;
+  }
+
+  .player-hero {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 14px;
+    padding: 25px 20px 24px;
+    text-align: center;
+  }
+
+  .player-hero__text {
+    flex: none;
+    align-items: center;
+    align-self: stretch;
+    gap: 6px;
+  }
+
+  .player-hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  .player-hero__name {
+    font-size: 52px;
+  }
+
+  .player-hero__details {
+    font-size: 13px;
+  }
+
+  .player-hero__rating-box {
+    flex-direction: row;
+    gap: 12px;
+    width: auto;
+    margin-top: 2px;
+    text-align: left;
+  }
+
+  .player-hero__rating.rating {
+    --rating-height: 56px;
+    --rating-font-size: 26px;
+    width: 52px; /* Figma: 52 × 56 */
+    margin-bottom: 0;
+  }
+
+  .player-hero__no-rating {
+    width: 45px;
+    height: 56px;
+    margin-bottom: 0;
+    font-size: 26px;
+  }
+
+  .player-hero__rating-rank {
+    font-size: 12px;
+  }
+
+  .player-hero__actions {
+    flex-direction: row;
+    align-self: stretch;
+    width: auto;
+    margin: 4px 0 0;
+  }
+
+  .player-hero__actions .button {
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px;
+  }
+
+  .player-stats {
+    gap: 12px;
+  }
+
+  .player-stat {
+    padding: 15px 8px 13px;
+  }
+
+  .player-stat__value {
+    font-size: 36px;
+    line-height: 36px;
+  }
+
+  .player-stat__label {
+    margin-top: 2px;
+    letter-spacing: 0.14em;
+  }
+
+  .player-profile__columns {
+    gap: 28px;
+  }
+
+  .player-section-head__title {
+    font-size: 28px;
+  }
+
+  .player-performance__season {
+    width: 110px;
+  }
+
+  .player-performance__card {
+    padding: 0 15px 17px;
+  }
+
+  .player-match-item {
+    gap: 12px;
+  }
+}

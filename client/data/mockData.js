@@ -388,3 +388,23 @@ export const HOME_FEATURED_ARTICLE = {
 
 // Texto corto de PLAYER_OF_THE_ROUND para el móvil de Inicio (Isco marcó dos goles al Osasuna)
 export const HOME_PLAYER_NOTE_SHORT = '2 goles';
+
+/* ---------------------------------------------------------------- */
+/* --- Página 04 · Ficha de jugador ---                              */
+/* ---------------------------------------------------------------- */
+
+// Datos extra de la ficha de jugador (mockup 04), por id de jugador. TODO ESTIMADO (no se pudo consultar):
+// la altura, el pie, los puestos en LaLiga y los pases clave. Solo está Pedri; el resto de jugadores
+// se muestra con «—» en lo que falta.
+// clubName: nombre del club en la cabecera · fullName: nombre completo
+// ratingRank / assistsRank: puesto en LaLiga · passAccuracyChange: cambio respecto a la 25/26
+// keyPasses: pases clave de la temporada · keyPassesPer90: los mismos por 90 minutos
+// venues: por jornada, C si jugó en casa y F si jugó fuera (para «Getafe (C)»)
+export const PLAYER_PROFILE_EXTRAS = {
+  pedri: {
+    clubName: 'FC Barcelona', fullName: 'Pedro González López', height: '1,74 m', foot: 'Diestro',
+    ratingRank: '3.º mejor de LaLiga', assistsRank: '2.º en LaLiga', passAccuracyChange: '+4 % vs 25/26',
+    keyPasses: 21, keyPassesPer90: '2,8 por 90',
+    venues: { 8: 'C', 7: 'F', 6: 'C', 5: 'F', 4: 'F' },
+  },
+};
