@@ -1,0 +1,444 @@
+/*
+ * 11 · Mi equipo ideal
+ * Figma › Mockups › 11 · Mi equipo ideal (escritorio 1440 y móvil 390)
+ */
+
+.ideal-team {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.ideal-team__mobile,
+.ideal-team__mobile-block {
+  display: none !important;
+}
+
+/* Cabecera: nombre del equipo, formación y guardar a la derecha del título */
+.ideal-team__controls {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.ideal-team__name {
+  width: 240px;
+}
+
+.ideal-team__formation {
+  width: 200px;
+}
+
+.ideal-team__save .button,
+.ideal-team__save-mobile .button {
+  gap: 8px;
+}
+
+.ideal-team__save .button img,
+.ideal-team__save-mobile .button img {
+  display: block;
+}
+
+.ideal-team__save .button:disabled img,
+.ideal-team__save-mobile .button:disabled img {
+  opacity: 0.4;
+}
+
+.ideal-team__save .button {
+  width: 168px;
+}
+
+/* Aviso al cambiar de formación */
+.ideal-team__notice {
+  margin: -12px 0 0;
+  padding: 10px 14px;
+  background: var(--accent-gold-soft);
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 40%, transparent);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--accent-gold);
+}
+
+/* Campo a la izquierda y buscador a la derecha */
+.ideal-team__main {
+  display: grid;
+  grid-template-columns: minmax(0, 860fr) minmax(0, 468fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.ideal-team__search {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ideal-team__section-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+/* «Eligiendo para: Extremo izquierdo (EI)» */
+.ideal-team__choosing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  padding: 6px 12px;
+  background: var(--accent-gold-soft);
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 30%, transparent);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-gold);
+}
+
+.ideal-team__remove {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--status-loss);
+  cursor: pointer;
+}
+
+.ideal-team__remove:hover {
+  background: color-mix(in srgb, var(--status-loss) 14%, transparent);
+}
+
+.ideal-team__remove:focus-visible {
+  outline: 2px solid var(--accent-gold);
+}
+
+.ideal-team__filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Lista de candidatos */
+.ideal-team__candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ideal-team__empty {
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.ideal-team-candidate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 70px;
+  padding: 13px 15px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.ideal-team-candidate:hover {
+  background: var(--bg-hover);
+}
+
+.ideal-team-candidate--first {
+  background: var(--bg-elevated);
+  border-color: var(--accent-gold);
+}
+
+.ideal-team-candidate--disabled {
+  opacity: 0.5;
+}
+
+.ideal-team-candidate--disabled:hover {
+  background: var(--bg-surface);
+}
+
+.ideal-team-candidate__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ideal-team-candidate__name,
+.ideal-team-candidate__meta {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ideal-team-candidate__name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ideal-team-candidate__meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ideal-team-candidate__add {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  font: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.ideal-team-candidate__add:hover:not(:disabled) {
+  background: var(--bg-hover);
+  outline: 1px solid var(--accent-gold);
+}
+
+.ideal-team-candidate__add:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.ideal-team-candidate__add:disabled {
+  cursor: not-allowed;
+}
+
+.ideal-team-candidate--first .ideal-team-candidate__add:not(:disabled) {
+  background: var(--gradient-gold);
+  color: var(--bg-base);
+}
+
+.ideal-team-candidate__plus {
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url('../../assets/icon-plus-light.svg') center / contain no-repeat;
+  mask: url('../../assets/icon-plus-light.svg') center / contain no-repeat;
+}
+
+.ideal-team__more {
+  align-self: center;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  cursor: pointer;
+}
+
+.ideal-team__more--mobile-only {
+  display: none;
+}
+
+.ideal-team__more:hover {
+  text-decoration: underline;
+}
+
+.ideal-team__more:focus-visible {
+  outline: 2px solid var(--accent-gold);
+}
+
+/* Resumen del equipo */
+.ideal-team-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 19px 25px;
+  background: linear-gradient(90deg, var(--accent-gold-soft), var(--bg-surface) 45%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.ideal-team-summary__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 48px;
+  margin: 0;
+}
+
+.ideal-team-summary__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ideal-team-summary__value {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ideal-team-summary__value--gold {
+  color: var(--accent-gold);
+}
+
+.ideal-team-summary__label {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ideal-team-summary__rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Pantallas medianas: el buscador baja debajo del campo */
+@media (max-width: 1279px) {
+  .ideal-team__main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ideal-team-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ideal-team__controls {
+    flex-wrap: wrap;
+  }
+}
+
+/* Móvil: campo alto, tres candidatos con «+ Añadir», resumen en dos columnas y guardar al final */
+@media (max-width: 799px) {
+  .ideal-team {
+    gap: 24px;
+  }
+
+  .ideal-team__desktop,
+  .ideal-team__desktop-block {
+    display: none !important;
+  }
+
+  .ideal-team__mobile {
+    display: inline !important;
+  }
+
+  .ideal-team__mobile-block {
+    display: block !important;
+  }
+
+  .ideal-team__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 110px;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .ideal-team__name,
+  .ideal-team__formation {
+    width: auto;
+  }
+
+  .ideal-team__notice {
+    margin-top: -8px;
+  }
+
+  .ideal-team__section-title {
+    font-size: 24px;
+  }
+
+  .ideal-team__search {
+    gap: 12px;
+  }
+
+  .ideal-team__candidates {
+    gap: 10px;
+  }
+
+  .ideal-team-candidate {
+    gap: 10px;
+    min-height: 66px;
+    padding: 13px 15px;
+  }
+
+  .ideal-team-candidate .avatar {
+    --avatar-size: 40px !important;
+    --avatar-font-size: 16px !important;
+  }
+
+  .ideal-team-candidate .rating {
+    --rating-height: 30px;
+    --rating-font-size: 12px;
+  }
+
+  .ideal-team-candidate__add {
+    width: auto;
+    height: auto;
+    padding: 4px;
+    background: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .ideal-team-candidate--first .ideal-team-candidate__add:not(:disabled) {
+    background: none;
+    color: var(--accent-gold);
+  }
+
+  .ideal-team-candidate--extra {
+    display: none;
+  }
+
+  .ideal-team__more--mobile-only {
+    display: block;
+  }
+
+  .ideal-team-summary {
+    padding: 19px 25px 14px;
+  }
+
+  .ideal-team-summary__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 10px;
+    width: 100%;
+  }
+
+  .ideal-team-summary__value {
+    font-size: 30px;
+  }
+
+  .ideal-team-summary__rule {
+    display: none;
+  }
+
+  .ideal-team__save-mobile .button {
+    width: 100%;
+  }
+}

@@ -408,3 +408,15 @@ export const PLAYER_PROFILE_EXTRAS = {
     venues: { 8: 'C', 7: 'F', 6: 'C', 5: 'F', 4: 'F' },
   },
 };
+
+/* ---------------------------------------------------------------- */
+/* --- Página 11 · Mi equipo ideal ---                              */
+/* ---------------------------------------------------------------- */
+
+// Edad ESTIMADA (a 17/10/2026) de los jugadores de PLAYERS que no tienen «age». Sirve para la media de edad
+// del equipo ideal; con estas edades el equipo de ejemplo da 26,2 años, como en el mockup.
+export const PLAYER_AGES_ESTIMATED = {
+  courtois: 34, 'alexander-arnold': 28, militao: 28, huijsen: 21, valverde: 28, vinicius: 26, 'raul-asencio': 23,
+  aramburu: 24, laporte: 32, balde: 22, baena: 25, raphinha: 29, 'gerard-martin': 24, 'nico-williams': 24,
+  kubo: 25, 'giuliano-simeone': 23,
+};
