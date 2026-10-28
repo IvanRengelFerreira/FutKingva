@@ -20,6 +20,7 @@ import { STANDINGS_LALIGA, STANDINGS_ZONES, getTeam, getStandingsZone } from '..
 //   <StandingsTable variant="compact" limit={5} />              → los 5 primeros
 //   <StandingsTable highlightTeamId="real-madrid" />            → resalta una fila (p. ej. desde la ficha de equipo)
 //   <StandingsTable standings={otraTabla} caption="Clasificación de la Premier League" />
+//   <StandingsTable legendExtra={<span>Actualizada hace 5 min</span>} />   → algo más a la derecha de la leyenda
 export default function StandingsTable({
   standings = STANDINGS_LALIGA,
   variant = 'full',
@@ -27,6 +28,7 @@ export default function StandingsTable({
   highlightTeamId,
   showLegend = variant === 'full',
   caption = 'Clasificación de LaLiga',
+  legendExtra,
   className = '',
 }) {
   const full = variant === 'full';
@@ -107,13 +109,16 @@ export default function StandingsTable({
       </div>
 
       {showLegend && (
-        <ul className="standings-table__legend" aria-label="Zonas de la clasificación">
-          {STANDINGS_ZONES.map((zone) => (
-            <li key={zone.id} className={`standings-table__legend-item standings-table__legend-item--${zone.id}`}>
-              {zone.label}
-            </li>
-          ))}
-        </ul>
+        <div className="standings-table__footer">
+          <ul className="standings-table__legend" aria-label="Zonas de la clasificación">
+            {STANDINGS_ZONES.map((zone) => (
+              <li key={zone.id} className={`standings-table__legend-item standings-table__legend-item--${zone.id}`}>
+                {zone.label}
+              </li>
+            ))}
+          </ul>
+          {legendExtra}
+        </div>
       )}
     </div>
   );
