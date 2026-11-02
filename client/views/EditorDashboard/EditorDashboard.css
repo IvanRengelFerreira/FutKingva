@@ -1,0 +1,321 @@
+/*
+ * 17 · Panel de editor
+ * Figma › Mockups › 17 · Panel de editor (escritorio y móvil)
+ */
+
+.editor-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Textos que solo salen en escritorio o solo en móvil */
+.editor-dashboard__less {
+  display: none;
+}
+
+/* Botones de la cabecera */
+.editor-dashboard__button {
+  gap: 8px;
+}
+
+/* Botón «Actualizar datos»: fondo elevado con borde, como en Figma */
+.editor-dashboard__button--data {
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.editor-dashboard__button--data:hover {
+  background: var(--bg-hover);
+}
+
+/* Indicadores: 4 en fila */
+.editor-dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.editor-dashboard__stats .stat-card {
+  padding: 17px 12px;
+}
+
+.editor-dashboard__trend {
+  display: block;
+  margin-top: 2px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--status-win);
+}
+
+/* «Mis artículos»: título, buscador y filtro */
+.editor-dashboard__articles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.editor-dashboard__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editor-dashboard__title {
+  margin: 0 auto 0 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.editor-dashboard__search {
+  width: 300px;
+}
+
+.editor-dashboard__status {
+  width: 180px;
+}
+
+.editor-dashboard__message {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--status-win);
+}
+
+.editor-dashboard__message:empty {
+  display: none;
+}
+
+.editor-dashboard__empty {
+  margin: 0;
+  padding: 40px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Tabla (escritorio) */
+.editor-dashboard__table {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.editor-dashboard__table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.editor-dashboard__table th {
+  padding: 11px 16px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.editor-dashboard__table td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.editor-dashboard__table th:first-child,
+.editor-dashboard__table td:first-child {
+  padding-left: 20px;
+}
+
+.editor-dashboard__table th:last-child,
+.editor-dashboard__table td:last-child {
+  padding-right: 20px;
+}
+
+.editor-dashboard__table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.editor-dashboard__table .editor-dashboard__end {
+  text-align: right;
+}
+
+.editor-dashboard__article-title {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.editor-dashboard__date {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.editor-dashboard__visits {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* Acciones: cuadrados de 32 px con el icono pintado con máscara (así cambia de color con CSS) */
+.editor-dashboard__actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.editor-dashboard__action {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--action-color) 10%, transparent);
+  cursor: pointer;
+}
+
+.editor-dashboard__action::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: var(--action-color);
+  mask: var(--action-icon) center / 16px 16px no-repeat;
+}
+
+.editor-dashboard__action:hover {
+  background: color-mix(in srgb, var(--action-color) 22%, transparent);
+}
+
+.editor-dashboard__action:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.editor-dashboard__action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.editor-dashboard__action--edit {
+  --action-color: var(--accent-gold);
+  --action-icon: url('../../assets/icon-edit.svg');
+}
+
+.editor-dashboard__action--view {
+  --action-color: var(--text-secondary);
+  --action-icon: url('../../assets/icon-eye.svg');
+}
+
+.editor-dashboard__action--delete {
+  --action-color: var(--status-loss);
+  --action-icon: url('../../assets/icon-trash.svg');
+}
+
+/* Tarjetas (móvil): ocultas en escritorio */
+.editor-dashboard__cards {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.editor-dashboard__card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 13px 15px 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.editor-dashboard__card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-dashboard__card-edit {
+  margin-left: auto;
+}
+
+.editor-dashboard__card .editor-dashboard__article-title {
+  font-size: 18px;
+}
+
+.editor-dashboard__card-meta {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Móvil */
+@media (max-width: 799px) {
+  .editor-dashboard {
+    gap: 24px;
+  }
+
+  .editor-dashboard__more {
+    display: none;
+  }
+
+  .editor-dashboard__less {
+    display: inline;
+  }
+
+  .editor-dashboard__buttons {
+    flex-direction: column-reverse; /* «Nuevo artículo» arriba, como en Figma */
+    width: 100%;
+    gap: 10px;
+  }
+
+  .editor-dashboard__button {
+    width: 100%;
+  }
+
+  .editor-dashboard__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editor-dashboard__toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .editor-dashboard__title {
+    flex-basis: 100%;
+    font-size: 24px;
+  }
+
+  .editor-dashboard__search {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .editor-dashboard__status {
+    width: 150px;
+  }
+
+  .editor-dashboard__table {
+    display: none;
+  }
+
+  .editor-dashboard__cards {
+    display: flex;
+  }
+}

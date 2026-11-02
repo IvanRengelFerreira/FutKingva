@@ -19,6 +19,7 @@ import Analysis from './views/Analysis/Analysis.jsx';
 import Article from './views/Article/Article.jsx';
 import Contact from './views/Contact/Contact.jsx';
 import About from './views/About/About.jsx';
+import EditorDashboard from './views/EditorDashboard/EditorDashboard.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
 import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
@@ -56,6 +57,9 @@ export default function App() {
             <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />    {/* 10 */}
             <Route path="equipo-ideal" element={<RequireRole><IdealTeam /></RequireRole>} />   {/* 11 */}
             <Route path="perfil" element={<RequireRole><Profile /></RequireRole>} />          {/* 12 */}
+
+            {/* Editor */}
+            <Route path="editor" element={<RequireRole roles={['editor']}><EditorDashboard /></RequireRole>} />  {/* 17 */}
 
             {/* Administrador */}
             <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />  {/* 20 */}
