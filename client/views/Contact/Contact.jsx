@@ -40,7 +40,7 @@ const FAQS = [
   },
   {
     question: '¿Cada cuánto se actualizan?',
-    answer: 'Los resultados y la clasificación se actualizan solos al terminar cada partido. Durante los partidos en directo, al momento.',
+    answer: 'Se actualizan automáticamente cada pocos minutos durante los partidos, y la clasificación al terminar cada uno.',
   },
   {
     question: '¿Cómo creo mi equipo ideal?',
