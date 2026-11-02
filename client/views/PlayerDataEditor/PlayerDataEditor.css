@@ -1,0 +1,455 @@
+/*
+ * 19 · Actualizar datos de jugadores
+ * Figma › Mockups › 19 · Actualizar datos de jugadores (escritorio y móvil)
+ */
+
+.player-data {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Textos que solo salen en escritorio o solo en móvil */
+.player-data__less {
+  display: none;
+}
+
+.player-data__button {
+  gap: 8px;
+}
+
+.player-data__button.button--tertiary {
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.player-data__button.button--tertiary:hover {
+  background: var(--bg-hover);
+}
+
+/* Sincronización con football-data.org */
+.player-data__sync {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.player-data__dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--status-win);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--status-win) 20%, transparent);
+}
+
+.player-data__dot--syncing {
+  background: var(--accent-gold);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-gold) 20%, transparent);
+}
+
+.player-data__sync-text p {
+  margin: 0;
+}
+
+.player-data__sync-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.player-data__sync-time {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Filtros */
+.player-data__filters {
+  display: flex;
+  gap: 12px;
+}
+
+.player-data__search {
+  position: relative;
+  width: 420px;
+}
+
+.player-data__filters .select {
+  width: 240px;
+}
+
+.player-data__suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  list-style: none;
+}
+
+.player-data__suggestion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.player-data__suggestion:hover,
+.player-data__suggestion:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.player-data__suggestion-team {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Ficha de edición a la izquierda e historial a la derecha */
+.player-data__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 500px;
+  align-items: start;
+  gap: 32px;
+}
+
+.player-data__card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px 28px 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-surface);
+}
+
+.player-data__who {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.player-data__badge {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.player-data__avatar.avatar {
+  border: 2px solid var(--accent-gold);
+  background: var(--brand-green-700);
+}
+
+.player-data__crest {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+}
+
+.player-data__who-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-data__name {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.player-data__meta {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.player-data__changed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--accent-gold-soft);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  white-space: nowrap;
+}
+
+.player-data__changed::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: var(--accent-gold);
+  mask: url('../../assets/icon-edit.svg') center / 14px 14px no-repeat;
+}
+
+/* Campos de 3 en 3 */
+.player-data__fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.player-data__field {
+  position: relative;
+}
+
+.player-data__field input {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* Campo cambiado: borde oro y «antes X» a la derecha */
+.player-data__field--changed .text-field__control,
+.player-data__field--changed .select__input {
+  border-color: var(--accent-gold);
+  background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-base));
+}
+
+.player-data__before {
+  position: absolute;
+  top: 39px;
+  right: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+/* Origen del cambio (aviso desde Contacto) */
+.player-data__origin {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--status-info) 10%, transparent);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--status-info);
+}
+
+.player-data__mail {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--status-info);
+  mask: url('../../assets/icon-mail.svg') center / 16px 16px no-repeat;
+}
+
+.player-data__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-data__message {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--status-win);
+}
+
+/* Historial de cambios */
+.player-data__history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.player-data__history-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.player-data__table {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.player-data__table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.player-data__table th {
+  padding: 11px 12px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.player-data__table td {
+  padding: 11px 12px;
+  border-top: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.player-data__table th:first-child,
+.player-data__table td:first-child {
+  padding-left: 16px;
+}
+
+.player-data__date {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.player-data__entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-data__entry-name,
+.player-data__entry-field {
+  display: block;
+  line-height: normal;
+}
+
+.player-data__entry-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.player-data__entry-field {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.player-data__change {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.player-data__change strong {
+  color: var(--accent-gold);
+}
+
+.player-data__arrow {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 4px;
+  background: var(--text-tertiary);
+  mask: url('../../assets/icon-arrow-right.svg') center / 12px 12px no-repeat;
+}
+
+/* Móvil: una columna, como en Figma */
+@media (max-width: 799px) {
+  .player-data__more {
+    display: none;
+  }
+
+  .player-data__less {
+    display: inline;
+  }
+
+  .player-data__capital {
+    text-transform: capitalize;
+  }
+
+  .player-data__sync {
+    width: 100%;
+  }
+
+  .player-data__sync-text {
+    flex: 1;
+  }
+
+  .player-data__filters {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .player-data__search {
+    width: 100%;
+  }
+
+  .player-data__filters .select {
+    width: calc(50% - 5px);
+  }
+
+  .player-data__layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .player-data__card {
+    padding: 18px 16px 20px;
+    border-radius: 12px;
+  }
+
+  .player-data__who {
+    flex-wrap: wrap;
+  }
+
+  .player-data__avatar.avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 23px;
+  }
+
+  .player-data__name {
+    font-size: 22px;
+  }
+
+  .player-data__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 12px;
+  }
+
+  .player-data__field--position {
+    grid-column: 1 / -1;
+  }
+
+  .player-data__actions .player-data__button {
+    flex: 1;
+  }
+
+  .player-data__history-title {
+    font-size: 24px;
+  }
+
+  .player-data__by {
+    display: none;
+  }
+}

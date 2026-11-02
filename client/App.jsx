@@ -21,6 +21,7 @@ import Contact from './views/Contact/Contact.jsx';
 import About from './views/About/About.jsx';
 import EditorDashboard from './views/EditorDashboard/EditorDashboard.jsx';
 import ArticleEditor from './views/ArticleEditor/ArticleEditor.jsx';
+import PlayerDataEditor from './views/PlayerDataEditor/PlayerDataEditor.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
 import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="editor" element={<RequireRole roles={['editor']}><EditorDashboard /></RequireRole>} />  {/* 17 */}
             <Route path="editor/articulo" element={<RequireRole roles={['editor']}><ArticleEditor /></RequireRole>} />  {/* 18 (nuevo) */}
             <Route path="editor/articulo/:articleId" element={<RequireRole roles={['editor']}><ArticleEditor /></RequireRole>} />  {/* 18 (editar) */}
+            <Route path="editor/datos" element={<RequireRole roles={['editor']}><PlayerDataEditor /></RequireRole>} />  {/* 19 */}
 
             {/* Administrador */}
             <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />  {/* 20 */}
