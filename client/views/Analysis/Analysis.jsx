@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import Button from '../../components/Button/Button.jsx';
 import Tag from '../../components/Tag/Tag.jsx';
 import Illustration from '../../components/Illustration/Illustration.jsx';
@@ -27,11 +28,13 @@ const CATEGORIES = [
 ];
 
 const PER_PAGE = 6;
+const MOBILE_STEP = 5; // En móvil se enseñan 5 y «Cargar más» añade otros 5 (como en Figma)
 
 export default function Analysis() {
   const [category, setCategory] = useState(null);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [mobileCount, setMobileCount] = useState(MOBILE_STEP);
 
   const featured = getArticle(FEATURED_ARTICLE_ID);
   const featuredExtras = getArticleExtras(FEATURED_ARTICLE_ID);
@@ -50,11 +53,13 @@ export default function Analysis() {
   function changeCategory(value) {
     setCategory(value);
     setPage(1);
+    setMobileCount(MOBILE_STEP);
   }
 
   function changeQuery(event) {
     setQuery(event.target.value);
     setPage(1);
+    setMobileCount(MOBILE_STEP);
   }
 
   return (
@@ -106,10 +111,15 @@ export default function Analysis() {
             <Tag featured>Destacado</Tag>
             <Tag category={featured.category} />
           </div>
-          <h2 className="analysis__featured-title">{featured.title}</h2>
+          <h2 className="analysis__featured-title">
+            <Link className="analysis__featured-link" to={`/analisis/${featured.id}`}>{featured.title}</Link>
+          </h2>
           <p className="analysis__featured-excerpt">{featuredExtras.excerpt}</p>
           <p className="analysis__featured-meta">
-            {[featured.author, featured.date, featuredExtras.readingTime].filter(Boolean).join(' · ')}
+            {featured.author}
+            {/* En móvil, sin la fecha (como en Figma) */}
+            <span className="analysis__desktop-only"> · {featured.date}</span>
+            {featuredExtras.readingTime && ` · ${featuredExtras.readingTime}`}
           </p>
           <Button className="analysis__featured-button" to={`/analisis/${featured.id}`}>Leer análisis</Button>
         </div>
@@ -122,29 +132,51 @@ export default function Analysis() {
         </div>
 
         {visible.length > 0 ? (
-          <div className="analysis__grid">
-            {visible.map((article) => {
-              const extras = getArticleExtras(article.id);
-              return (
+          <>
+            {/* Escritorio: rejilla de 3 columnas con paginación */}
+            <div className="analysis__grid">
+              {visible.map((article) => {
+                const extras = getArticleExtras(article.id);
+                return (
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    excerpt={extras.excerpt}
+                    illustration={extras.illustration}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Móvil: lista compacta con «Cargar más» */}
+            <div className="analysis__list">
+              {results.slice(0, mobileCount).map((article) => (
                 <ArticleCard
                   key={article.id}
                   article={article}
-                  excerpt={extras.excerpt}
-                  illustration={extras.illustration}
+                  illustration={getArticleExtras(article.id).illustration}
+                  layout="compact"
                 />
-              );
-            })}
-          </div>
+              ))}
+              {results.length > mobileCount && (
+                <Button variant="tertiary" className="analysis__more" onClick={() => setMobileCount((n) => n + MOBILE_STEP)}>
+                  Cargar más
+                </Button>
+              )}
+            </div>
+          </>
         ) : (
           <p className="analysis__empty">No hay análisis que coincidan con tu búsqueda.</p>
         )}
 
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onChange={setPage}
-          label="Páginas de análisis"
-        />
+        <div className="analysis__desktop-only">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onChange={setPage}
+            label="Páginas de análisis"
+          />
+        </div>
       </div>
     </section>
   );

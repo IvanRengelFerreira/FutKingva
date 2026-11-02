@@ -143,6 +143,28 @@
   gap: 24px;
 }
 
+.analysis__featured-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.analysis__featured-link:hover {
+  color: var(--accent-gold);
+}
+
+/* Lista compacta: solo en móvil */
+.analysis__list {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analysis__more {
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
 .analysis__empty {
   margin: 0;
   padding: 40px;
@@ -150,4 +172,78 @@
   border-radius: 12px;
   text-align: center;
   color: var(--text-secondary);
+}
+
+/* Móvil (Figma › 08 · Análisis · Móvil): chips con desplazamiento lateral, destacado en vertical
+   sin entradilla ni botón, lista compacta y «Cargar más» en vez de paginación */
+@media (max-width: 799px) {
+  .analysis {
+    gap: 28px;
+  }
+
+  .analysis .page-header__subtitle,
+  .analysis__search,
+  .analysis__sort,
+  .analysis__featured-excerpt,
+  .analysis__featured-button,
+  .analysis__desktop-only,
+  .analysis__grid,
+  .analysis__featured-tags .tag:not(.tag--featured) {
+    display: none;
+  }
+
+  /* Los chips se salen por la derecha y se deslizan con el dedo */
+  .analysis__toolbar {
+    margin-right: -16px;
+  }
+
+  .analysis__chips {
+    overflow-x: auto;
+    padding-right: 16px;
+    scrollbar-width: none;
+  }
+
+  .analysis__chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .analysis__chip {
+    padding: 6px 13px;
+    font-size: 13px;
+  }
+
+  .analysis__featured {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 12px;
+  }
+
+  .analysis__featured-illustration {
+    height: 200px;
+  }
+
+  .analysis__featured-body {
+    gap: 10px;
+    padding: 16px 16px 18px;
+  }
+
+  .analysis__featured-title {
+    font-size: 30px;
+    line-height: 1.08;
+  }
+
+  .analysis__featured-meta {
+    font-size: 12px;
+  }
+
+  .analysis__latest {
+    gap: 12px;
+  }
+
+  .analysis__latest-title {
+    font-size: 24px;
+  }
+
+  .analysis__list {
+    display: flex;
+  }
 }

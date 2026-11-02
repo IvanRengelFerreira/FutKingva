@@ -77,7 +77,17 @@ function ArticleView({ article }) {
           <div className="article__author">
             <p className="article__author-name">{article.author}</p>
             <p className="article__author-meta">
-              {[AUTHOR_ROLES[article.author], toLongDate(article.date), extras.readingTime].filter(Boolean).join(' · ')}
+              {AUTHOR_ROLES[article.author]}
+              {/* Escritorio: «15 de octubre de 2026 · 6 min de lectura» · Móvil: «15/10 · 6 min» (como en Figma) */}
+              <span className="article__desktop-only"> · {toLongDate(article.date)}</span>
+              <span className="article__mobile-only"> · {article.date?.slice(0, 5)}</span>
+              {extras.readingTime && (
+                <>
+                  {' · '}
+                  {extras.readingTime.replace(' de lectura', '')}
+                  <span className="article__desktop-only"> de lectura</span>
+                </>
+              )}
             </p>
           </div>
 
@@ -115,6 +125,18 @@ function ArticleView({ article }) {
                 key={item.id}
                 article={item}
                 illustration={getArticleExtras(item.id).illustration}
+                minimal
+              />
+            ))}
+          </div>
+          {/* Móvil: dos tarjetas compactas (miniatura a la izquierda) */}
+          <div className="article__related-list">
+            {related.slice(0, 2).map((item) => (
+              <ArticleCard
+                key={item.id}
+                article={item}
+                illustration={getArticleExtras(item.id).illustration}
+                layout="compact"
                 minimal
               />
             ))}

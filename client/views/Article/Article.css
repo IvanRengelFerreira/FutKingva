@@ -275,3 +275,104 @@
 .article__related-grid .article-card__illustration {
   height: 190px;
 }
+
+/* Textos que cambian entre escritorio y móvil */
+.article__mobile-only,
+.article__related-list {
+  display: none;
+}
+
+/* Móvil (Figma › 09 · Artículo · Móvil): columna a lo ancho, titular más pequeño,
+   dato destacado en vertical y dos relacionados en tarjeta compacta */
+@media (max-width: 799px) {
+  .article {
+    gap: 40px;
+  }
+
+  .article__column {
+    gap: 20px;
+  }
+
+  .article__desktop-only,
+  .article__related-grid,
+  .article .breadcrumbs__item:last-child {
+    display: none;
+  }
+
+  .article__mobile-only {
+    display: inline;
+  }
+
+  .article__header {
+    gap: 12px;
+  }
+
+  .article__title {
+    font-size: 40px;
+    line-height: 1.04;
+  }
+
+  .article__lead {
+    font-size: 17px;
+  }
+
+  .article__byline {
+    gap: 10px;
+    padding-bottom: 14px;
+  }
+
+  .article__author-avatar.avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .article__illustration {
+    height: 210px;
+    border-radius: 12px;
+  }
+
+  .article__paragraph {
+    font-size: 16px;
+  }
+
+  .article__stats {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .article__stat-value {
+    font-size: 40px;
+  }
+
+  /* Gráfico más bajo y barras estrechas para que quepan las 8 jornadas */
+  .article__figure .bar-chart__plot {
+    height: 120px;
+  }
+
+  .article__figure .bar-chart__bar {
+    width: min(22px, 70%);
+  }
+
+  .article__figure .bar-chart__value {
+    font-size: 13px;
+  }
+
+  .article__quote {
+    font-size: 27px;
+  }
+
+  .article__related {
+    gap: 12px;
+  }
+
+  .article__related-title {
+    font-size: 24px;
+  }
+
+  .article__related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
