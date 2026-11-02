@@ -17,6 +17,7 @@ import Profile from './views/Profile/Profile.jsx';
 import SearchResults from './views/SearchResults/SearchResults.jsx';
 import Analysis from './views/Analysis/Analysis.jsx';
 import Article from './views/Article/Article.jsx';
+import Contact from './views/Contact/Contact.jsx';
 import NotFound from './views/NotFound/NotFound.jsx';
 import ComponentGallery from './views/ComponentGallery/ComponentGallery.jsx'; // TEMPORAL
 
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="analisis" element={<Analysis />} />                  {/* 08 */}
             <Route path="analisis/:articleId" element={<Article />} />        {/* 09 */}
             <Route path="buscar" element={<SearchResults />} />               {/* 13 (texto buscado en ?q=) */}
+            <Route path="contacto" element={<Contact />} />                   {/* 16 */}
 
             {/* Usuario registrado */}
             <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />    {/* 10 */}

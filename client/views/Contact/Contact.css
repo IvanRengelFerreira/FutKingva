@@ -1,0 +1,228 @@
+/*
+ * 16 · Contacto
+ * Figma › Mockups › 16 · Contacto (escritorio y móvil)
+ */
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Formulario a la izquierda y columna de 440 px a la derecha */
+.contact__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  align-items: start;
+  gap: 32px;
+}
+
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-surface);
+}
+
+.contact__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contact__message textarea {
+  min-height: 154px; /* Campo de 180 px de alto, como en Figma */
+}
+
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.contact__submit {
+  gap: 8px;
+}
+
+/* Aviso verde tras enviar */
+.contact__sent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--status-win);
+}
+
+/* El ✓ del repo es el de la casilla (verde oscuro): con la máscara se pinta en verde */
+.contact__sent-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--status-win);
+  mask: url('../../assets/icon-check.svg') center / 16px 16px no-repeat;
+}
+
+.contact__sent:not(:empty) {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--status-win) 12%, transparent);
+}
+
+/* Columna derecha: tres recuadros */
+.contact__side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact__box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.contact__box--faq {
+  gap: 4px;
+  padding-bottom: 12px;
+}
+
+.contact__box-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.contact__info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* El icono del sobre del repo es gris: con la máscara se pinta en oro, como en Figma */
+.contact__mail-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--accent-gold);
+  mask: url('../../assets/icon-mail.svg') center / 18px 18px no-repeat;
+}
+
+/* Preguntas frecuentes: se despliegan al pulsarlas */
+.contact__faq {
+  border-top: 1px solid var(--border);
+}
+
+.contact__faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+
+.contact__faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.contact__faq-question:hover {
+  color: var(--accent-gold);
+}
+
+.contact__faq-question:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.contact__faq-arrow {
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.contact__faq[open] .contact__faq-arrow {
+  transform: rotate(90deg);
+}
+
+.contact__faq-answer {
+  margin: 0;
+  padding: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.contact__faq-link {
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+/* Redes sociales: cuadrados de 44 px */
+.contact__socials {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact__social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
+}
+
+/* Móvil: una sola columna */
+@media (max-width: 799px) {
+  .contact {
+    gap: 28px;
+  }
+
+  .contact__layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .contact__form {
+    padding: 18px 16px 20px;
+    border-radius: 12px;
+  }
+
+  .contact__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .contact__message textarea {
+    min-height: 124px;
+  }
+
+  .contact__submit {
+    width: 100%;
+  }
+
+  .contact__sent:not(:empty) {
+    width: 100%;
+  }
+}
