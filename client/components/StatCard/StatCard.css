@@ -50,6 +50,14 @@
   --stat-color: var(--status-info);
 }
 
+.stat-card--yellow {
+  --stat-color: var(--card-yellow);
+}
+
+.stat-card--amber {
+  --stat-color: var(--accent-amber);
+}
+
 /* Móvil: cifra más pequeña (Figma › 03 · Ficha de equipo · Móvil) */
 @media (max-width: 799px) {
   .stat-card__value {

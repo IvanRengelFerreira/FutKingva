@@ -1,0 +1,433 @@
+/*
+ * 13 · Resultados de búsqueda
+ * Figma › Mockups › 13 · Resultados de búsqueda (escritorio y móvil)
+ */
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Cosas que solo salen en escritorio o solo en móvil */
+.search-results .search-results__mobile,
+.search-results .search-results__mobile-flex,
+.search-results .search-results__mobile-block {
+  display: none;
+}
+
+.search-results__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Campo de búsqueda ---------- */
+
+.search-results__form {
+  display: flex;
+  gap: 12px;
+}
+
+.search-results__field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 640px;
+  max-width: 100%;
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+}
+
+/* Borde oro mientras se escribe (o si ya hay una búsqueda) */
+.search-results__field:focus-within,
+.search-results__field:has(.search-results__input:not(:placeholder-shown)) {
+  border-color: var(--accent-gold);
+}
+
+.search-results__input {
+  flex: 1;
+  min-width: 0;
+  height: 43px;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.search-results__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Sin la «x» que pone el navegador: ya hay un botón para borrar */
+.search-results__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.search-results__clear {
+  display: flex;
+  padding: 2px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.search-results__clear:focus-visible,
+.search-results__submit:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.search-results__submit {
+  padding: 0 24px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gradient-gold);
+  color: var(--brand-green-900);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-results__submit:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------- Título y bloques ---------- */
+
+.search-results__title {
+  overflow-wrap: anywhere;
+}
+
+.search-results__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-results__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.search-results__section-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.search-results__order {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Texto que coincide con la búsqueda */
+.search-results__match {
+  background: none;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.search-results__see {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.search-results__see:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Tarjetas (equipos; jugadores en móvil) ---------- */
+
+.search-results__teams,
+.search-results__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-results__teams {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.search-results__card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.search-results__card:hover {
+  background: var(--bg-hover);
+}
+
+.search-results__card:focus-visible,
+.search-results__team:focus-visible,
+.search-results__see:focus-visible,
+.search-results__also a:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.search-results__card-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.search-results__card-name {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-results__card-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* «Busca también en árbitros y análisis →» */
+.search-results__also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.search-results__also a {
+  color: var(--text-secondary);
+}
+
+.search-results__also a:hover {
+  color: var(--accent-gold);
+}
+
+/* ---------- Tabla de jugadores ---------- */
+
+.search-results__table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.search-results__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.search-results__table thead th {
+  padding: 11px 8px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.search-results__table td,
+.search-results__table tbody th {
+  padding: 11px 8px;
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+.search-results__table th:first-child,
+.search-results__table td:first-child {
+  padding-left: 20px;
+}
+
+.search-results__table th:last-child,
+.search-results__table td:last-child {
+  padding-right: 20px;
+}
+
+.search-results__table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.search-results__player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-results__player-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.search-results__table .search-results__team-col {
+  width: 260px;
+}
+
+.search-results__team {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.search-results__team:hover {
+  color: var(--text-primary);
+}
+
+.search-results__table .search-results__position-col {
+  width: 160px;
+}
+
+.search-results__table .search-results__num {
+  width: 80px;
+  text-align: right;
+}
+
+.search-results__table .search-results__num--wide {
+  width: 100px;
+}
+
+.search-results__table .search-results__big {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.search-results__table .search-results__link-col {
+  width: 100px;
+  text-align: right;
+}
+
+.search-results__empty {
+  padding: 40px 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.search-results__empty p {
+  margin: 0 0 8px;
+}
+
+.search-results__empty a {
+  color: var(--accent-gold);
+}
+
+/* ---------- Pantallas medianas ---------- */
+
+@media (max-width: 1099px) {
+  .search-results__teams {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .search-results__table .search-results__team-col {
+    width: auto;
+  }
+}
+
+/* ---------- Móvil (Figma › 13 · Resultados de búsqueda · Móvil) ---------- */
+
+@media (max-width: 799px) {
+  .search-results {
+    gap: 24px;
+  }
+
+  .search-results .search-results__desktop,
+  .search-results .search-results__desktop-flex,
+  .search-results .search-results__desktop-block {
+    display: none;
+  }
+
+  .search-results .search-results__mobile {
+    display: inline;
+  }
+
+  .search-results .search-results__mobile-flex,
+  .search-results .search-results__mobile-block {
+    display: flex;
+  }
+
+  /* Sin botón «Buscar»: se busca con Enter */
+  .search-results__submit {
+    display: none;
+  }
+
+  .search-results__field {
+    width: 100%;
+  }
+
+  .search-results__title {
+    font-size: 34px;
+  }
+
+  .search-results__section-title {
+    font-size: 24px;
+  }
+
+  .search-results__teams,
+  .search-results__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-results__card {
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .search-results__card-name {
+    font-size: 15px;
+  }
+
+  .search-results__card-meta {
+    font-size: 12px;
+  }
+}

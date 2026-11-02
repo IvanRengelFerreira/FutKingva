@@ -9,7 +9,8 @@ import './StatCard.css';
 //   <StatCard value="6-0-2" label="V - E - D" />
 //   <StatCard value={team.goalsFor} label="Goles a favor" tone="win" />
 //   <StatCard value={team.goalsAgainst} label="Goles en contra" tone="loss" />
-// tone (color de la cifra): 'default' (blanco), 'gold', 'win' (verde), 'loss' (rojo), 'info' (azul)
+// tone (color de la cifra): 'default' (blanco), 'gold', 'win' (verde), 'loss' (rojo), 'info' (azul),
+//   'yellow' (amarillo de tarjeta) y 'amber' (ámbar), como en 07 · Ficha de árbitro
 export default function StatCard({ value, label, tone = 'default', className = '' }) {
   return (
     <div className={`stat-card stat-card--${tone} ${className}`.trim()}>

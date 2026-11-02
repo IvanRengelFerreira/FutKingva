@@ -1,0 +1,656 @@
+/*
+ * 12 · Mi perfil
+ * Figma › Mockups › 12 · Mi perfil (escritorio y móvil)
+ */
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Cosas que solo salen en escritorio o solo en móvil */
+.profile .profile__mobile,
+.profile .profile__mobile-flex {
+  display: none;
+}
+
+.profile__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Botones del perfil ---------- */
+
+.profile__outline-button,
+.profile__dark-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile__outline-button {
+  border: 1.5px solid var(--accent-gold);
+  background: none;
+  color: var(--accent-gold);
+}
+
+.profile__outline-button:hover {
+  background: var(--accent-gold-soft);
+}
+
+.profile__dark-button {
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.profile__dark-button:hover {
+  background: var(--bg-hover);
+}
+
+.profile__outline-button:focus-visible,
+.profile__dark-button:focus-visible,
+.profile__more:focus-visible,
+.profile__action:focus-visible,
+.profile-card__star:focus-visible,
+.profile-card__text:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* ---------- Cabecera ---------- */
+
+.profile-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 28px 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(175deg, var(--brand-green-900) 0%, var(--bg-surface) 71%);
+}
+
+.profile .profile-hero__avatar {
+  border: 3px solid var(--accent-gold);
+  background: var(--brand-green-700);
+}
+
+.profile-hero__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.profile-hero__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.profile-hero__name {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.profile-hero__meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.profile-hero__counts {
+  display: flex;
+  gap: 28px;
+  margin: 0;
+}
+
+.profile-hero__counts > div {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.profile-hero__counts dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.profile-hero__counts dd {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: normal;
+}
+
+.profile-hero__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-hero__notice {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Número de avisos sin leer en la pestaña */
+.profile__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--status-live);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 2px;
+}
+
+/* ---------- Bloques ---------- */
+
+.profile__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.profile__section--narrow {
+  max-width: 440px;
+}
+
+.profile__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile__section-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.profile__more {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent-gold);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile__more:hover {
+  text-decoration: underline;
+}
+
+.profile__empty {
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.profile__empty a {
+  color: var(--accent-gold);
+}
+
+.profile__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 888fr) minmax(0, 440fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.profile__main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Tarjetas (favoritos; comparativas en móvil) ---------- */
+
+.profile__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile__list {
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.profile-card__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  border-radius: 4px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+a.profile-card__text:hover .profile-card__name {
+  text-decoration: underline;
+}
+
+.profile-card__name {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-card__meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.profile-card__star {
+  display: flex;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------- Comparativas ---------- */
+
+.profile-comparisons {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.profile-comparisons__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.profile-comparisons thead th {
+  padding: 11px 8px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.profile-comparisons td,
+.profile-comparisons tbody th {
+  padding: 12px 8px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
+.profile-comparisons tbody th {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.profile-comparisons th:first-child,
+.profile-comparisons td:first-child {
+  padding-left: 20px;
+}
+
+.profile-comparisons th:last-child,
+.profile-comparisons td:last-child {
+  padding-right: 20px;
+}
+
+.profile-comparisons tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.profile-comparisons .profile-comparisons__players-col {
+  width: 150px;
+}
+
+.profile-comparisons .profile-comparisons__date {
+  width: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.profile-comparisons .profile-comparisons__actions {
+  width: 150px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Avatares montados uno sobre otro */
+.profile-comparison__players {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.profile-comparison__players .avatar + .avatar {
+  margin-left: -8px;
+}
+
+.profile__action {
+  margin-left: 14px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--accent-gold);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.profile__action:hover {
+  text-decoration: underline;
+}
+
+.profile__action--danger {
+  color: var(--status-loss);
+}
+
+/* ---------- Notificaciones ---------- */
+
+.profile-notifications {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  list-style: none;
+  overflow: hidden;
+}
+
+.profile-notifications__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.profile-notifications__item + .profile-notifications__item {
+  border-top: 1px solid var(--border);
+}
+
+.profile-notifications__item--unread {
+  background: color-mix(in srgb, var(--accent-gold-soft) 60%, transparent);
+}
+
+/* Icono del tipo de aviso pintado con el color del tono (la forma la da el SVG) */
+.profile-notifications__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.profile-notifications__icon > span {
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+.profile-notifications__icon--gold { color: var(--accent-gold); }
+.profile-notifications__icon--win { color: var(--status-win); }
+.profile-notifications__icon--loss { color: var(--status-loss); }
+
+.profile-notifications__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-notifications__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-notifications__detail {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.profile-notifications__time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.profile-notifications__dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--status-live);
+}
+
+/* ---------- Equipo ideal ---------- */
+
+.profile-ideal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+/* Campo verde con las líneas del Figma y los jugadores encima */
+.profile-ideal__pitch {
+  position: relative;
+  aspect-ratio: 406 / 300;
+  border-radius: 10px;
+  background-color: var(--brand-green-900);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.profile-ideal__dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  transform: translate(-50%, -50%);
+}
+
+.profile-ideal__dot--empty {
+  border: 1.5px dashed var(--accent-gold);
+  background: none;
+}
+
+.profile-ideal__summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-ideal__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-ideal__name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.profile-ideal__meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.profile-ideal .profile__outline-button {
+  width: 100%;
+}
+
+/* ---------- Pantallas medianas ---------- */
+
+@media (max-width: 1199px) {
+  .profile__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Móvil (Figma › 12 · Mi perfil · Móvil) ---------- */
+
+@media (max-width: 799px) {
+  .profile {
+    gap: 28px;
+  }
+
+  .profile .profile__desktop,
+  .profile .profile__desktop-flex,
+  .profile .profile__desktop-block {
+    display: none;
+  }
+
+  .profile .profile__mobile {
+    display: inline;
+  }
+
+  .profile .profile__mobile-flex {
+    display: flex;
+  }
+
+  .profile-hero {
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .profile-hero__text {
+    align-items: center;
+  }
+
+  .profile-hero__name {
+    font-size: 34px;
+  }
+
+  .profile-hero__meta {
+    font-size: 13px;
+  }
+
+  .profile-hero__counts {
+    gap: 18px;
+  }
+
+  .profile-hero__counts dd {
+    font-size: 28px;
+  }
+
+  .profile-hero__actions {
+    flex-direction: row;
+    align-self: stretch;
+  }
+
+  .profile-hero__actions > * {
+    flex: 1;
+    padding: 11px 10px;
+  }
+
+  .profile__section-title {
+    font-size: 24px;
+  }
+
+  .profile__more {
+    font-size: 13px;
+  }
+
+  .profile__cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .profile__section--narrow {
+    max-width: none;
+  }
+}

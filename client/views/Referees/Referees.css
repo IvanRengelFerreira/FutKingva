@@ -1,0 +1,314 @@
+/*
+ * 06 · Árbitros (y tarjetas dibujadas de 06 y 07)
+ * Figma › Mockups › 06 · Árbitros (escritorio y móvil)
+ */
+
+.referees {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Cosas que solo salen en escritorio o solo en móvil */
+.referees .referees__mobile-flex {
+  display: none;
+}
+
+.referees__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Filtros ---------- */
+
+.referees__filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.referees__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.referees__filter {
+  width: 200px;
+}
+
+.referees__filter--sort {
+  width: 250px;
+}
+
+.referees__submit {
+  height: 41px;
+  padding: 0 24px;
+}
+
+.referees__empty {
+  margin: 0;
+  padding: 40px 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* ---------- Tabla ---------- */
+
+.referees__table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.referees__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.referees__table thead th {
+  padding: 11px 8px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.referees__table td,
+.referees__table tbody th {
+  padding: 11px 8px;
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+.referees__table th:first-child,
+.referees__table td:first-child {
+  padding-left: 20px;
+}
+
+.referees__table th:last-child,
+.referees__table td:last-child {
+  padding-right: 20px;
+}
+
+.referees__table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.referees__name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.referees__fifa {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--status-info) 14%, transparent);
+  color: var(--status-info);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.referees__table .referees__committee {
+  width: 170px;
+  white-space: nowrap;
+}
+
+.referees__table .referees__num {
+  width: 80px;
+  text-align: right;
+}
+
+.referees__table .referees__num--sm {
+  width: 70px;
+}
+
+.referees__table .referees__cards {
+  width: 220px;
+  padding-left: 24px;
+}
+
+.referees__cards-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.referees__table .referees__big {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.referees__table .referees__big--red {
+  color: var(--status-loss);
+}
+
+.referees__table .referees__big--muted {
+  color: var(--text-tertiary);
+}
+
+/* Barra de tarjetas por partido */
+.referees__bar {
+  position: relative;
+  width: 120px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-elevated);
+  overflow: hidden;
+}
+
+.referees__bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--card-yellow) 85%, transparent);
+}
+
+.referees__table .referees__link {
+  width: 90px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.referees__link a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-decoration: none;
+}
+
+.referees__link a:hover {
+  text-decoration: underline;
+}
+
+.referees__link a:focus-visible,
+.referees__item:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* ---------- Lista de móvil ---------- */
+
+.referees__list {
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.referees__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.referees__item:hover {
+  background: var(--bg-hover);
+}
+
+.referees__item-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.referees__item-name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.referees__item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.referees__more {
+  width: 100%;
+}
+
+/* ---------- Pantallas medianas ---------- */
+
+@media (max-width: 1199px) {
+  .referees__filters {
+    flex-wrap: wrap;
+  }
+
+  .referees__search {
+    flex-basis: 100%;
+  }
+
+  .referees__table .referees__committee {
+    display: none;
+  }
+}
+
+/* ---------- Móvil (Figma › 06 · Árbitros · Móvil) ---------- */
+
+@media (max-width: 799px) {
+  .referees {
+    gap: 28px;
+  }
+
+  .referees .referees__desktop,
+  .referees .referees__desktop-block,
+  .referees .referees__desktop-flex,
+  .referees .referees__filter--sort,
+  .referees .referees__submit {
+    display: none;
+  }
+
+  .referees .referees__mobile-flex {
+    display: flex;
+  }
+
+  .referees__filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .referees__search {
+    grid-column: 1 / -1;
+  }
+
+  .referees__filter {
+    width: auto;
+  }
+}

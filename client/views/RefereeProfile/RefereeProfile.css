@@ -1,0 +1,382 @@
+/*
+ * 07 · Ficha de árbitro
+ * Figma › Mockups › 07 · Ficha de árbitro (escritorio y móvil)
+ */
+
+.referee-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Cosas que solo salen en escritorio o solo en móvil */
+.referee-profile .referee-profile__mobile,
+.referee-profile .referee-profile__mobile-flex,
+.referee-profile .referee-profile__mobile-block {
+  display: none;
+}
+
+.referee-profile__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Cabecera ---------- */
+
+.referee-hero {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 36px 40px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(174deg, var(--accent-gold-soft) 0%, var(--bg-surface) 71%);
+}
+
+/* Avatar grande con borde amarillo (color de tarjeta) */
+.referee-profile .referee-hero__avatar {
+  border: 3px solid var(--card-yellow);
+}
+
+.referee-hero__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.referee-hero__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.referee-hero__name {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.referee-hero__meta {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+/* Recuadro «5,8 tarjetas / partido» */
+.referee-hero__highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-base) 50%, transparent);
+  text-align: center;
+}
+
+.referee-hero__value {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent-amber);
+}
+
+.referee-hero__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.referee-hero__comparison {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-amber);
+}
+
+/* ---------- Indicadores ---------- */
+
+.referee-profile__stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ---------- Gráfico y tabla ---------- */
+
+.referee-profile__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 768fr) minmax(0, 560fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.referee-profile__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.referee-profile__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.referee-profile__section-title {
+  margin: 0;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: normal;
+}
+
+.referee-profile__season {
+  width: 200px;
+}
+
+.referee-profile__chart {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 21px 25px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+/* Leyenda: amarillas, rojas y media de la liga */
+.referee-profile__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.referee-profile__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.referee-profile__legend-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.referee-profile__legend-item--yellow::before {
+  background: var(--card-yellow);
+}
+
+.referee-profile__legend-item--red::before {
+  background: var(--status-loss);
+}
+
+.referee-profile__legend-item--average::before {
+  width: 14px;
+  height: 0;
+  border-top: 1.5px dashed var(--text-secondary);
+  border-radius: 0;
+}
+
+.referee-profile__empty {
+  margin: 0;
+  padding: 32px 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Tabla de últimos partidos */
+.referee-matches {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.referee-matches__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.referee-matches thead th {
+  padding: 11px 6px;
+  background: var(--bg-elevated);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.referee-matches td,
+.referee-matches tbody th {
+  padding: 12px 6px;
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+  text-align: left;
+}
+
+.referee-matches th:first-child,
+.referee-matches td:first-child {
+  padding-left: 16px;
+}
+
+.referee-matches th:last-child,
+.referee-matches td:last-child {
+  padding-right: 16px;
+}
+
+.referee-matches .referee-matches__date {
+  width: 58px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.referee-matches__match {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.referee-matches .referee-matches__cards {
+  width: 96px;
+}
+
+.referee-matches__cards-cell {
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- Pantallas medianas ---------- */
+
+@media (max-width: 1199px) {
+  .referee-profile__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .referee-profile__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .referee-hero {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- Móvil (Figma › 07 · Ficha de árbitro · Móvil) ---------- */
+
+@media (max-width: 799px) {
+  .referee-profile {
+    gap: 28px;
+  }
+
+  .referee-profile .referee-profile__desktop,
+  .referee-profile .referee-profile__desktop-flex,
+  .referee-profile .referee-profile__desktop-block,
+  .referee-profile .referee-hero__highlight {
+    display: none;
+  }
+
+  .referee-profile .referee-profile__mobile {
+    display: inline;
+  }
+
+  .referee-profile .referee-profile__mobile-flex {
+    display: flex;
+  }
+
+  .referee-profile .referee-profile__mobile-block {
+    display: block;
+  }
+
+  .referee-hero {
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .referee-hero__text {
+    align-items: center;
+    gap: 6px;
+  }
+
+  .referee-hero__name {
+    font-size: 40px;
+  }
+
+  .referee-hero__meta {
+    font-size: 13px;
+  }
+
+  .referee-profile__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .referee-profile__section-title {
+    font-size: 24px;
+  }
+
+  .referee-profile__chart {
+    padding: 16px 14px;
+  }
+
+  .referee-matches thead th:first-child,
+  .referee-matches td:first-child {
+    padding-left: 12px;
+  }
+
+  .referee-matches td,
+  .referee-matches tbody th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .referee-matches .referee-matches__date {
+    width: 46px;
+    font-size: 12px;
+  }
+
+  .referee-matches .referee-matches__cards {
+    width: 70px;
+  }
+
+  .referee-matches__cards-cell {
+    gap: 8px;
+  }
+}

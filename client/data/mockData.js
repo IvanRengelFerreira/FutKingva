@@ -253,9 +253,14 @@ export const IDEAL_TEAM_EXAMPLE = {
 // cardsPerMatch: tarjetas por partido (media de LaLiga: LEAGUE_CARDS_PER_MATCH)
 export const LEAGUE_CARDS_PER_MATCH = 4.9;
 
+// fullName, comité territorial, FIFA, partidos, rojas y penaltis: los del mockup 06 (los árbitros y sus comités son
+// reales; las cifras, ESTIMADAS). yellowCards: amarillas (estimadas, cuadran más o menos con partidos × tarjetas por partido − rojas).
+// age y since (año de debut en Primera): aproximados (06/07).
+// shortName: como sale en el móvil y en las migas («Gil Manzano»)
 export const REFEREES = [
   {
-    id: 'gil-manzano', name: 'Jesús Gil Manzano', cardsPerMatch: 5.8,
+    id: 'gil-manzano', name: 'Jesús Gil Manzano', shortName: 'Gil Manzano', committee: 'Extremadura', committeeAdjective: 'extremeño',
+    fifa: true, age: 43, since: 2012, cardsPerMatch: 5.8,
     matches: 5, yellowCards: 27, redCards: 2, penalties: 3,
     // Partidos dirigidos (partidos y resultados reales; que los pitara él y sus tarjetas, estimado)
     cardsByMatch: [
@@ -266,15 +271,15 @@ export const REFEREES = [
       { round: 1, date: '15/08', homeId: 'alaves', awayId: 'getafe', score: [3, 0], yellow: 6, red: 0 },
     ],
   },
-  { id: 'soto-grado', name: 'Soto Grado', cardsPerMatch: 5.6 },
-  { id: 'diaz-de-mera', name: 'Díaz de Mera', cardsPerMatch: 5.5 },
-  { id: 'cuadra', name: 'Cuadra', cardsPerMatch: 5.3 },
-  { id: 'hernandez', name: 'Hernández', cardsPerMatch: 5.0 },
-  { id: 'munuera', name: 'Munuera', cardsPerMatch: 4.8 },
-  { id: 'martinez-munuera', name: 'Martínez Munuera', cardsPerMatch: 4.6 },
-  { id: 'alberola', name: 'Alberola', cardsPerMatch: 4.4 },
-  { id: 'sanchez-martinez', name: 'Sánchez Martínez', cardsPerMatch: 4.2 },
-  { id: 'ortiz-arias', name: 'Ortiz Arias', cardsPerMatch: 4.0 },
+  { id: 'soto-grado', name: 'César Soto Grado', shortName: 'Soto Grado', committee: 'La Rioja', committeeAdjective: 'riojano', fifa: true, age: 46, since: 2012, cardsPerMatch: 5.6, matches: 4, yellowCards: 20, redCards: 2, penalties: 1 },
+  { id: 'diaz-de-mera', name: 'Isidro Díaz de Mera', shortName: 'Díaz de Mera', committee: 'Castilla-La Mancha', committeeAdjective: 'castellanomanchego', fifa: false, age: 39, since: 2019, cardsPerMatch: 5.5, matches: 4, yellowCards: 21, redCards: 1, penalties: 2 },
+  { id: 'cuadra', name: 'Guillermo Cuadra Fernández', shortName: 'Cuadra Fernández', committee: 'Baleares', committeeAdjective: 'balear', fifa: false, age: 40, since: 2016, cardsPerMatch: 5.3, matches: 4, yellowCards: 20, redCards: 1, penalties: 0 },
+  { id: 'hernandez', name: 'Alejandro Hernández Hernández', shortName: 'Hernández Hernández', committee: 'Canarias', committeeAdjective: 'canario', fifa: true, age: 44, since: 2012, cardsPerMatch: 5.0, matches: 4, yellowCards: 20, redCards: 0, penalties: 2 },
+  { id: 'munuera', name: 'José Luis Munuera Montero', shortName: 'Munuera Montero', committee: 'Andalucía', committeeAdjective: 'andaluz', fifa: true, age: 43, since: 2013, cardsPerMatch: 4.8, matches: 5, yellowCards: 23, redCards: 1, penalties: 2 },
+  { id: 'martinez-munuera', name: 'Juan Martínez Munuera', shortName: 'Martínez Munuera', committee: 'C. Valenciana', committeeAdjective: 'valenciano', fifa: true, age: 44, since: 2010, cardsPerMatch: 4.6, matches: 5, yellowCards: 23, redCards: 0, penalties: 3 },
+  { id: 'alberola', name: 'Javier Alberola Rojas', shortName: 'Alberola Rojas', committee: 'Castilla-La Mancha', committeeAdjective: 'castellanomanchego', fifa: false, age: 36, since: 2018, cardsPerMatch: 4.4, matches: 5, yellowCards: 22, redCards: 0, penalties: 1 },
+  { id: 'sanchez-martinez', name: 'José María Sánchez Martínez', shortName: 'Sánchez Martínez', committee: 'Murcia', committeeAdjective: 'murciano', fifa: true, age: 43, since: 2013, cardsPerMatch: 4.2, matches: 5, yellowCards: 20, redCards: 1, penalties: 1 },
+  { id: 'ortiz-arias', name: 'Miguel Ángel Ortiz Arias', shortName: 'Ortiz Arias', committee: 'Madrid', committeeAdjective: 'madrileño', fifa: false, age: 40, since: 2019, cardsPerMatch: 4.0, matches: 4, yellowCards: 16, redCards: 0, penalties: 1 },
 ];
 
 /* ---------------------------------------------------------------- */
@@ -419,4 +424,66 @@ export const PLAYER_AGES_ESTIMATED = {
   courtois: 34, 'alexander-arnold': 28, militao: 28, huijsen: 21, valverde: 28, vinicius: 26, 'raul-asencio': 23,
   aramburu: 24, laporte: 32, balde: 22, baena: 25, raphinha: 29, 'gerard-martin': 24, 'nico-williams': 24,
   kubo: 25, 'giuliano-simeone': 23,
+};
+
+/* ---------------------------------------------------------------- */
+/* --- Página 03 · Ficha de equipo ---                               */
+/* ---------------------------------------------------------------- */
+
+// Estadio y año de fundación de los 20 equipos de LaLiga (según Wikipedia, 2025).
+// stadium: como sale en la cabecera de la ficha («Estadio Santiago Bernabéu») · stadiumShort: versión corta del móvil
+export const TEAM_PROFILE_EXTRAS = {
+  'real-madrid': { stadium: 'Estadio Santiago Bernabéu', stadiumShort: 'Santiago Bernabéu', founded: 1902 },
+  barcelona: { stadium: 'Spotify Camp Nou', stadiumShort: 'Camp Nou', founded: 1899 },
+  'atletico-madrid': { stadium: 'Riyadh Air Metropolitano', stadiumShort: 'Metropolitano', founded: 1903 },
+  'real-betis': { stadium: 'Estadio Benito Villamarín', stadiumShort: 'Benito Villamarín', founded: 1907 },
+  sevilla: { stadium: 'Estadio Ramón Sánchez-Pizjuán', stadiumShort: 'Sánchez-Pizjuán', founded: 1890 },
+  'real-sociedad': { stadium: 'Reale Arena', stadiumShort: 'Reale Arena', founded: 1909 },
+  alaves: { stadium: 'Estadio de Mendizorroza', stadiumShort: 'Mendizorroza', founded: 1921 },
+  deportivo: { stadium: 'Estadio Abanca Riazor', stadiumShort: 'Riazor', founded: 1906 },
+  celta: { stadium: 'Estadio Abanca Balaídos', stadiumShort: 'Balaídos', founded: 1923 },
+  'athletic-club': { stadium: 'San Mamés', stadiumShort: 'San Mamés', founded: 1898 },
+  villarreal: { stadium: 'Estadio de la Cerámica', stadiumShort: 'La Cerámica', founded: 1923 },
+  espanyol: { stadium: 'RCDE Stadium', stadiumShort: 'RCDE Stadium', founded: 1900 },
+  'rayo-vallecano': { stadium: 'Estadio de Vallecas', stadiumShort: 'Vallecas', founded: 1924 },
+  getafe: { stadium: 'Coliseum', stadiumShort: 'Coliseum', founded: 1983 },
+  racing: { stadium: 'Campos de Sport de El Sardinero', stadiumShort: 'El Sardinero', founded: 1913 },
+  osasuna: { stadium: 'Estadio El Sadar', stadiumShort: 'El Sadar', founded: 1920 },
+  levante: { stadium: 'Estadio Ciutat de València', stadiumShort: 'Ciutat de València', founded: 1909 },
+  elche: { stadium: 'Estadio Martínez Valero', stadiumShort: 'Martínez Valero', founded: 1923 },
+  valencia: { stadium: 'Estadio de Mestalla', stadiumShort: 'Mestalla', founded: 1919 },
+  malaga: { stadium: 'Estadio La Rosaleda', stadiumShort: 'La Rosaleda', founded: 1904 },
+};
+
+// Últimos resultados de un equipo en su ficha, del más reciente al más antiguo.
+// Solo está el Real Madrid (los del mockup 03, ESTIMADOS); cuadran con su forma (DVVDV) y con el
+// Atlético 2-1 Real Madrid de la J7. Los demás equipos sacan sus partidos de LATEST_RESULTS.
+// venue: 'C' en casa · 'F' fuera · score: [goles del equipo, goles del rival]
+export const TEAM_RECENT_RESULTS = {
+  'real-madrid': [
+    { date: '10/10', opponentId: 'villarreal', venue: 'C', score: [1, 0] },
+    { date: '20/09', opponentId: 'atletico-madrid', venue: 'F', score: [1, 2] },
+    { date: '15/09', opponentId: 'elche', venue: 'F', score: [3, 2] },
+    { date: '12/09', opponentId: 'rayo-vallecano', venue: 'C', score: [4, 1] },
+    { date: '04/09', opponentId: 'real-betis', venue: 'F', score: [0, 1] },
+  ],
+};
+
+/* ---------------------------------------------------------------- */
+/* --- Página 12 · Mi perfil ---                                     */
+/* ---------------------------------------------------------------- */
+
+// Datos del usuario de ejemplo (rol «user» de la sesión simulada). Favoritos y comparativas: ids de TEAMS y PLAYERS.
+// Las comparativas guardadas abren el Comparador (10). memberSince: mes y año de alta.
+export const PROFILE_EXAMPLE = {
+  email: 'usuario@ejemplo.com',
+  memberSince: '09/2026',
+  favoriteTeams: ['barcelona', 'villarreal', 'athletic-club', 'real-betis'],
+  favoritePlayers: ['pedri', 'lamine-yamal', 'mbappe', 'nico-williams'],
+  savedComparisons: [
+    { id: 1, name: 'Medios de Barça y Madrid', playerIds: ['pedri', 'bellingham', 'lamine-yamal'], date: '16/10/2026' },
+    { id: 2, name: 'Extremos jóvenes', playerIds: ['lamine-yamal', 'nico-williams'], date: '12/10/2026' },
+    { id: 3, name: 'Delanteros del Madrid', playerIds: ['mbappe', 'vinicius'], date: '10/10/2026' },
+    { id: 4, name: 'Centrales', playerIds: ['militao', 'huijsen', 'laporte'], date: '02/10/2026' },
+  ],
 };

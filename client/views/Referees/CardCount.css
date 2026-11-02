@@ -1,0 +1,30 @@
+/*
+ * Tarjeta amarilla o roja dibujada con su número (06 · Árbitros y 07 · Ficha de árbitro)
+ * Figma › Mockups › 07 · Ficha de árbitro › columna «Tarjetas»
+ */
+
+.card-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.card-count__card {
+  width: 9px;
+  height: 13px;
+  border-radius: 2px;
+  transform: rotate(8deg);
+}
+
+.card-count__card--yellow {
+  background: var(--card-yellow);
+}
+
+.card-count__card--red {
+  background: var(--status-loss);
+}

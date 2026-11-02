@@ -8,12 +8,14 @@ import './Avatar.css';
 //   <Avatar name={player.name} />               → «Kylian Mbappé» → KM (32 px)
 //   <Avatar name="Pedri" size={44} />            → un solo nombre → PE
 //   <Avatar initials={user.initials} name={user.name} size={36} />   → iniciales que ya vienen en los datos
+//   <Avatar name={player.name} color={team.color} size={34} />  → borde del color del club (13 · Resultados de búsqueda)
 // Va al lado del nombre, así que los lectores de pantalla lo saltan.
-export default function Avatar({ name = '', initials, size = 32, className = '' }) {
+export default function Avatar({ name = '', initials, size = 32, color, className = '' }) {
   const style = {
     '--avatar-size': `${size}px`,
     '--avatar-font-size': `${Math.round(size * 0.41)}px`,
   };
+  if (color) style['--avatar-border'] = color; // Color del club (viene de los datos, no de colors.css)
 
   return (
     <span className={`avatar ${className}`.trim()} style={style} title={name || undefined} aria-hidden="true">
