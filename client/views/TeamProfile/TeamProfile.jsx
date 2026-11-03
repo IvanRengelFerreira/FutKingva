@@ -71,11 +71,13 @@ function TeamPage({ teamId }) {
           <div className="team-profile__columns">
             <section className="team-profile__section" aria-labelledby="team-squad-title">
               <SectionHeader id="team-squad-title" title="Plantilla">
-                <button type="button" className="team-profile__more" onClick={() => setTab('squad')}>
-                  <span className="team-profile__desktop">Ver los {squad.length}</span>
-                  <span className="team-profile__mobile">Ver todos</span>
-                  <span aria-hidden="true"> →</span>
-                </button>
+                {squad.length > 0 && (
+                  <button type="button" className="team-profile__more" onClick={() => setTab('squad')}>
+                    <span className="team-profile__desktop">{squad.length > 1 ? `Ver los ${squad.length}` : 'Ver plantilla'}</span>
+                    <span className="team-profile__mobile">{squad.length > 1 ? 'Ver todos' : 'Ver'}</span>
+                    <span aria-hidden="true"> →</span>
+                  </button>
+                )}
               </SectionHeader>
               {squad.length > 0 ? (
                 <>

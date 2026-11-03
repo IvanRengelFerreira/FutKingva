@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useState } from 'react';
+import { Link } from 'react-router';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
-import { useSession } from '../../context/SessionContext.jsx';
-import { PROFILE_EXAMPLE, IDEAL_TEAM_EXAMPLE } from '../../data/mockData.js';
+import { useLogout, useSession } from '../../context/SessionContext.jsx';
+import { useUserData } from '../../context/UserDataContext.jsx';
+import { PROFILE_EXAMPLE } from '../../data/mockData.js';
 import {
   SectionHeader,
   FavoriteTeams,
@@ -17,19 +18,20 @@ import logoutIcon from '../../assets/icon-logout-light.svg';
 import './Profile.css';
 
 // 12 · Mi perfil (RF3): datos del usuario, favoritos, comparativas guardadas, equipo ideal y notificaciones.
-// Solo con sesión (RequireRole en App.jsx). El nombre y las iniciales salen de la sesión simulada;
-// el correo, los favoritos y las comparativas, de PROFILE_EXAMPLE (mockData.js).
-// Quitar favoritos y eliminar comparativas solo dura hasta recargar (no hay servidor).
+// Solo con sesión (RequireRole en App.jsx). El nombre, las iniciales y el correo salen de la sesión simulada;
+// los favoritos, las comparativas y el equipo ideal, de lo que el usuario ha guardado (useUserData,
+// que empieza con los datos de ejemplo de mockData.js y se guarda en el navegador).
 // Pestaña Favoritos: el resumen del mockup (todo); las demás enseñan solo su bloque.
 // Diseño: Figma › Mockups › 12 · Mi perfil
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=56-781
 export default function Profile() {
-  const { user, logout, notifications, unreadCount, markAllRead } = useSession();
-  const navigate = useNavigate();
+  const { user, notifications, unreadCount, markAllRead } = useSession();
+  const handleLogout = useLogout();
   const [tab, setTab] = useState('favorites');
-  const [favoriteTeams, setFavoriteTeams] = useState(PROFILE_EXAMPLE.favoriteTeams);
-  const [favoritePlayers, setFavoritePlayers] = useState(PROFILE_EXAMPLE.favoritePlayers);
-  const [comparisons, setComparisons] = useState(PROFILE_EXAMPLE.savedComparisons);
+  const {
+    favoriteTeams, favoritePlayers, savedComparisons: comparisons, idealTeam,
+    toggleFavoriteTeam, toggleFavoritePlayer, removeComparison,
+  } = useUserData();
   const [editNotice, setEditNotice] = useState(false);
 
   const tabs = [
@@ -47,25 +49,9 @@ export default function Profile() {
     },
   ];
 
-  // «Cerrar sesión»: primero se va a Inicio y la sesión se cierra cuando esta página ya se ha quitado.
-  // Si se cerrara antes, RequireRole vería la página privada sin sesión y mandaría a Acceso.
-  const loggingOut = useRef(false);
-  const logoutRef = useRef(logout);
-  useEffect(() => {
-    logoutRef.current = logout;
-  });
-  useEffect(() => () => {
-    if (loggingOut.current) logoutRef.current();
-  }, []);
-
-  function handleLogout() {
-    loggingOut.current = true;
-    navigate('/');
-  }
-
-  const removeTeam = (id) => setFavoriteTeams(favoriteTeams.filter((teamId) => teamId !== id));
-  const removePlayer = (id) => setFavoritePlayers(favoritePlayers.filter((playerId) => playerId !== id));
-  const removeComparison = (id) => setComparisons(comparisons.filter((comparison) => comparison.id !== id));
+  const removeTeam = toggleFavoriteTeam;
+  const removePlayer = toggleFavoritePlayer;
+  const hasIdealTeam = idealTeam.players.some((slot) => slot.playerId);
 
   return (
     <section className="page profile">
@@ -75,7 +61,7 @@ export default function Profile() {
         <div className="profile-hero__text">
           <p className="profile-hero__eyebrow">{ROLE_LABELS[user.role] ?? 'Usuario registrado'}</p>
           <h1 className="profile-hero__name">{user.name}</h1>
-          <p className="profile-hero__meta">{PROFILE_EXAMPLE.email} · Miembro desde {PROFILE_EXAMPLE.memberSince}</p>
+          <p className="profile-hero__meta">{user.email} · Miembro desde {PROFILE_EXAMPLE.memberSince}</p>
         </div>
         <dl className="profile-hero__counts">
           <div>
@@ -88,7 +74,7 @@ export default function Profile() {
           </div>
           <div>
             <dt>Equipo ideal</dt>
-            <dd>1</dd>
+            <dd>{hasIdealTeam ? 1 : 0}</dd>
           </div>
         </dl>
         <div className="profile-hero__actions">
@@ -147,7 +133,7 @@ export default function Profile() {
 
             <section className="profile__section" aria-labelledby="profile-ideal-title">
               <SectionHeader id="profile-ideal-title" title="Mi equipo ideal" />
-              <IdealTeamCard team={IDEAL_TEAM_EXAMPLE} />
+              <IdealTeamCard team={idealTeam} />
             </section>
           </div>
         </>
@@ -165,7 +151,7 @@ export default function Profile() {
       {tab === 'ideal' && (
         <section className="profile__section profile__section--narrow" aria-labelledby="profile-ideal-tab-title">
           <SectionHeader id="profile-ideal-tab-title" title="Mi equipo ideal" />
-          <IdealTeamCard team={IDEAL_TEAM_EXAMPLE} />
+          <IdealTeamCard team={idealTeam} />
         </section>
       )}
 

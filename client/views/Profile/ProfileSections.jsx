@@ -2,6 +2,8 @@ import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Rating from '../../components/Rating/Rating.jsx';
+import { FORMATIONS } from '../../components/Pitch/Pitch.jsx';
+import { summarize, toAssigned } from '../IdealTeam/team.js';
 import { getTeam, getPlayer, STANDINGS_LALIGA } from '../../data/mockData.js';
 import starFilledIcon from '../../assets/icon-star-filled.svg';
 import editIcon from '../../assets/icon-edit-gold.svg';
@@ -21,14 +23,6 @@ const NOTIFICATION_TYPES = {
   goal: { icon: ballIcon, tone: 'gold' },
   standings: { icon: trendIcon, tone: 'win' },
   rival: { icon: trendIcon, tone: 'loss' },
-};
-
-// Sitio de cada puesto del 4-3-3 en la miniatura del campo (en %; el ataque, arriba)
-const PITCH_SPOTS = {
-  DC: [50, 15], EI: [20, 20], ED: [80, 20],
-  MC1: [28, 45], MC2: [50, 50], MC3: [72, 45],
-  LI: [14, 70], DFC2: [38, 72], DFC1: [62, 72], LD: [86, 70],
-  POR: [50, 88],
 };
 
 // Título de cada bloque, con un enlace o botón opcional a la derecha
@@ -145,7 +139,7 @@ export function SavedComparisons({ comparisons, onRemove, limit }) {
                 </td>
                 <td className="profile-comparisons__date">{comparison.date}</td>
                 <td className="profile-comparisons__actions">
-                  <Link className="profile__action" to="/comparador">Abrir</Link>
+                  <OpenComparison comparison={comparison} />
                   <button type="button" className="profile__action profile__action--danger" onClick={() => onRemove(comparison.id)}>
                     Eliminar
                   </button>
@@ -164,11 +158,30 @@ export function SavedComparisons({ comparisons, onRemove, limit }) {
               <span className="profile-card__name">{comparison.name}</span>
               <span className="profile-card__meta">{comparison.date}</span>
             </span>
-            <Link className="profile__action" to="/comparador">Abrir</Link>
+            <span className="profile-card__buttons">
+              <OpenComparison comparison={comparison} />
+              <button type="button" className="profile__action profile__action--danger" onClick={() => onRemove(comparison.id)}>
+                Eliminar
+              </button>
+            </span>
           </li>
         ))}
       </ul>
     </>
+  );
+}
+
+// «Abrir»: lleva al Comparador con los jugadores de la comparativa
+function OpenComparison({ comparison }) {
+  return (
+    <Link
+      className="profile__action"
+      to="/comparador"
+      state={{ playerIds: comparison.playerIds, saved: true }}
+      aria-label={`Abrir la comparativa ${comparison.name}`}
+    >
+      Abrir
+    </Link>
   );
 }
 
@@ -213,11 +226,13 @@ export function NotificationList({ notifications, limit }) {
 // Miniatura del equipo ideal: campo con un punto oro por jugador (discontinuo si el puesto está vacío)
 export function IdealTeamCard({ team }) {
   const filled = team.players.filter((slot) => slot.playerId).length;
+  const totals = summarize(toAssigned(team.players));
+  const spots = FORMATIONS[team.formation] ?? FORMATIONS['4-3-3'];
   return (
     <div className="profile-ideal">
       <div className="profile-ideal__pitch" style={{ backgroundImage: `url("${pitchLines}")` }}>
         {team.players.map((slot) => {
-          const [x, y] = PITCH_SPOTS[slot.slot] ?? [50, 50];
+          const [x, y] = spots[slot.slot] ?? [50, 50];
           const player = slot.playerId ? getPlayer(slot.playerId) : null;
           return (
             <span
@@ -235,10 +250,10 @@ export function IdealTeamCard({ team }) {
             {team.name}<span className="profile__mobile"> · {team.formation}</span>
           </span>
           <span className="profile-ideal__meta profile__desktop">
-            {team.formation} · {filled}/{team.players.length} jugadores · {team.totals.goals} goles
+            {team.formation} · {filled}/{team.players.length} jugadores · {totals.goals ?? 0} goles
           </span>
         </span>
-        <Rating value={team.totals.averageRating} size="md" className="profile__desktop-flex" />
+        {totals.averageRating != null && <Rating value={totals.averageRating} size="md" className="profile__desktop-flex" />}
       </div>
       <Link className="profile__outline-button" to="/equipo-ideal">
         <img src={editIcon} alt="" width="16" height="16" />

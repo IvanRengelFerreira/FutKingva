@@ -181,6 +181,7 @@ function Block({ block }) {
 
     case 'chart': {
       const player = getPlayer(block.playerId);
+      if (!player?.passAccuracyByRound) return null; // Sin datos del jugador, no hay gráfico
       const data = player.passAccuracyByRound.map((value, i) => ({
         label: `J${i + 1}`,
         value,

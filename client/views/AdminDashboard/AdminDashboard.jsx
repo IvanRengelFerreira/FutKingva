@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [filters, setFilters] = useState(NO_FILTERS);
   const [page, setPage] = useState(1);
   const [message, setMessage] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(null); // Usuario que espera confirmación para eliminarse
 
   const stats = {
     users: ADMIN_STATS.users - (USERS.length - users.length),
@@ -46,8 +47,17 @@ export default function AdminDashboard() {
     );
   }
 
+  // «Eliminar» pide confirmación en la propia fila; al confirmar se avisa de a quién se ha eliminado
   function deleteUser(id) {
+    if (confirmDelete !== id) {
+      setConfirmDelete(id);
+      setMessage('');
+      return;
+    }
+    const user = users.find((u) => u.id === id);
     setUsers((list) => list.filter((u) => u.id !== id || u.isCurrentUser));
+    setConfirmDelete(null);
+    if (user && !user.isCurrentUser) setMessage(`Usuario eliminado: ${user.name} (${user.email}).`);
   }
 
   function resolveReport(id, action) {
@@ -64,6 +74,7 @@ export default function AdminDashboard() {
   function changeTab(id) {
     setTab(id);
     setMessage('');
+    setConfirmDelete(null);
   }
 
   const tabs = [
@@ -111,6 +122,9 @@ export default function AdminDashboard() {
           onChangeRole={changeRole}
           onToggleBlock={toggleBlock}
           onDelete={deleteUser}
+          confirmDelete={confirmDelete}
+          onCancelDelete={() => setConfirmDelete(null)}
+          message={message}
         />
       ) : (
         <ReportsPanel reports={reports} message={message} onResolve={resolveReport} />

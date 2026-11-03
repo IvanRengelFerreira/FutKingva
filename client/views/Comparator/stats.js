@@ -49,7 +49,9 @@ export function formatStat(value, stat, mode) {
 }
 
 // Índices de los jugadores con el mejor valor (pueden empatar). Sin corona si todos empatan.
-export function bestIndexes(values, best) {
+// Se comparan las cifras tal como se ven (redondeadas a 2 decimales): 0,033 y 0,025 salen las dos «0,03» y empatan.
+export function bestIndexes(rawValues, best) {
+  const values = rawValues.map((value) => (value == null ? null : Math.round(value * 100) / 100));
   const known = values.filter((value) => value != null);
   if (!best || known.length < 2) return [];
   const target = best === 'max' ? Math.max(...known) : Math.min(...known);

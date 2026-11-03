@@ -24,7 +24,7 @@ const FIGURES = [
 const FEATURES = [
   {
     title: 'Estadísticas al día',
-    text: 'Equipos, jugadores, clasificaciones y árbitros de cinco ligas, actualizados de forma automática.',
+    text: 'Equipos, jugadores, clasificaciones y árbitros de las cinco grandes ligas, actualizados de forma automática. En esta primera versión, con los datos de LaLiga.',
     icon: chartIcon,
     tone: 'gold',
     to: '/clasificaciones',

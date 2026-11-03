@@ -43,7 +43,8 @@ export function UpcomingMatches({ matches }) {
 
 export function RecentResults({ results }) {
   if (results.length === 0) {
-    return <p className="team-profile__empty">Todavía no hay resultados.</p>;
+    // Solo hay marcadores de algunos partidos (mockData.js): la forma de arriba resume sus últimos resultados
+    return <p className="team-profile__empty">Todavía no tenemos el detalle de sus partidos. Su racha está en «Forma», arriba.</p>;
   }
 
   return (

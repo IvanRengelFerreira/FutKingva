@@ -42,12 +42,33 @@ export function filterUsers(users, { query, role, status }) {
 }
 
 // Acciones de una fila: la cuenta propia no se puede bloquear ni eliminar («—»)
-function UserActions({ user, onToggleBlock, onDelete, compact }) {
+function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete, compact }) {
   if (user.isCurrentUser) {
     return compact ? null : <span className="admin-users__none" aria-label="Sin acciones para tu propia cuenta">—</span>;
   }
   const blocked = user.status === 'blocked';
   const blockLabel = blocked ? 'Desbloquear' : 'Bloquear';
+
+  if (confirming) {
+    return (
+      <div className="admin-actions">
+        <button
+          type="button"
+          className="admin-action admin-action--loss"
+          onClick={() => onDelete(user.id)}
+          aria-label={`Confirmar: eliminar a ${user.name}`}
+          autoFocus
+        >
+          <AdminIcon name="trash" />
+          <span className="admin-action__text">¿Eliminar?</span>
+        </button>
+        <button type="button" className="admin-action admin-action--gold" onClick={onCancelDelete} aria-label={`No eliminar a ${user.name}`}>
+          <span className="admin-action__text">Cancelar</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-actions">
       <button
@@ -101,6 +122,7 @@ function UserName({ user }) {
 
 export default function UsersPanel({
   users, filters, onFilters, page, totalPages, onPage, onChangeRole, onToggleBlock, onDelete,
+  confirmDelete, onCancelDelete, message,
 }) {
   const filtering = isFiltering(filters);
 
@@ -135,6 +157,8 @@ export default function UsersPanel({
         />
       </div>
 
+      <p className="admin-reports__message" role="status">{message}</p>
+
       {users.length === 0 ? (
         <p className="admin-empty">
           {filtering ? 'Ningún usuario coincide con la búsqueda.' : 'Esta página no está cargada en la maqueta.'}
@@ -163,7 +187,7 @@ export default function UsersPanel({
                     <td><StatusBadge status={user.status} /></td>
                     <td className="admin-table__muted">{user.registered ?? '—'}</td>
                     <td className="admin-table__end">
-                      <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} />
+                      <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} confirming={confirmDelete === user.id} onCancelDelete={onCancelDelete} />
                     </td>
                   </tr>
                 ))}
@@ -188,7 +212,7 @@ export default function UsersPanel({
                 </div>
                 <div className="admin-card__bottom">
                   <RoleSelect user={user} onChangeRole={onChangeRole} />
-                  <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} compact />
+                  <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} confirming={confirmDelete === user.id} onCancelDelete={onCancelDelete} compact />
                 </div>
               </li>
             ))}

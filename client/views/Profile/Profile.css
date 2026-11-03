@@ -420,6 +420,17 @@ a.profile-card__text:hover .profile-card__name {
   color: var(--status-loss);
 }
 
+/* «Abrir» y «Eliminar» de las comparativas en móvil */
+.profile-card__buttons {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.profile-card__buttons .profile__action:first-child {
+  margin-left: 0;
+}
+
 /* ---------- Notificaciones ---------- */
 
 .profile-notifications {

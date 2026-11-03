@@ -37,11 +37,10 @@ export default function EditorDashboard() {
   const [page, setPage] = useState(1);
   const [message, setMessage] = useState('');
 
-  // Los indicadores bajan si se elimina un publicado o un borrador
-  const removed = ARTICLES.filter((article) => !articles.includes(article));
+  // Publicados y borradores: se cuentan en la lista de artículos (así cuadran con la tabla y bajan al eliminar)
   const stats = {
-    published: EDITOR_STATS.published - removed.filter((a) => a.status === 'published').length,
-    drafts: EDITOR_STATS.drafts - removed.filter((a) => a.status === 'draft').length,
+    published: articles.filter((a) => a.status === 'published').length,
+    drafts: articles.filter((a) => a.status === 'draft').length,
   };
 
   const search = normalize(query);
@@ -179,6 +178,13 @@ export default function EditorDashboard() {
                       className="editor-dashboard__action editor-dashboard__action--edit editor-dashboard__card-edit"
                       to={`/editor/articulo/${article.id}`}
                       aria-label={`Editar «${article.title}»`}
+                    />
+                    <button
+                      type="button"
+                      className="editor-dashboard__action editor-dashboard__action--delete"
+                      onClick={() => remove(article)}
+                      aria-label={`Eliminar «${article.title}»`}
+                      title="Eliminar"
                     />
                   </div>
                   <p className="editor-dashboard__article-title">{article.title}</p>

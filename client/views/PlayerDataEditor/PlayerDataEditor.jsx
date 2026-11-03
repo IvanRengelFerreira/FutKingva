@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
@@ -6,8 +7,8 @@ import Select from '../../components/Select/Select.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Crest from '../../components/Crest/Crest.jsx';
-import { PLAYERS, TEAMS, SEASON, getPlayer, getTeam } from '../../data/mockData.js';
-import { CHANGE_HISTORY, CURRENT_EDITOR, PEDRI_REPORT } from './changeHistory.js';
+import { PLAYERS, TEAMS, SEASON, TODAY, getPlayer, getTeam } from '../../data/mockData.js';
+import { CURRENT_EDITOR, PEDRI_REPORT } from './changeHistory.js';
 import syncIcon from '../../assets/icon-sync.svg';
 import saveIcon from '../../assets/icon-save.svg';
 import searchIcon from '../../assets/icon-search-small.svg';
@@ -15,8 +16,8 @@ import './PlayerDataEditor.css';
 
 // 19 · Actualizar datos de jugadores (RF11): corregir las estadísticas que llegan del proveedor.
 // Se abre como en Figma: Pedri con las amarillas cambiadas de 2 a 3 por el aviso que llegó desde Contacto (16).
-// «Guardar cambios» añade cada campo cambiado al historial; «Cancelar» vuelve a los datos de mockData.js.
-// Sin servidor: los cambios duran hasta que se recarga la página.
+// «Guardar cambios» añade cada campo cambiado al historial y corrige el dato en toda la web (ficha del jugador,
+// comparador…); «Cancelar» vuelve a los datos guardados. Sin servidor, se guarda en el navegador (useUserData).
 // Diseño: Figma › Mockups › 19 · Actualizar datos de jugadores
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=62-1286
 
@@ -36,9 +37,13 @@ const POSITIONS = ['Portero', 'Defensa', 'Centrocampista', 'Extremo', 'Delantero
 
 const SYNC_SECONDS = 1200;
 
+// La última sincronización, poco antes de la hora de los datos (sábado 17/10 a las 17:00); se sincroniza cada 5 min
+const SYNC_EVERY_MINUTES = 5;
+const FIRST_SYNC = minutesBefore(TODAY.time, 1);
+
 export default function PlayerDataEditor() {
-  const [saved, setSaved] = useState({}); // Datos ya corregidos en esta visita: { playerId: { campo: valor } }
-  const [history, setHistory] = useState(CHANGE_HISTORY);
+  // Datos ya corregidos ({ playerId: { campo: valor } }) e historial de cambios, guardados en el navegador
+  const { playerCorrections: saved, dataHistory: history, savePlayerCorrection } = useUserData();
   const [playerId, setPlayerId] = useState(PEDRI_REPORT.playerId);
   const [values, setValues] = useState(() => ({ ...originalValues(PEDRI_REPORT.playerId, {}), ...PEDRI_REPORT.changes }));
   const [reason, setReason] = useState(PEDRI_REPORT.reason);
@@ -49,13 +54,13 @@ export default function PlayerDataEditor() {
   const [teamId, setTeamId] = useState('all');
   const [listOpen, setListOpen] = useState(false); // Lista de jugadores para elegir (al buscar o filtrar por equipo)
 
-  const [lastSync, setLastSync] = useState('10:05');
+  const [lastSync, setLastSync] = useState(FIRST_SYNC);
   const [syncing, setSyncing] = useState(false);
 
   const player = getPlayer(playerId);
   const team = getTeam(player.teamId);
   const original = originalValues(playerId, saved);
-  const changed = [...FIELDS.map((field) => field.key), 'position'].filter((key) => values[key] !== original[key]);
+  const changed = [...FIELDS.map((field) => field.key), 'position'].filter((key) => !sameValue(values[key], original[key]));
 
   const errors = {
     ...Object.fromEntries(
@@ -70,7 +75,7 @@ export default function PlayerDataEditor() {
     if (!syncing) return undefined;
     const timer = setTimeout(() => {
       setSyncing(false);
-      setLastSync(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+      setLastSync(TODAY.time);
     }, SYNC_SECONDS);
     return () => clearTimeout(timer);
   }, [syncing]);
@@ -81,11 +86,12 @@ export default function PlayerDataEditor() {
   }
 
   function choosePlayer(id) {
+    const discarded = changed.length > 0;
     setPlayerId(id);
     setValues(originalValues(id, saved));
     setReason('');
     setSubmitted(false);
-    setMessage('');
+    setMessage(discarded ? `Se han descartado los cambios sin guardar de ${player.name}.` : '');
     setQuery('');
     setListOpen(false);
   }
@@ -115,8 +121,7 @@ export default function PlayerDataEditor() {
       to: values[key],
       by: CURRENT_EDITOR.initials,
     }));
-    setHistory((list) => [...entries, ...list]);
-    setSaved((all) => ({ ...all, [playerId]: { ...all[playerId], ...pick(values, changed) } }));
+    savePlayerCorrection(playerId, pick(values, changed), entries);
     setReason('');
     setSubmitted(false);
     setMessage(`Cambios guardados: ${entries.map((e) => `${e.field} ${e.from} → ${e.to}`).join(', ')}.`);
@@ -155,7 +160,7 @@ export default function PlayerDataEditor() {
                 <>
                   <span className="player-data__more">Última sincronización: </span>
                   <span className="player-data__capital">hoy {lastSync}</span>
-                  <span className="player-data__more"> · próxima en 4 min</span>
+                  <span className="player-data__more"> · próxima en {lastSync === TODAY.time ? SYNC_EVERY_MINUTES : SYNC_EVERY_MINUTES - 1} min</span>
                 </>
               )}
             </p>
@@ -168,7 +173,11 @@ export default function PlayerDataEditor() {
       </header>
 
       <div className="player-data__filters">
-        <div className="player-data__search">
+        <div
+          className="player-data__search"
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setListOpen(false); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') setListOpen(false); }}
+        >
           <TextField
             size="sm"
             label="Buscar jugador"
@@ -177,6 +186,7 @@ export default function PlayerDataEditor() {
             icon={searchIcon}
             value={query}
             onChange={(e) => { setQuery(e.target.value); setListOpen(true); }}
+            onFocus={() => setListOpen(true)}
             autoComplete="off"
           />
           {suggestions.length > 0 && (
@@ -326,6 +336,22 @@ function originalValues(playerId, saved) {
     values[field.key] = field.decimal ? value.toLocaleString('es-ES') : String(value);
   });
   return { ...values, ...saved[playerId] };
+}
+
+// ¿Es el mismo dato? Los números se comparan como números («0,8» = «0.8», «03» = «3»)
+function sameValue(a, b) {
+  const toNumber = (text) => Number(String(text).trim().replace(',', '.'));
+  if (String(a).trim() === String(b).trim()) return true;
+  const numberA = toNumber(a);
+  const numberB = toNumber(b);
+  return String(a).trim() !== '' && Number.isFinite(numberA) && numberA === numberB;
+}
+
+// «17:00» menos unos minutos → «16:59»
+function minutesBefore(time, minutes) {
+  const [hours, mins] = time.split(':').map(Number);
+  const total = hours * 60 + mins - minutes;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
 function isValidNumber(text, decimal) {

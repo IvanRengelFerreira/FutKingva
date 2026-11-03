@@ -3,6 +3,7 @@ import {
   UPCOMING_MATCHES,
   LATEST_RESULTS,
   TEAM_RECENT_RESULTS,
+  PLAYER_PROFILE_EXTRAS,
   TODAY,
   getPlayersByTeam,
 } from '../../data/mockData.js';
@@ -57,9 +58,10 @@ export function getUpcomingMatches(teamId) {
 }
 
 // Últimos resultados del equipo: { date, opponentId, venue: 'C' | 'F', score: [a favor, en contra], result: 'V' | 'E' | 'D' }
-// Si el equipo no tiene los suyos en TEAM_RECENT_RESULTS, se sacan de LATEST_RESULTS.
+// Si el equipo no tiene los suyos en TEAM_RECENT_RESULTS, se sacan de LATEST_RESULTS y, si ahí no hay ninguno,
+// de los últimos partidos de algún jugador suyo (p. ej. los de Pedri para el Barcelona; la fecha va como jornada).
 export function getRecentResults(teamId) {
-  const results = TEAM_RECENT_RESULTS[teamId] ?? LATEST_RESULTS
+  const fromLatest = LATEST_RESULTS
     .filter((match) => match.homeId === teamId || match.awayId === teamId)
     .map((match) => {
       const home = match.homeId === teamId;
@@ -70,8 +72,22 @@ export function getRecentResults(teamId) {
         score: home ? match.score : [match.score[1], match.score[0]],
       };
     });
+  const results = TEAM_RECENT_RESULTS[teamId] ?? (fromLatest.length > 0 ? fromLatest : resultsFromPlayers(teamId));
 
   return results.map((match) => ({ ...match, result: getResult(match.score) }));
+}
+
+// Últimos partidos del primer jugador del equipo que los tenga (score «3-0» con los goles del equipo primero)
+function resultsFromPlayers(teamId) {
+  const player = getPlayersByTeam(teamId).find((p) => p.lastMatches?.length);
+  if (!player) return [];
+  const venues = PLAYER_PROFILE_EXTRAS[player.id]?.venues ?? {};
+  return player.lastMatches.map((match) => ({
+    date: `J${match.round}`,
+    opponentId: match.opponentId,
+    venue: venues[match.round] ?? 'C',
+    score: match.score.split('-').map(Number),
+  }));
 }
 
 function getResult([goalsFor, goalsAgainst]) {

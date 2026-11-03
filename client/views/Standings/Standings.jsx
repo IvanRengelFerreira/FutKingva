@@ -88,7 +88,7 @@ export default function Standings() {
         <div className="standings__empty">
           <p className="standings__empty-title">Próximamente</p>
           <p className="standings__empty-text">
-            Todavía no tenemos la clasificación de la {current.label}. De momento, FutKingva solo sigue LaLiga.
+            Todavía no tenemos la clasificación de la {current.label}: en esta primera versión, FutKingva solo tiene los datos de LaLiga.
           </p>
           <button type="button" className="standings__empty-link" onClick={() => setLeague('laliga')}>
             Ver la clasificación de LaLiga →

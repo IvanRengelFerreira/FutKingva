@@ -73,7 +73,7 @@ export default function Radar({ axes, series, label, className = '' }) {
 
         {/* Un área por jugador, con un punto en cada eje */}
         {areas.map((points, i) => (
-          <g key={series[i].name} className={`radar__series radar__series--${i + 1}`}>
+          <g key={`${i}-${series[i].name}`} className={`radar__series radar__series--${i + 1}`}>
             <polygon className="radar__area" points={toPoints(points)} />
             {points.map(([x, y], axisIndex) => (
               <circle key={axes[axisIndex].id} className="radar__dot" cx={x} cy={y} r="3.5" />
@@ -85,7 +85,7 @@ export default function Radar({ axes, series, label, className = '' }) {
       {/* Leyenda: qué color es cada jugador */}
       <figcaption className="radar__legend">
         {series.map((player, i) => (
-          <span key={player.name} className={`radar__legend-item radar__series--${i + 1}`}>
+          <span key={`${i}-${player.name}`} className={`radar__legend-item radar__series--${i + 1}`}>
             {player.name}
           </span>
         ))}

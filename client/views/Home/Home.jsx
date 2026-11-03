@@ -92,7 +92,7 @@ export default function Home() {
             )
           }
           to="/clasificaciones"
-          linkLabel="Ver todos →"
+          linkLabel="Ver clasificación →"
         />
         {live.length > 0 ? (
           <div className="home__live-list">
@@ -108,7 +108,7 @@ export default function Home() {
       <div className="home__columns">
         <div className="home__main">
           <section aria-labelledby="home-results-title">
-            <SectionHeader id="home-results-title" title="Últimos resultados" to="/clasificaciones" linkLabel="Ver todos →" />
+            <SectionHeader id="home-results-title" title="Últimos resultados" to="/clasificaciones" linkLabel="Ver clasificación →" />
             <MatchList
               items={results}
               label="Últimos resultados"
@@ -134,7 +134,7 @@ export default function Home() {
           </section>
 
           <section aria-labelledby="home-upcoming-title">
-            <SectionHeader id="home-upcoming-title" title="Próximos partidos" to="/clasificaciones" linkLabel="Ver todos →" />
+            <SectionHeader id="home-upcoming-title" title="Próximos partidos" to="/clasificaciones" linkLabel="Ver clasificación →" />
             <MatchList
               items={upcoming}
               label="Próximos partidos"

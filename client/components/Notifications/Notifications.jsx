@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import './Notifications.css';
 import { useSession } from '../../context/SessionContext.jsx';
 import NotificationToast from './NotificationToast.jsx';
@@ -26,6 +26,14 @@ export default function Notifications() {
   const { notifications, unreadCount, markAllRead } = useSession();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
+
+  // Al cambiar de página (también con el teclado, sin pulsar fuera) el panel se cierra
+  const { pathname } = useLocation();
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
 
   // Mientras está abierto, se cierra al pulsar fuera o con Esc
   useEffect(() => {

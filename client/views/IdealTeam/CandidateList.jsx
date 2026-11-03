@@ -23,7 +23,8 @@ export default function CandidateList({ slot, assigned, onAdd }) {
   const [showAll, setShowAll] = useState(false);
 
   const position = slot ? slotPosition(slot) : null;
-  const candidates = candidatesFor({ slot, assigned, query, onlySlotPosition: onlySlot === 'slot', sort });
+  // Con el once completo no hay posición elegida: no se listan jugadores hasta pulsar una posición del campo
+  const candidates = slot ? candidatesFor({ slot, assigned, query, onlySlotPosition: onlySlot === 'slot', sort }) : [];
   const visible = showAll ? candidates : candidates.slice(0, PAGE_SIZE);
 
   return (
@@ -60,7 +61,9 @@ export default function CandidateList({ slot, assigned, onAdd }) {
 
       <ul className="ideal-team__candidates" aria-label="Jugadores disponibles">
         {candidates.length === 0 && (
-          <li className="ideal-team__empty">No hay jugadores disponibles con estos filtros</li>
+          <li className="ideal-team__empty">
+            {slot ? 'No hay jugadores disponibles con estos filtros' : 'Pulsa una posición del campo para ver sus jugadores'}
+          </li>
         )}
         {visible.map((player, i) => {
           const team = getTeam(player.teamId);

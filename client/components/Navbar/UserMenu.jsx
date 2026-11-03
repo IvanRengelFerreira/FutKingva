@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
+import { Link } from 'react-router';
+import { ROLE_PANELS, useLogout } from '../../context/SessionContext.jsx';
 import { DESKTOP_QUERY } from './breakpoints.js';
 import chevronDownIcon from '../../assets/icon-chevron-down.svg';
 
@@ -8,8 +8,7 @@ import chevronDownIcon from '../../assets/icon-chevron-down.svg';
 // Diseño del botón: Figma › Componentes de mockup › Cabecera › Sesión=Sí › Usuario.
 // El desplegable no está en Figma: sigue el estilo del panel de notificaciones.
 export default function UserMenu({ user }) {
-  const { logout } = useSession();
-  const navigate = useNavigate();
+  const logout = useLogout();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const panel = ROLE_PANELS[user.role];
@@ -44,7 +43,6 @@ export default function UserMenu({ user }) {
   function handleLogout() {
     setOpen(false);
     logout();
-    navigate('/');
   }
 
   return (

@@ -7,7 +7,7 @@ export const CHANGE_HISTORY = [
   { id: 2, date: '15/10', playerId: 'mbappe', field: 'Goles', from: '6', to: '7', by: 'AM' },
   { id: 3, date: '14/10', playerId: 'courtois', field: 'Partidos', from: '7', to: '8', by: 'IR' },
   { id: 4, date: '13/10', playerId: 'bellingham', field: 'Tiros a puerta', from: '10', to: '11', by: 'CR' },
-  { id: 5, date: '12/10', playerId: 'raphinha', field: 'Posición', from: 'DC', to: 'EI', by: 'AM' },
+  { id: 5, date: '12/10', playerId: 'raphinha', field: 'Posición', from: 'Delantero', to: 'Extremo', by: 'AM' },
   { id: 6, date: '11/10', playerId: 'vinicius', field: 'Amarillas', from: '1', to: '2', by: 'IR' },
 ];
 

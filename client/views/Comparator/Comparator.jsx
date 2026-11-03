@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Select from '../../components/Select/Select.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
@@ -17,21 +19,29 @@ import './Comparator.css';
 // 10 · Comparador (RF4): comparar de 2 a 4 jugadores lado a lado y en un gráfico radar.
 // Empieza con la comparativa de ejemplo (Pedri, Bellingham y Lamine Yamal). Cada jugador tiene su
 // color (serie 1–4) en la tarjeta, la tabla y el radar; al quitar uno, los siguientes cambian de color.
-// «Guardar comparativa» la marca como guardada (sin servidor no se guarda en ningún sitio).
+// Si se llega con jugadores (desde la ficha de un jugador o al abrir una comparativa de Mi perfil), empieza con ellos.
+// «Guardar comparativa» la guarda en Mi perfil (useUserData, en el navegador).
 // Diseño: Figma › Mockups › 10 · Comparador
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=54-623
 export default function Comparator() {
-  const [playerIds, setPlayerIds] = useState(COMPARISON_EXAMPLE);
+  const { state } = useLocation();
+  const { saveComparison } = useUserData();
+  const [playerIds, setPlayerIds] = useState(() => initialPlayers(state?.playerIds));
   const [mode, setMode] = useState('totals');
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(Boolean(state?.saved));
   const [searchOpen, setSearchOpen] = useState(false); // Solo en móvil: buscador debajo de las tarjetas
 
-  const players = playerIds.map(getPlayer);
+  const players = playerIds.map(getPlayer).filter(Boolean);
   const canAdd = players.length < MAX_PLAYERS;
 
   function change(ids) {
     setPlayerIds(ids);
     setSaved(false);
+  }
+
+  function save() {
+    saveComparison(playerIds);
+    setSaved(true);
   }
 
   function add(id) {
@@ -59,7 +69,7 @@ export default function Comparator() {
             <img src={plusIcon} alt="" width="16" height="16" />
             Nueva comparativa
           </Button>
-          <Button className="comparator__save" onClick={() => setSaved(true)} disabled={players.length < 2 || saved}>
+          <Button className="comparator__save" onClick={save} disabled={players.length < 2 || saved}>
             <img src={saveIcon} alt="" width="16" height="16" />
             {saved ? 'Comparativa guardada' : 'Guardar comparativa'}
           </Button>
@@ -174,4 +184,11 @@ export default function Comparator() {
       )}
     </section>
   );
+}
+
+// Jugadores con los que empieza: los que llegan (sin repetir, que existan y como mucho MAX_PLAYERS) o el ejemplo
+function initialPlayers(ids) {
+  if (!Array.isArray(ids)) return COMPARISON_EXAMPLE;
+  const valid = [...new Set(ids)].filter((id) => getPlayer(id)).slice(0, MAX_PLAYERS);
+  return valid.length > 0 ? valid : COMPARISON_EXAMPLE;
 }

@@ -35,7 +35,7 @@ export default function RegisterForm({ onSubmit, onSwitch }) {
   function handleSubmit(event) {
     event.preventDefault();
     setSubmitted(true);
-    if (Object.values(errors).every((error) => !error)) onSubmit();
+    if (Object.values(errors).every((error) => !error)) onSubmit(form.username.trim());
   }
 
   return (

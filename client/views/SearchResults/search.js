@@ -15,12 +15,17 @@ function positionOf(teamId) {
   return STANDINGS_LALIGA.find((row) => row.teamId === teamId)?.position ?? 99;
 }
 
-// Equipos de LaLiga cuyo nombre contiene el texto, por puesto en la tabla
+// ¿Coincide el nombre del equipo o su nombre corto («Barça», «Atlético»)?
+function teamMatches(team, text) {
+  return normalize(team.name).includes(text) || normalize(team.shortName ?? '').includes(text);
+}
+
+// Equipos de LaLiga cuyo nombre (o nombre corto) contiene el texto, por puesto en la tabla
 export function searchTeams(query) {
   const text = normalize(query.trim());
   if (!text) return [];
   return Object.values(TEAMS)
-    .filter((team) => team.competition === 'LaLiga' && normalize(team.name).includes(text))
+    .filter((team) => team.competition === 'LaLiga' && teamMatches(team, text))
     .map((team) => ({ ...team, position: positionOf(team.id) }))
     .sort((a, b) => a.position - b.position);
 }

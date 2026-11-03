@@ -8,6 +8,7 @@ import Button from '../../components/Button/Button.jsx';
 import Illustration from '../../components/Illustration/Illustration.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Crest from '../../components/Crest/Crest.jsx';
+import FieldError from '../../components/FieldError/FieldError.jsx';
 import NotFound from '../NotFound/NotFound.jsx';
 import { PLAYERS, TEAMS, getArticle, getPlayer, getTeam } from '../../data/mockData.js';
 import { getArticleExtras } from '../Analysis/articleExtras.js';
@@ -30,6 +31,7 @@ import './ArticleEditor.css';
 // El editor de texto usa contentEditable y las órdenes del navegador (negrita, cursiva, título, lista,
 // cita, enlace), sin bibliotecas. «Jugador» inserta la ficha del jugador elegido; «Imagen» y «Gráfico»,
 // un bloque de ejemplo. Sin servidor: «Guardar borrador» y «Publicar» solo enseñan el aviso.
+// Para publicar hace falta título, entradilla y texto; si está programado, la fecha en formato dd/mm/aaaa · hh:mm.
 // Diseño: Figma › Mockups › 18 · Editor de artículo
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=61-1565
 
@@ -42,6 +44,9 @@ const STATUSES = [
 ];
 
 const WORDS_PER_MINUTE = 200;
+
+// Fecha de publicación: «24/10/2026 · 18:00» (la hora es opcional)
+const DATE_PATTERN = /^\d{2}\/\d{2}\/\d{4}( · \d{2}:\d{2})?$/;
 
 export default function ArticleEditor() {
   const { articleId } = useParams();
@@ -63,6 +68,7 @@ function EditorForm({ initial, isNew }) {
   const [formats, setFormats] = useState({ bold: false, italic: false, heading: false });
   const [playerPicker, setPlayerPicker] = useState(false);
   const [newTag, setNewTag] = useState(null); // null = no se está escribiendo una etiqueta
+  const tagCancelled = useRef(false); // Esc al escribir una etiqueta: no se añade al perder el foco
   const [relatedQuery, setRelatedQuery] = useState('');
   const [coverImage, setCoverImage] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -99,7 +105,11 @@ function EditorForm({ initial, isNew }) {
   const errors = {
     title: !form.title.trim() ? 'Escribe el título' : null,
     excerpt: !form.excerpt.trim() ? 'Escribe la entradilla' : null,
-    publishAt: form.status === 'scheduled' && !form.publishAt.trim() ? 'Indica cuándo se publica' : null,
+    publishAt: form.status !== 'scheduled' ? null
+      : !form.publishAt.trim() ? 'Indica cuándo se publica'
+        : !DATE_PATTERN.test(form.publishAt.trim()) ? 'Usa el formato dd/mm/aaaa · hh:mm'
+          : null,
+    body: words === 0 ? 'Escribe el texto del artículo' : null,
   };
   const shown = (field) => (submitted ? errors[field] : null);
 
@@ -181,8 +191,11 @@ function EditorForm({ initial, isNew }) {
     setNotice(null);
   }
 
+  // Solo cuenta el texto escrito: las fichas de jugador, imágenes y gráficos insertados no son palabras
   function countWords() {
-    const text = editorRef.current?.innerText ?? '';
+    const copy = editorRef.current?.cloneNode(true);
+    copy?.querySelectorAll('[data-block]').forEach((block) => block.remove());
+    const text = copy?.textContent ?? '';
     setWords(text.trim() ? text.trim().split(/\s+/).length : 0);
   }
 
@@ -190,6 +203,10 @@ function EditorForm({ initial, isNew }) {
 
   function addTag(event) {
     event.preventDefault();
+    if (tagCancelled.current) {
+      tagCancelled.current = false;
+      return;
+    }
     const tag = newTag?.trim();
     if (tag && !form.tags.includes(tag)) change('tags', [...form.tags, tag]);
     setNewTag(null);
@@ -217,6 +234,7 @@ function EditorForm({ initial, isNew }) {
       return;
     }
     setSubmitted(false);
+    setSaveState('saved');
     setNotice(
       form.status === 'scheduled'
         ? { tone: 'win', text: `Programado para el ${form.publishAt}.` }
@@ -250,14 +268,14 @@ function EditorForm({ initial, isNew }) {
           <TextField
             className="article-editor__title-field"
             label="Título"
-            placeholder="Previa: Barcelona – Real Madrid, el Clásico del liderato"
+            placeholder="Escribe el título del análisis"
             value={form.title}
             onChange={(e) => change('title', e.target.value)}
             error={shown('title')}
           />
           <TextField
             label={<>Subtítulo / entradilla</>}
-            placeholder="Lo que dicen los datos antes del Clásico del Camp Nou."
+            placeholder="Resume en una frase de qué trata"
             value={form.excerpt}
             onChange={(e) => change('excerpt', e.target.value)}
             error={shown('excerpt')}
@@ -299,12 +317,15 @@ function EditorForm({ initial, isNew }) {
               role="textbox"
               aria-multiline="true"
               aria-label="Texto del artículo"
+              aria-invalid={shown('body') ? true : undefined}
+              aria-describedby={shown('body') ? 'article-editor-body-error' : undefined}
               data-placeholder="Empieza a escribir el análisis…"
               onInput={edited}
               onKeyUp={rememberCursor}
               onMouseUp={rememberCursor}
               onClick={handleEditorClick}
             />
+            <FieldError id="article-editor-body-error">{shown('body')}</FieldError>
 
             <div className="article-editor__status">
               <span className={`article-editor__saved${saveState === 'new' ? ' article-editor__saved--new' : ''}`}>
@@ -385,7 +406,11 @@ function EditorForm({ initial, isNew }) {
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value)}
                         onBlur={addTag}
-                        onKeyDown={(e) => e.key === 'Escape' && setNewTag(null)}
+                        onKeyDown={(e) => {
+                          if (e.key !== 'Escape') return;
+                          tagCancelled.current = true;
+                          setNewTag(null);
+                        }}
                         autoFocus
                       />
                     </form>
@@ -540,7 +565,8 @@ function getInitialValues(article) {
     tags: draft.tags ?? [],
     related: draft.related ?? mentions.map(({ type, id }) => ({ type, id })),
     cover: draft.cover ?? extras.illustration ?? {},
-    bodyHtml: blocksToHtml(draft.body ?? content.body ?? []),
+    // Si el artículo no tiene más texto que la entradilla (como en su página pública), el texto empieza con ella
+    bodyHtml: blocksToHtml(draft.body ?? content.body ?? [{ type: 'paragraph', text: content.lead ?? extras.excerpt ?? '' }]),
   };
 }
 
@@ -552,6 +578,7 @@ function blocksToHtml(blocks) {
         case 'paragraph': return `<p>${escape(block.text)}</p>`;
         case 'heading': return `<h2>${escape(block.text)}</h2>`;
         case 'quote': return `<blockquote>${escape(block.text)}</blockquote>`;
+        case 'stats': return simpleBlockHtml('chart', 'Dato destacado', (block.items ?? []).map((item) => `${item.value} ${item.label}`).join(' · '));
         case 'player': {
           const player = getPlayer(block.id);
           return player ? playerBlockHtml(player) : '';

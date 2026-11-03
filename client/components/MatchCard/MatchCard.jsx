@@ -15,8 +15,9 @@ const SHORT_COMPETITIONS = { 'Premier League': 'Premier' };
 const MATCH_MINUTES = 90;
 
 export default function MatchCard({ match, className = '' }) {
-  const home = getTeam(match.homeId);
-  const away = getTeam(match.awayId);
+  // Si falta un equipo en mockData.js, sale con su id en vez de romper la página
+  const home = getTeam(match.homeId) ?? { name: match.homeId, shortName: match.homeId };
+  const away = getTeam(match.awayId) ?? { name: match.awayId, shortName: match.awayId };
   const [homeGoals, awayGoals] = match.score;
   const progress = Math.min(100, (match.minute / MATCH_MINUTES) * 100);
   const shortCompetition = SHORT_COMPETITIONS[match.competition];

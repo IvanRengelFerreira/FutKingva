@@ -39,8 +39,11 @@ export default function Analysis() {
   const featured = getArticle(FEATURED_ARTICLE_ID);
   const featuredExtras = getArticleExtras(FEATURED_ARTICLE_ID);
 
+  // Sin filtros, el destacado va arriba y no se repite en la lista. Al buscar o elegir categoría, el destacado
+  // se oculta y entra en los resultados como uno más (si no, buscar «Pedri» decía «No hay análisis»).
+  const filtering = Boolean(category || query.trim()) || !featured;
   const latest = ARTICLES
-    .filter((article) => article.status === 'published' && article.id !== FEATURED_ARTICLE_ID)
+    .filter((article) => article.status === 'published' && (filtering || article.id !== FEATURED_ARTICLE_ID))
     .sort((a, b) => toTime(b.date) - toTime(a.date));
 
   const results = latest.filter((article) =>
@@ -100,30 +103,32 @@ export default function Analysis() {
         />
       </div>
 
-      <article className="analysis__featured">
-        <Illustration
-          className="analysis__featured-illustration"
-          type={featured.category}
-          {...featuredExtras.illustration}
-        />
-        <div className="analysis__featured-body">
-          <div className="analysis__featured-tags">
-            <Tag featured>Destacado</Tag>
-            <Tag category={featured.category} />
+      {!filtering && (
+        <article className="analysis__featured">
+          <Illustration
+            className="analysis__featured-illustration"
+            type={featured.category}
+            {...featuredExtras.illustration}
+          />
+          <div className="analysis__featured-body">
+            <div className="analysis__featured-tags">
+              <Tag featured>Destacado</Tag>
+              <Tag category={featured.category} />
+            </div>
+            <h2 className="analysis__featured-title">
+              <Link className="analysis__featured-link" to={`/analisis/${featured.id}`}>{featured.title}</Link>
+            </h2>
+            <p className="analysis__featured-excerpt">{featuredExtras.excerpt}</p>
+            <p className="analysis__featured-meta">
+              {featured.author}
+              {/* En móvil, sin la fecha (como en Figma) */}
+              <span className="analysis__desktop-only"> · {featured.date}</span>
+              {featuredExtras.readingTime && ` · ${featuredExtras.readingTime}`}
+            </p>
+            <Button className="analysis__featured-button" to={`/analisis/${featured.id}`}>Leer análisis</Button>
           </div>
-          <h2 className="analysis__featured-title">
-            <Link className="analysis__featured-link" to={`/analisis/${featured.id}`}>{featured.title}</Link>
-          </h2>
-          <p className="analysis__featured-excerpt">{featuredExtras.excerpt}</p>
-          <p className="analysis__featured-meta">
-            {featured.author}
-            {/* En móvil, sin la fecha (como en Figma) */}
-            <span className="analysis__desktop-only"> · {featured.date}</span>
-            {featuredExtras.readingTime && ` · ${featuredExtras.readingTime}`}
-          </p>
-          <Button className="analysis__featured-button" to={`/analisis/${featured.id}`}>Leer análisis</Button>
-        </div>
-      </article>
+        </article>
+      )}
 
       <div className="analysis__latest">
         <div className="analysis__latest-header">

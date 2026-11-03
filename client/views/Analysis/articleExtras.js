@@ -23,7 +23,7 @@ export const ARTICLE_EXTRAS = {
     excerpt: 'Seis goles encajados cada uno: nadie concede menos en LaLiga.',
   },
   'atletico-cinco-victorias': {
-    excerpt: 'Desde el 3 – 0 en San Mamés, pleno: 15 de 15 puntos.',
+    excerpt: 'Desde el 0 – 3 en el Reale Arena, pleno: 15 de 15 puntos.',
   },
   'previa-real-madrid-sevilla': {
     excerpt: 'Lo que dicen los datos antes del partido del domingo.',

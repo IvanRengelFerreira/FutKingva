@@ -40,7 +40,7 @@ export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite
                     <img src={favorite ? starFilledIcon : starOutlineIcon} alt="" width="18" height="18" />
                   </button>
                 ) : (
-                  <Link className="team-card__star" to="/acceso" aria-label={`Inicia sesión para seguir a ${team.name}`}>
+                  <Link className="team-card__star" to="/acceso" state={{ from: '/equipos' }} aria-label={`Inicia sesión para seguir a ${team.name}`}>
                     <img src={starOutlineIcon} alt="" width="18" height="18" />
                   </Link>
                 )}

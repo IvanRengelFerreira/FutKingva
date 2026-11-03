@@ -74,8 +74,8 @@ export default function BarChart({
           />
         )}
 
-        {bars.map((bar) => (
-          <div key={bar.label} className="bar-chart__column">
+        {bars.map((bar, index) => (
+          <div key={`${index}-${bar.label}`} className="bar-chart__column">
             <div className="bar-chart__bar" style={{ height: `${percent(bar.total)}%` }}>
               <span className="bar-chart__value">{format(bar.total)}</span>
               <div className="bar-chart__fill">
@@ -93,8 +93,8 @@ export default function BarChart({
       </div>
 
       <div className="bar-chart__labels" aria-hidden="true">
-        {bars.map((bar) => (
-          <span key={bar.label}>{bar.label}</span>
+        {bars.map((bar, index) => (
+          <span key={`${index}-${bar.label}`}>{bar.label}</span>
         ))}
       </div>
     </div>

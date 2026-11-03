@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import Select from '../../components/Select/Select.jsx';
@@ -16,7 +17,7 @@ import './Teams.css';
 // en móvil, lista con «Cargar más». Pestaña Jugadores: tabla (tarjetas en móvil).
 // El buscador filtra mientras se escribe (sin tildes ni mayúsculas). Solo hay datos de LaLiga 2026/27,
 // así que los desplegables de liga y temporada tienen una sola opción.
-// La estrella marca un equipo como favorito (sin sesión lleva a Acceso; no se guarda: no hay servidor).
+// La estrella marca un equipo como favorito (sale en Mi perfil); sin sesión lleva a Acceso y al entrar vuelve aquí.
 // Diseño: Figma › Mockups › 02 · Equipos y jugadores
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=43-87
 
@@ -34,7 +35,7 @@ export default function Teams() {
   const [sort, setSort] = useState({ teams: TEAM_SORTS[0].value, players: PLAYER_SORTS[0].value });
   const [page, setPage] = useState(1);
   const [mobileCount, setMobileCount] = useState(MOBILE_STEP);
-  const [favorites, setFavorites] = useState([]);
+  const { favoriteTeams: favorites, toggleFavoriteTeam } = useUserData();
 
   const rows = tab === 'teams' ? getTeamRows(query, sort.teams) : getPlayerRows(query, sort.players);
   const totalPages = Math.ceil(rows.length / PER_PAGE[tab]);
@@ -63,9 +64,7 @@ export default function Teams() {
     resetPaging();
   }
 
-  function toggleFavorite(teamId) {
-    setFavorites(favorites.includes(teamId) ? favorites.filter((id) => id !== teamId) : [...favorites, teamId]);
-  }
+  const toggleFavorite = toggleFavoriteTeam;
 
   const noun = tab === 'teams' ? (rows.length === 1 ? 'equipo' : 'equipos') : (rows.length === 1 ? 'jugador' : 'jugadores');
 
@@ -118,7 +117,7 @@ export default function Teams() {
         <p className="teams__count" aria-live="polite">
           {rows.length} {noun} en LaLiga
         </p>
-        {query && (
+        {query.trim() && (
           <button type="button" className="teams__chip" onClick={() => changeQuery('')} aria-label={`Quitar la búsqueda «${query}»`}>
             «{query}» ×
           </button>

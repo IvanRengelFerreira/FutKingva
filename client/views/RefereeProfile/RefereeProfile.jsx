@@ -59,7 +59,7 @@ export default function RefereeProfile() {
       <Breadcrumbs
         items={[
           { label: 'Árbitros', to: '/arbitros' },
-          { label: 'LaLiga', to: '/arbitros', hideOnMobile: true },
+          { label: 'LaLiga', to: '/clasificaciones', hideOnMobile: true },
           { label: referee.name, shortLabel: referee.shortName },
         ]}
       />

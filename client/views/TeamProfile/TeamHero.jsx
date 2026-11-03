@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useLocation } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import FormGuide from '../../components/FormGuide/FormGuide.jsx';
 import Button from '../../components/Button/Button.jsx';
 import { useSession } from '../../context/SessionContext.jsx';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import starIcon from '../../assets/icon-star.svg';
 
 // Cabecera de la ficha de equipo: escudo grande, liga y puesto, nombre, estadio · entrenador · fundación,
 // forma y los botones «Seguir equipo» y «Ver clasificación».
 // En móvil va centrada, con el escudo más pequeño y los textos cortos.
-// «Seguir equipo» sin sesión lleva a Acceso; con sesión cambia a «Siguiendo» (no se guarda: no hay servidor).
+// «Seguir equipo» sin sesión lleva a Acceso (y al entrar vuelve aquí); con sesión lo añade a los favoritos de Mi perfil.
 // Diseño: Figma › Mockups › 03 · Ficha de equipo › Cabecera de ficha
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=44-193
 export default function TeamHero({ team, extras, row }) {
   const { user } = useSession();
-  const [following, setFollowing] = useState(false);
+  const { pathname } = useLocation();
+  const { favoriteTeams, toggleFavoriteTeam } = useUserData();
+  const following = favoriteTeams.includes(team.id);
 
   const eyebrow = row ? `${team.competition} · ${row.position}.º` : team.competition;
   const coachSurname = team.coach?.split(' ').at(-1);
@@ -25,8 +28,8 @@ export default function TeamHero({ team, extras, row }) {
   const metaShort = [extras?.stadiumShort, coachSurname].filter(Boolean);
 
   const followProps = user
-    ? { onClick: () => setFollowing(!following), 'aria-pressed': following }
-    : { to: '/acceso' };
+    ? { onClick: () => toggleFavoriteTeam(team.id), 'aria-pressed': following }
+    : { to: '/acceso', state: { from: pathname } };
 
   return (
     <header className="team-hero">

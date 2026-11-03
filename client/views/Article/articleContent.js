@@ -38,7 +38,7 @@ export const ARTICLE_CONTENT = {
         items: [
           { value: '91 %', label: 'Acierto en el pase' },
           { value: '6,1', label: 'Pérdidas por partido' },
-          { value: '2,7', label: 'Pases clave por 90' },
+          { value: '2,8', label: 'Pases clave por 90' },
         ],
       },
       {

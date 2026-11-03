@@ -28,8 +28,9 @@ function byName(a, b) {
 export function getTeamRows(query, sort) {
   const text = normalize(query);
   const rows = STANDINGS_LALIGA
+    .filter((row) => TEAMS[row.teamId])
     .map((row) => ({ ...TEAMS[row.teamId], row }))
-    .filter((team) => normalize(team.name).includes(text));
+    .filter((team) => normalize(team.name).includes(text) || normalize(team.shortName ?? '').includes(text));
 
   if (sort === 'name') return rows.sort(byName);
   if (sort === 'goals') return rows.sort((a, b) => b.row.goalsFor - a.row.goalsFor || a.row.position - b.row.position);

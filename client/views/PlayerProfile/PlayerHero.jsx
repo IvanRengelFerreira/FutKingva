@@ -1,19 +1,21 @@
-import { useState } from 'react';
 import { useLocation } from 'react-router';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Crest from '../../components/Crest/Crest.jsx';
 import Rating from '../../components/Rating/Rating.jsx';
 import Button from '../../components/Button/Button.jsx';
 import { useSession } from '../../context/SessionContext.jsx';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import { MISSING } from './format.js';
+import { ageOf } from '../IdealTeam/team.js';
 
 // Cabecera de la ficha: avatar con el escudo del club, nombre, valoración media y botones.
-// «Seguir» (favorito): con sesión cambia de estado; sin sesión lleva a Acceso y al entrar vuelve aquí.
-// Sin servidor, el favorito solo dura mientras la página está abierta.
+// «Seguir» (favorito): con sesión lo añade o lo quita de Mi perfil; sin sesión lleva a Acceso y al entrar vuelve aquí.
+// «Comparar jugador» abre el Comparador con este jugador.
 export default function PlayerHero({ player, team, extras, isMobile }) {
   const { user } = useSession();
   const { pathname } = useLocation();
-  const [following, setFollowing] = useState(false);
+  const { favoritePlayers, toggleFavoritePlayer } = useUserData();
+  const following = favoritePlayers.includes(player.id);
 
   const clubName = extras.clubName ?? team?.name;
   const eyebrow = [clubName, player.position, player.number != null ? `#${player.number}` : null]
@@ -22,9 +24,11 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
     .toUpperCase();
 
   // Escritorio: nombre completo, edad, país, altura y pie · móvil: solo edad, país y altura
+  // Edad: la de PLAYERS o, si no está, la estimada (la misma que usa el equipo ideal)
+  const age = ageOf(player);
   const details = (isMobile
-    ? [player.age != null && `${player.age} años`, player.country, extras.height]
-    : [extras.fullName, player.age != null && `${player.age} años`, player.country, extras.height, extras.foot]
+    ? [age != null && `${age} años`, player.country, extras.height]
+    : [extras.fullName, age != null && `${age} años`, player.country, extras.height, extras.foot]
   ).filter(Boolean);
 
   const followLabel = following ? (isMobile ? 'Siguiendo' : 'En favoritos') : isMobile ? 'Seguir' : 'Añadir a favoritos';
@@ -63,7 +67,7 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
             variant="secondary"
             className={`player-hero__follow${following ? ' player-hero__follow--on' : ''}`}
             aria-pressed={following}
-            onClick={() => setFollowing(!following)}
+            onClick={() => toggleFavoritePlayer(player.id)}
           >
             {star}
             {followLabel}
@@ -74,7 +78,7 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
             {followLabel}
           </Button>
         )}
-        <Button className="player-hero__compare" to="/comparador">
+        <Button className="player-hero__compare" to="/comparador" state={{ playerIds: [player.id] }}>
           {isMobile ? 'Comparar' : 'Comparar jugador'}
         </Button>
       </div>

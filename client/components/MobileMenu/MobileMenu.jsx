@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router';
-import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
+import { Link, NavLink, useLocation } from 'react-router';
+import { ROLE_PANELS, useLogout, useSession } from '../../context/SessionContext.jsx';
 import './MobileMenu.css';
 import logo from '../../assets/logo-mobile.svg'; // Mismo logo que la navbar móvil
 import closeIcon from '../../assets/icon-close.svg';
@@ -40,8 +40,8 @@ const PANEL_ICONS = { editor: editIcon, admin: shieldIcon };
 // user: el usuario de la sesión simulada (ver SessionContext).
 export default function MobileMenu({ open, onClose, user = null }) {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { logout, unreadCount } = useSession();
+  const { unreadCount } = useSession();
+  const logout = useLogout();
   const closeButtonRef = useRef(null);
 
   // Mientras está abierto: Esc lo cierra, la página de detrás no hace scroll y el foco va a la X.
@@ -67,7 +67,6 @@ export default function MobileMenu({ open, onClose, user = null }) {
   function handleLogout() {
     onClose();
     logout();
-    navigate('/');
   }
 
   // Opción del menú: icono + texto + flecha (o el número de avisos en «Mi perfil»).

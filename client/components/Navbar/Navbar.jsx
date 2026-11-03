@@ -31,7 +31,9 @@ const LINKS = [
 export default function Navbar() {
   const navigate = useNavigate();
   const { user } = useSession();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  // En Resultados de búsqueda, el buscador enseña lo buscado; en las demás páginas sale vacío
+  const searchedText = pathname === '/buscar' ? new URLSearchParams(search).get('q') ?? '' : '';
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef(null);
 
@@ -106,7 +108,7 @@ export default function Navbar() {
       <div className="navbar__actions">
         <form className={user ? 'navbar__search navbar__search--wide' : 'navbar__search'} role="search" onSubmit={handleSearch}>
           <img src={searchIcon} alt="" width="18" height="18" />
-          <input type="search" name="q" placeholder="Buscar…" aria-label="Buscar equipos y jugadores" />
+          <input key={searchedText} type="search" name="q" defaultValue={searchedText} placeholder="Buscar…" aria-label="Buscar equipos y jugadores" />
         </form>
 
         {/* Solo en móvil: lupa (lleva a Resultados de búsqueda) */}

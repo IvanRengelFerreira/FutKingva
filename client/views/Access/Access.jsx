@@ -12,8 +12,8 @@ import logo from '../../assets/logo-access.svg';
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=58-1144
 // Va sin navbar ni pie (ruta fuera de Layout en App.jsx): solo la tarjeta y un enlace para volver.
 // /acceso?registro abre directamente la pestaña «Registrarse» (botón «Registrarse» de la navbar).
-// No hay servidor: al entrar o registrarse se inicia la sesión simulada como «Usuario»
-// y se vuelve a la página privada de la que venía (RequireRole) o a Inicio.
+// No hay servidor: al entrar o registrarse se inicia la sesión simulada como «Usuario» (con el nombre
+// elegido al registrarse; sin «Recordarme», la sesión no se recuerda al recargar) y se vuelve a la página privada de la que venía (RequireRole) o a Inicio.
 
 const TABS = [
   { id: 'login', label: 'Iniciar sesión' },
@@ -39,8 +39,8 @@ export default function Access() {
   const [tab, setTab] = useState(location.search.includes('registro') ? 'register' : 'login');
   const heading = HEADINGS[tab];
 
-  function enter(role) {
-    login(role);
+  function enter(role, options) {
+    login(role, options);
     navigate(location.state?.from ?? '/', { replace: true });
   }
 
@@ -62,9 +62,9 @@ export default function Access() {
 
         <div role="tabpanel" aria-label={TABS.find((t) => t.id === tab).label}>
           {tab === 'login' ? (
-            <LoginForm onSubmit={() => enter('user')} onSwitch={() => setTab('register')} />
+            <LoginForm onSubmit={(remember) => enter('user', { remember })} onSwitch={() => setTab('register')} />
           ) : (
-            <RegisterForm onSubmit={() => enter('user')} onSwitch={() => setTab('login')} />
+            <RegisterForm onSubmit={(name) => enter('user', { name })} onSwitch={() => setTab('login')} />
           )}
         </div>
 

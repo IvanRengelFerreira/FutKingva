@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useUserData } from '../../context/UserDataContext.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Select from '../../components/Select/Select.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
@@ -9,27 +10,30 @@ import {
   FORMATION_NAMES, MAX_NAME_LENGTH, lineupOf, slotsOf, toAssigned,
   assignPlayer, removePlayer, changeFormation,
 } from './team.js';
-import { SEASON, IDEAL_TEAM_EXAMPLE, getPlayer } from '../../data/mockData.js';
+import { SEASON, getPlayer } from '../../data/mockData.js';
 import saveIcon from '../../assets/icon-save.svg';
 import removeIcon from '../../assets/icon-remove.svg';
 import './IdealTeam.css';
 
 // 11 · Mi equipo ideal (RF5): el usuario arma su once sobre el campo con jugadores de cualquier club.
-// Empieza con el equipo de ejemplo (Los Coronados, 4-3-3, con el extremo izquierdo libre).
+// Empieza con el equipo guardado (al principio, el de ejemplo: Los Coronados, 4-3-3, con el extremo izquierdo libre).
 // Reglas de negocio: cada posición del campo lleva un solo jugador (no se repite posición), un jugador no puede
 // estar dos veces y solo vale en las posiciones donde encaja (ver fitsSlot en team.js).
 // Cambio de formación: los jugadores cuyas posiciones desaparecen se reubican en un hueco libre donde encajen
 // y, si no lo hay, salen del once (se avisa de qué ha pasado con cada uno).
-// «Guardar equipo» lo marca como guardado (sin servidor no se guarda en ningún sitio).
+// «Guardar equipo» lo guarda (useUserData, en el navegador): sale en Mi perfil y al volver a esta página.
+// El nombre es obligatorio para guardar.
 // Diseño: Figma › Mockups › 11 · Mi equipo ideal
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=55-702
 export default function IdealTeam() {
-  const [name, setName] = useState(IDEAL_TEAM_EXAMPLE.name);
-  const [formation, setFormation] = useState(IDEAL_TEAM_EXAMPLE.formation);
-  const [assigned, setAssigned] = useState(() => toAssigned(IDEAL_TEAM_EXAMPLE.players));
-  const [activeSlot, setActiveSlot] = useState(() => firstEmpty(IDEAL_TEAM_EXAMPLE.formation, toAssigned(IDEAL_TEAM_EXAMPLE.players)));
+  const { idealTeam, saveIdealTeam } = useUserData();
+  const [name, setName] = useState(idealTeam.name);
+  const [formation, setFormation] = useState(idealTeam.formation);
+  const [assigned, setAssigned] = useState(() => toAssigned(idealTeam.players));
+  const [activeSlot, setActiveSlot] = useState(() => firstEmpty(idealTeam.formation, toAssigned(idealTeam.players)));
   const [notice, setNotice] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [nameError, setNameError] = useState(null);
 
   const lineup = lineupOf(formation, assigned);
   const count = lineup.filter((l) => l.playerId).length;
@@ -62,8 +66,18 @@ export default function IdealTeam() {
     setNotice(describeChange(value, result));
   }
 
+  function save() {
+    if (!name.trim()) {
+      setNameError('Ponle un nombre al equipo');
+      return;
+    }
+    saveIdealTeam({ name: name.trim(), formation, players: lineup });
+    setName(name.trim());
+    setSaved(true);
+  }
+
   const saveButton = (
-    <Button onClick={() => setSaved(true)} disabled={count === 0 || saved}>
+    <Button onClick={save} disabled={count === 0 || saved}>
       <img src={saveIcon} alt="" width="16" height="16" />
       {saved ? 'Equipo guardado' : 'Guardar equipo'}
     </Button>
@@ -91,7 +105,8 @@ export default function IdealTeam() {
             hideLabel
             value={name}
             maxLength={MAX_NAME_LENGTH}
-            onChange={(e) => { setName(e.target.value); setSaved(false); }}
+            onChange={(e) => { setName(e.target.value); setSaved(false); setNameError(null); }}
+            error={nameError}
             className="ideal-team__name"
           />
           <Select

@@ -23,7 +23,7 @@ export default function LoginForm({ onSubmit, onSwitch }) {
   function handleSubmit(event) {
     event.preventDefault();
     setSubmitted(true);
-    if (!errors.email && !errors.password) onSubmit();
+    if (!errors.email && !errors.password) onSubmit(remember);
   }
 
   return (

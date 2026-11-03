@@ -404,8 +404,9 @@
     width: 100%;
   }
 
+  /* Equipo y temporada, cada uno en su fila: a media anchura «Temporada 2026/27» no cabía */
   .player-data__filters .select {
-    width: calc(50% - 5px);
+    width: 100%;
   }
 
   .player-data__layout {
@@ -420,6 +421,16 @@
 
   .player-data__who {
     flex-wrap: wrap;
+  }
+
+  /* El texto ocupa todo lo que queda junto al avatar (56 px + 14 de hueco) y la etiqueta
+     «1 campo modificado» baja a su propia línea, alineada con el texto */
+  .player-data__who-text {
+    flex-basis: calc(100% - 70px);
+  }
+
+  .player-data__changed {
+    margin-left: 70px;
   }
 
   .player-data__avatar.avatar {

@@ -271,7 +271,7 @@ export const REFEREES = [
       { round: 1, date: '15/08', homeId: 'alaves', awayId: 'getafe', score: [3, 0], yellow: 6, red: 0 },
     ],
   },
-  { id: 'soto-grado', name: 'César Soto Grado', shortName: 'Soto Grado', committee: 'La Rioja', committeeAdjective: 'riojano', fifa: true, age: 46, since: 2012, cardsPerMatch: 5.6, matches: 4, yellowCards: 20, redCards: 2, penalties: 1 },
+  { id: 'soto-grado', name: 'César Soto Grado', shortName: 'Soto Grado', committee: 'La Rioja', committeeAdjective: 'riojano', fifa: true, age: 46, since: 2012, cardsPerMatch: 5.5, matches: 4, yellowCards: 20, redCards: 2, penalties: 1 },
   { id: 'diaz-de-mera', name: 'Isidro Díaz de Mera', shortName: 'Díaz de Mera', committee: 'Castilla-La Mancha', committeeAdjective: 'castellanomanchego', fifa: false, age: 39, since: 2019, cardsPerMatch: 5.5, matches: 4, yellowCards: 21, redCards: 1, penalties: 2 },
   { id: 'cuadra', name: 'Guillermo Cuadra Fernández', shortName: 'Cuadra Fernández', committee: 'Baleares', committeeAdjective: 'balear', fifa: false, age: 40, since: 2016, cardsPerMatch: 5.3, matches: 4, yellowCards: 20, redCards: 1, penalties: 0 },
   { id: 'hernandez', name: 'Alejandro Hernández Hernández', shortName: 'Hernández Hernández', committee: 'Canarias', committeeAdjective: 'canario', fifa: true, age: 44, since: 2012, cardsPerMatch: 5.0, matches: 4, yellowCards: 20, redCards: 0, penalties: 2 },
@@ -305,8 +305,8 @@ export const ARTICLES = [
   { id: 'gil-manzano-tarjeta-facil', title: 'Gil Manzano y la tarjeta fácil', category: 'Datos', status: 'published', date: '14/10/2026', visits: 2105, author: 'Carlota R.' },
 ];
 
-// Indicadores del panel de editor (estimados)
-export const EDITOR_STATS = { published: 12, drafts: 3, monthlyVisits: 18420, visitsChange: '+24 % vs septiembre', comments: 146 };
+// Indicadores del panel de editor (estimados). Publicados y borradores se cuentan en ARTICLES
+export const EDITOR_STATS = { monthlyVisits: 18420, visitsChange: '+24 % vs septiembre', comments: 146 };
 
 /* ---------------------------------------------------------------- */
 /* Notificaciones en directo (RF9)                                   */
@@ -355,12 +355,13 @@ export const REPORTS = [
 /* Funciones de ayuda                                                */
 /* ---------------------------------------------------------------- */
 
+// Con Object.hasOwn, ids como «constructor» o «toString» no devuelven cosas heredadas de Object
 export function getTeam(id) {
-  return TEAMS[id];
+  return Object.hasOwn(TEAMS, id ?? '') ? TEAMS[id] : undefined;
 }
 
 export function getPlayer(id) {
-  return PLAYERS[id];
+  return Object.hasOwn(PLAYERS, id ?? '') ? PLAYERS[id] : undefined;
 }
 
 export function getReferee(id) {
