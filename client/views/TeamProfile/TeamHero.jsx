@@ -16,7 +16,7 @@ export default function TeamHero({ team, extras, row }) {
   const { user } = useSession();
   const { pathname } = useLocation();
   const { favoriteTeams, toggleFavoriteTeam } = useUserData();
-  const following = favoriteTeams.includes(team.id);
+  const following = Boolean(user) && favoriteTeams.includes(team.id); // sin sesión no hay favoritos
 
   const eyebrow = row ? `${team.competition} · ${row.position}.º` : team.competition;
   const coachSurname = team.coach?.split(' ').at(-1);

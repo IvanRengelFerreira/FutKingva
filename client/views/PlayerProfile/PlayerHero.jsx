@@ -15,7 +15,7 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
   const { user } = useSession();
   const { pathname } = useLocation();
   const { favoritePlayers, toggleFavoritePlayer } = useUserData();
-  const following = favoritePlayers.includes(player.id);
+  const following = Boolean(user) && favoritePlayers.includes(player.id); // sin sesión no hay favoritos
 
   const clubName = extras.clubName ?? team?.name;
   const eyebrow = [clubName, player.position, player.number != null ? `#${player.number}` : null]
