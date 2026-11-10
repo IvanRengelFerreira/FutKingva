@@ -17,8 +17,15 @@ desktop.ini
 # --- Obsidian (por si se abre la carpeta como bóveda) ---
 .obsidian/
 
-# --- Front-end (client/) ---
+# --- Proyecto (src/client y src/server) ---
 node_modules/
 dist/
 *.local
 npm-debug.log*
+.env
+
+# --- Respuestas de prueba de las fuentes de datos (src/server/scripts/explore*.mjs) ---
+src/server/scripts/samples/
+
+# --- Cliente de Prisma generado (npx prisma generate) ---
+src/server/generated/

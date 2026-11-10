@@ -1,0 +1,560 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model appearances {
+  match_id     BigInt
+  player_id    BigInt
+  team_id      BigInt
+  is_starter   Boolean?
+  minutes      Int         @default(0) @db.SmallInt
+  goals        Int         @default(0) @db.SmallInt
+  assists      Int         @default(0) @db.SmallInt
+  yellow_cards Int         @default(0) @db.SmallInt
+  red_cards    Int         @default(0) @db.SmallInt
+  source       data_source
+  matches      matches     @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  players      players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams        teams       @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([match_id, player_id])
+  @@index([player_id], map: "appearances_player_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model articles {
+  id           BigInt         @id @default(autoincrement())
+  author_id    BigInt?
+  title        String
+  summary      String?
+  body         String
+  cover_url    String?
+  tags         String[]       @default([])
+  status       article_status @default(DRAFT)
+  published_at DateTime?      @db.Timestamptz(6)
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime       @default(now()) @db.Timestamptz(6)
+  users        users?         @relation(fields: [author_id], references: [id], onUpdate: NoAction)
+  reports      reports[]
+
+  @@index([author_id], map: "articles_author_idx")
+  @@index([status, published_at(sort: Desc)], map: "articles_status_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model comparison_players {
+  comparison_id BigInt
+  player_id     BigInt
+  sort_order    Int         @db.SmallInt
+  comparisons   comparisons @relation(fields: [comparison_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  players       players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([comparison_id, player_id])
+  @@unique([comparison_id, sort_order])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model comparisons {
+  id                 BigInt               @id @default(autoincrement())
+  user_id            BigInt
+  name               String
+  created_at         DateTime             @default(now()) @db.Timestamptz(6)
+  comparison_players comparison_players[]
+  users              users                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "comparisons_user_idx")
+}
+
+model competitions {
+  id                                              BigInt    @id @default(autoincrement())
+  name                                            String
+  country                                         String?
+  emblem_url                                      String?
+  fd_id                                           BigInt?   @unique
+  af_id                                           BigInt?   @unique
+  tm_code                                         String?   @unique
+  current_season_id                               BigInt?
+  updated_at                                      DateTime  @default(now()) @db.Timestamptz(6)
+  seasons_competitions_current_season_idToseasons seasons?  @relation("competitions_current_season_idToseasons", fields: [current_season_id], references: [id], onUpdate: NoAction, map: "competitions_current_season_fk")
+  seasons_seasons_competition_idTocompetitions    seasons[] @relation("seasons_competition_idTocompetitions")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model contact_messages {
+  id         BigInt   @id @default(autoincrement())
+  name       String
+  email      String
+  subject    String
+  message    String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model favorite_players {
+  user_id    BigInt
+  player_id  BigInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  players    players  @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, player_id])
+}
+
+model favorite_teams {
+  user_id    BigInt
+  team_id    BigInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  teams      teams    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, team_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model ideal_team_players {
+  ideal_team_id BigInt
+  slot          String
+  player_id     BigInt
+  ideal_teams   ideal_teams @relation(fields: [ideal_team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  players       players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ideal_team_id, slot])
+  @@unique([ideal_team_id, player_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model ideal_teams {
+  id                 BigInt               @id @default(autoincrement())
+  user_id            BigInt               @unique
+  name               String
+  formation          String               @default("4-3-3")
+  updated_at         DateTime             @default(now()) @db.Timestamptz(6)
+  ideal_team_players ideal_team_players[]
+  users              users                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model match_events {
+  id                                              BigInt           @id @default(autoincrement())
+  match_id                                        BigInt
+  minute                                          Int              @db.SmallInt
+  extra_minute                                    Int?             @db.SmallInt
+  type                                            match_event_type
+  team_id                                         BigInt
+  player_id                                       BigInt?
+  player_name                                     String?
+  related_player_id                               BigInt?
+  related_player_name                             String?
+  detail                                          String?
+  source                                          data_source
+  external_key                                    String?
+  created_at                                      DateTime         @default(now()) @db.Timestamptz(6)
+  matches                                         matches          @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  players_match_events_player_idToplayers         players?         @relation("match_events_player_idToplayers", fields: [player_id], references: [id], onUpdate: NoAction)
+  players_match_events_related_player_idToplayers players?         @relation("match_events_related_player_idToplayers", fields: [related_player_id], references: [id], onUpdate: NoAction)
+  teams                                           teams            @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([source, external_key])
+  @@index([match_id, minute], map: "match_events_match_idx")
+  @@index([player_id], map: "match_events_player_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model matches {
+  id                                BigInt          @id @default(autoincrement())
+  season_id                         BigInt
+  matchday                          Int?            @db.SmallInt
+  utc_date                          DateTime        @db.Timestamptz(6)
+  status                            match_status    @default(SCHEDULED)
+  minute                            Int?            @db.SmallInt
+  home_team_id                      BigInt
+  away_team_id                      BigInt
+  home_goals                        Int?            @db.SmallInt
+  away_goals                        Int?            @db.SmallInt
+  home_goals_ht                     Int?            @db.SmallInt
+  away_goals_ht                     Int?            @db.SmallInt
+  referee_id                        BigInt?
+  venue                             String?
+  attendance                        Int?
+  home_formation                    String?
+  away_formation                    String?
+  home_coach                        String?
+  away_coach                        String?
+  source                            data_source
+  is_simulated                      Boolean         @default(false)
+  fd_id                             BigInt?         @unique
+  af_id                             BigInt?         @unique
+  tm_id                             BigInt?         @unique
+  updated_at                        DateTime        @default(now()) @db.Timestamptz(6)
+  appearances                       appearances[]
+  match_events                      match_events[]
+  teams_matches_away_team_idToteams teams           @relation("matches_away_team_idToteams", fields: [away_team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teams_matches_home_team_idToteams teams           @relation("matches_home_team_idToteams", fields: [home_team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referees                          referees?       @relation(fields: [referee_id], references: [id], onUpdate: NoAction)
+  seasons                           seasons         @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  notifications                     notifications[]
+
+  @@index([away_team_id], map: "matches_away_team_idx")
+  @@index([utc_date], map: "matches_date_idx")
+  @@index([home_team_id], map: "matches_home_team_idx")
+  @@index([referee_id], map: "matches_referee_idx")
+  @@index([season_id, matchday], map: "matches_season_matchday_idx")
+  @@index([status])
+}
+
+model notifications {
+  id         BigInt            @id @default(autoincrement())
+  user_id    BigInt
+  type       notification_type
+  text       String
+  link       String?
+  match_id   BigInt?
+  is_read    Boolean           @default(false)
+  created_at DateTime          @default(now()) @db.Timestamptz(6)
+  matches    matches?          @relation(fields: [match_id], references: [id], onUpdate: NoAction)
+  users      users             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, is_read, created_at(sort: Desc)], map: "notifications_user_idx")
+}
+
+model player_data_changes {
+  id         BigInt   @id @default(autoincrement())
+  player_id  BigInt
+  season_id  BigInt?
+  editor_id  BigInt?
+  field      String
+  old_value  String?
+  new_value  String?
+  reason     String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  users      users?   @relation(fields: [editor_id], references: [id], onUpdate: NoAction)
+  players    players  @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasons    seasons? @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([player_id, created_at(sort: Desc)], map: "player_data_changes_player_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model player_season_stats {
+  season_id     BigInt
+  player_id     BigInt
+  team_id       BigInt
+  played        Int         @default(0) @db.SmallInt
+  starts        Int?        @db.SmallInt
+  minutes       Int?
+  goals         Int         @default(0) @db.SmallInt
+  assists       Int         @default(0) @db.SmallInt
+  penalties     Int         @default(0) @db.SmallInt
+  yellow_cards  Int?        @db.SmallInt
+  red_cards     Int?        @db.SmallInt
+  rating        Decimal?    @db.Decimal(3, 1)
+  source        data_source
+  field_sources Json        @default("{}")
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  players       players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasons       seasons     @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams         teams       @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([season_id, player_id, team_id])
+  @@index([player_id], map: "player_season_stats_player_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model players {
+  id                                                   BigInt                @id @default(autoincrement())
+  name                                                 String
+  first_name                                           String?
+  last_name                                            String?
+  date_of_birth                                        DateTime?             @db.Date
+  nationality                                          String?
+  position                                             position_group?
+  detailed_position                                    String?
+  foot                                                 preferred_foot?
+  height_cm                                            Int?                  @db.SmallInt
+  photo_url                                            String?
+  market_value_eur                                     BigInt?
+  team_id                                              BigInt?
+  shirt_number                                         Int?                  @db.SmallInt
+  fd_id                                                BigInt?               @unique
+  af_id                                                BigInt?               @unique
+  tm_id                                                BigInt?               @unique
+  updated_at                                           DateTime              @default(now()) @db.Timestamptz(6)
+  appearances                                          appearances[]
+  comparison_players                                   comparison_players[]
+  favorite_players                                     favorite_players[]
+  ideal_team_players                                   ideal_team_players[]
+  match_events_match_events_player_idToplayers         match_events[]        @relation("match_events_player_idToplayers")
+  match_events_match_events_related_player_idToplayers match_events[]        @relation("match_events_related_player_idToplayers")
+  player_data_changes                                  player_data_changes[]
+  player_season_stats                                  player_season_stats[]
+  teams                                                teams?                @relation(fields: [team_id], references: [id], onUpdate: NoAction)
+
+  @@index([team_id], map: "players_team_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model referee_season_stats {
+  season_id     BigInt
+  referee_id    BigInt
+  matches       Int         @default(0) @db.SmallInt
+  yellow_cards  Int         @default(0) @db.SmallInt
+  red_cards     Int         @default(0) @db.SmallInt
+  penalties     Int         @default(0) @db.SmallInt
+  source        data_source
+  field_sources Json        @default("{}")
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  referees      referees    @relation(fields: [referee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasons       seasons     @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([season_id, referee_id])
+}
+
+model referees {
+  id                   BigInt                 @id @default(autoincrement())
+  name                 String
+  short_name           String?
+  nationality          String?
+  committee            String?
+  is_fifa              Boolean                @default(false)
+  first_season         Int?                   @db.SmallInt
+  fd_id                BigInt?                @unique
+  af_id                BigInt?                @unique
+  updated_at           DateTime               @default(now()) @db.Timestamptz(6)
+  matches              matches[]
+  referee_season_stats referee_season_stats[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reports {
+  id                               BigInt        @id @default(autoincrement())
+  reporter_id                      BigInt?
+  article_id                       BigInt?
+  reason                           String
+  status                           report_status @default(PENDING)
+  resolved_by                      BigInt?
+  resolved_at                      DateTime?     @db.Timestamptz(6)
+  created_at                       DateTime      @default(now()) @db.Timestamptz(6)
+  articles                         articles?     @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_reports_reporter_idTousers users?        @relation("reports_reporter_idTousers", fields: [reporter_id], references: [id], onUpdate: NoAction)
+  users_reports_resolved_byTousers users?        @relation("reports_resolved_byTousers", fields: [resolved_by], references: [id], onUpdate: NoAction)
+
+  @@index([status, created_at], map: "reports_status_idx")
+}
+
+model season_teams {
+  season_id  BigInt
+  team_id    BigInt
+  coach_name String?
+  seasons    seasons @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams      teams   @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([season_id, team_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model seasons {
+  id                                                   BigInt                 @id @default(autoincrement())
+  competition_id                                       BigInt
+  start_year                                           Int                    @db.SmallInt
+  label                                                String
+  starts_on                                            DateTime?              @db.Date
+  ends_on                                              DateTime?              @db.Date
+  current_matchday                                     Int?                   @db.SmallInt
+  fd_id                                                BigInt?                @unique
+  competitions_competitions_current_season_idToseasons competitions[]         @relation("competitions_current_season_idToseasons")
+  matches                                              matches[]
+  player_data_changes                                  player_data_changes[]
+  player_season_stats                                  player_season_stats[]
+  referee_season_stats                                 referee_season_stats[]
+  season_teams                                         season_teams[]
+  competitions_seasons_competition_idTocompetitions    competitions           @relation("seasons_competition_idTocompetitions", fields: [competition_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  standings                                            standings[]
+  sync_runs                                            sync_runs[]
+
+  @@unique([competition_id, start_year])
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model standings {
+  season_id     BigInt
+  team_id       BigInt
+  position      Int      @db.SmallInt
+  played        Int      @default(0) @db.SmallInt
+  won           Int      @default(0) @db.SmallInt
+  drawn         Int      @default(0) @db.SmallInt
+  lost          Int      @default(0) @db.SmallInt
+  goals_for     Int      @default(0) @db.SmallInt
+  goals_against Int      @default(0) @db.SmallInt
+  points        Int      @default(0) @db.SmallInt
+  form          String?  @db.VarChar(5)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  seasons       seasons  @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams         teams    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([season_id, team_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sync_runs {
+  id          BigInt      @id @default(autoincrement())
+  source      data_source
+  resource    String
+  season_id   BigInt?
+  status      sync_status @default(RUNNING)
+  records     Int?
+  requests    Int?        @db.SmallInt
+  error       String?
+  started_at  DateTime    @default(now()) @db.Timestamptz(6)
+  finished_at DateTime?   @db.Timestamptz(6)
+  seasons     seasons?    @relation(fields: [season_id], references: [id], onUpdate: NoAction)
+
+  @@index([source, resource, started_at(sort: Desc)], map: "sync_runs_recent_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model teams {
+  id                                  BigInt                @id @default(autoincrement())
+  name                                String
+  short_name                          String
+  tla                                 String?               @db.Char(3)
+  crest_url                           String?
+  founded                             Int?                  @db.SmallInt
+  club_colors                         String?
+  venue                               String?
+  venue_capacity                      Int?
+  city                                String?
+  website                             String?
+  fd_id                               BigInt?               @unique
+  af_id                               BigInt?               @unique
+  tm_id                               BigInt?               @unique
+  updated_at                          DateTime              @default(now()) @db.Timestamptz(6)
+  appearances                         appearances[]
+  favorite_teams                      favorite_teams[]
+  match_events                        match_events[]
+  matches_matches_away_team_idToteams matches[]             @relation("matches_away_team_idToteams")
+  matches_matches_home_team_idToteams matches[]             @relation("matches_home_team_idToteams")
+  player_season_stats                 player_season_stats[]
+  players                             players[]
+  season_teams                        season_teams[]
+  standings                           standings[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model users {
+  id                                 BigInt                @id @default(autoincrement())
+  email                              String                @unique
+  password_hash                      String
+  name                               String
+  role                               user_role             @default(USER)
+  status                             user_status           @default(ACTIVE)
+  created_at                         DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at                         DateTime              @default(now()) @db.Timestamptz(6)
+  articles                           articles[]
+  comparisons                        comparisons[]
+  favorite_players                   favorite_players[]
+  favorite_teams                     favorite_teams[]
+  ideal_teams                        ideal_teams?
+  notifications                      notifications[]
+  player_data_changes                player_data_changes[]
+  reports_reports_reporter_idTousers reports[]             @relation("reports_reporter_idTousers")
+  reports_reports_resolved_byTousers reports[]             @relation("reports_resolved_byTousers")
+}
+
+enum article_status {
+  DRAFT
+  PUBLISHED
+}
+
+enum data_source {
+  FOOTBALL_DATA
+  API_FOOTBALL
+  TRANSFERMARKT
+  EDITOR
+  ESTIMATED
+  SIMULATOR
+}
+
+enum match_event_type {
+  GOAL
+  OWN_GOAL
+  PENALTY_GOAL
+  MISSED_PENALTY
+  YELLOW_CARD
+  SECOND_YELLOW
+  RED_CARD
+  SUBSTITUTION
+  VAR
+}
+
+enum match_status {
+  SCHEDULED
+  TIMED
+  IN_PLAY
+  PAUSED
+  FINISHED
+  SUSPENDED
+  POSTPONED
+  CANCELLED
+  AWARDED
+}
+
+enum notification_type {
+  GOAL
+  CARD
+  MATCH_START
+  MATCH_END
+  STANDINGS
+  ARTICLE
+  SYSTEM
+}
+
+enum position_group {
+  GOALKEEPER
+  DEFENDER
+  MIDFIELDER
+  FORWARD
+}
+
+enum preferred_foot {
+  LEFT
+  RIGHT
+  BOTH
+}
+
+enum report_status {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum sync_status {
+  RUNNING
+  OK
+  ERROR
+}
+
+enum user_role {
+  USER
+  EDITOR
+  ADMIN
+}
+
+enum user_status {
+  ACTIVE
+  BLOCKED
+}

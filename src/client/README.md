@@ -20,6 +20,7 @@ Guía para el equipo: qué hay en esta carpeta, cómo ponerla en marcha y cómo 
 | 1.4 | 18/10/2026 | Ivan Rengel | Componentes `BarChart`, `Radar` y `Notifications` hechos (campana con desplegable y aviso emergente de gol). Nuevo color `--card-yellow` (tarjetas amarillas). `useSession()` da también `notifications`, `unreadCount` y `markAllRead()`. Cuarto color del comparador `--series-4` (coral) |
 | 1.5 | 18/10/2026 | Ivan Rengel | La versión final (`npm run build`) se abre con doble clic en `dist/index.html` (file://), sin servidor |
 | 1.6 | 18/10/2026 | Ivan Rengel | Página 14 · Acceso hecha, como página propia sin navbar ni pie. `Tabs` tiene la opción `fill` (pestañas a todo el ancho). Al entrar desde una página privada, Acceso vuelve a ella |
+| 1.7 | 04/11/2026 | Ivan Rengel | El proyecto pasa a la carpeta `src/` (lo pide el enunciado de la entrega final): el front está ahora en `src/client/` y el servidor irá en `src/server/` |
 
 ---
 
@@ -35,7 +36,7 @@ Enunciado: `SW1_proyecto_p3.pdf` (prof. Álvaro Sánchez Picot).
 - Se pueden usar frameworks CSS y bibliotecas JS, pero **se valora el CSS y el JS propios**.
 - **Fecha límite: martes 3 de noviembre de 2026.** La entrega es tenerlo subido al repositorio (nada en Blackboard).
 
-> ⚠️ La diapositiva de entrega dice «en la carpeta docs». Hemos decidido que `docs/` es solo para documentos y que el código va en `client/`. Si hay dudas, se lo preguntamos al profesor.
+> ⚠️ La diapositiva de entrega dice «en la carpeta docs». Hemos decidido que `docs/` es solo para documentos y que el código va en `src/` (`src/client/`, desde el 04/11/2026; antes en `client/`). Si hay dudas, se lo preguntamos al profesor.
 
 ---
 
@@ -75,9 +76,9 @@ Ideas básicas de React:
    ```bash
    git clone https://github.com/IvanRengelFerreira/FutKingva.git
    ```
-3. Entrar en `client/` e instalar las dependencias:
+3. Entrar en `src/client/` e instalar las dependencias:
    ```bash
-   cd FutKingva/client
+   cd FutKingva/src/client
    npm install
    ```
    Esto crea la carpeta `node_modules/`. **No se sube a GitHub** (está en `.gitignore`); cada uno la genera en su ordenador.
@@ -86,12 +87,12 @@ Ideas básicas de React:
 
 ## 4. Comandos del día a día
 
-Siempre desde la carpeta `client/`:
+Siempre desde la carpeta `src/client/`:
 
 | Comando | Qué hace |
 |---------|----------|
 | `npm run dev` | Arranca la web en <http://localhost:5173>. Se recarga sola al guardar. **Es el que usaréis siempre.** |
-| `npm run build` | Genera la versión final en `client/dist/` (no se sube a GitHub). Se abre con **doble clic en `dist/index.html`**, sin servidor (así lo pide el enunciado); `vite.config.js` ya está preparado para ello. |
+| `npm run build` | Genera la versión final en `src/client/dist/` (no se sube a GitHub). Se abre con **doble clic en `dist/index.html`**, sin servidor (así lo pide el enunciado); `vite.config.js` ya está preparado para ello. |
 | `npm run preview` | Sirve la versión de `dist/` para comprobar que el build funciona. |
 
 Para parar el servidor: `Ctrl + C` en la terminal.
@@ -101,7 +102,7 @@ Para parar el servidor: `Ctrl + C` en la terminal.
 ## 5. Qué hay ahora mismo
 
 ```
-client/
+src/client/
 ├── index.html        # Página principal: solo tiene <div id="root"> donde React lo pinta todo
 ├── main.jsx          # Arranca React y monta <App /> dentro de #root
 ├── App.jsx           # Rutas de la web: qué vista se ve en cada dirección (apartado 6)
@@ -137,7 +138,7 @@ Mientras una página no tenga ruta, su enlace lleva a «Página no encontrada».
 ## 6. Estructura y rutas
 
 ```
-client/
+src/client/
 ├── views/            # Una carpeta por página del sitemap (las 20): Home/, PlayerProfile/, …
 │   └── Home/
 │       ├── Home.jsx

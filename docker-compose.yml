@@ -1,0 +1,32 @@
+# Servicios de FutKingva para desarrollo.
+# De momento solo la base de datos; al final se añadirá el servidor (servicio «app»).
+#
+#   docker compose up -d db     → arranca PostgreSQL en segundo plano
+#   docker compose ps           → comprueba que está «healthy»
+#   docker compose down         → lo para (los datos se conservan en el volumen)
+#   docker compose down -v      → lo para y BORRA los datos (BD desde cero)
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: futkingva-db
+    restart: unless-stopped
+    environment:
+      # Credenciales solo para desarrollo local (no es un servidor público).
+      # Si se cambian, hay que cambiar también DATABASE_URL en src/server/.env
+      POSTGRES_USER: futkingva
+      POSTGRES_PASSWORD: futkingva
+      POSTGRES_DB: futkingva
+      TZ: Europe/Madrid
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U futkingva -d futkingva"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:

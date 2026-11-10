@@ -1,0 +1,16 @@
+{
+  "name": "futkingva-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Servidor de FutKingva: API REST, base de datos y tiempo real",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "pg": "^8.23.1"
+  }
+}
