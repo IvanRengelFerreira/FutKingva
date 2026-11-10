@@ -29,3 +29,6 @@ src/server/scripts/samples/
 
 # --- Cliente de Prisma generado (npx prisma generate) ---
 src/server/generated/
+
+# --- Datos descargados por los importadores (src/server/sync/transfermarkt/download.js) ---
+src/server/data/

@@ -7,7 +7,9 @@
   "engines": {
     "node": ">=22.13"
   },
-  "scripts": {},
+  "scripts": {
+    "import:history": "node sync/transfermarkt/importHistory.js"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",

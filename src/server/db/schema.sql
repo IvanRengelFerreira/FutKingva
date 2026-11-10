@@ -214,6 +214,7 @@ CREATE INDEX matches_referee_idx         ON matches (referee_id);
 
 -- Goles, tarjetas y cambios. Si el jugador del evento no se encuentra en la BD
 -- (p. ej. «D. Berdos» de API-Football), se guarda su nombre en player_name.
+-- En OWN_GOAL, team_id es el equipo BENEFICIADO (el que suma el gol), no el del jugador.
 CREATE TABLE match_events (
   id                  bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   match_id            bigint           NOT NULL REFERENCES matches (id) ON DELETE CASCADE,
