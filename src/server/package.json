@@ -8,7 +8,9 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "import:history": "node sync/transfermarkt/importHistory.js"
+    "import": "npm run import:history && npm run import:current",
+    "import:history": "node sync/transfermarkt/importHistory.js",
+    "import:current": "node sync/footballData/importCurrent.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

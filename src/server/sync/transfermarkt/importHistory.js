@@ -23,6 +23,7 @@ import { join } from 'node:path';
 import { readCsvGz } from '../csv.js';
 import { createPool, bulkUpsert } from '../pg.js';
 import { ensureFiles } from './download.js';
+import { recalculateStandings } from '../standings.js';
 import {
   CLUBS, crestUrl, text, int, date, seasonLabel, matchday,
   positionGroup, detailedPosition, foot, height, eventType,
@@ -94,87 +95,7 @@ async function readSource() {
 }
 
 // =====================================================================
-// 2. Clasificación final de cada temporada
-// =====================================================================
-// Criterios de LaLiga: puntos → enfrentamientos directos entre los empatados (puntos y
-// diferencia de goles) → diferencia de goles general → goles a favor.
-
-function computeStandings(seasonGames) {
-  const table = new Map();
-  const row = (id) => {
-    if (!table.has(id)) {
-      table.set(id, { teamId: id, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, results: [] });
-    }
-    return table.get(id);
-  };
-
-  const ordered = [...seasonGames].sort((a, b) => a.date.localeCompare(b.date) || matchday(a.round) - matchday(b.round));
-  for (const g of ordered) {
-    const home = row(g.home_club_id);
-    const away = row(g.away_club_id);
-    const hg = int(g.home_club_goals);
-    const ag = int(g.away_club_goals);
-    home.played++; away.played++;
-    home.gf += hg; home.ga += ag;
-    away.gf += ag; away.ga += hg;
-    if (hg > ag) {
-      home.won++; away.lost++; home.points += 3;
-      home.results.push('W'); away.results.push('L');
-    } else if (hg < ag) {
-      away.won++; home.lost++; away.points += 3;
-      home.results.push('L'); away.results.push('W');
-    } else {
-      home.drawn++; away.drawn++; home.points++; away.points++;
-      home.results.push('D'); away.results.push('D');
-    }
-  }
-
-  // Mini-liga entre los equipos empatados a puntos
-  const byPoints = new Map();
-  for (const r of table.values()) {
-    if (!byPoints.has(r.points)) byPoints.set(r.points, []);
-    byPoints.get(r.points).push(r);
-  }
-  for (const group of byPoints.values()) {
-    const ids = new Set(group.map((r) => r.teamId));
-    for (const r of group) { r.h2hPoints = 0; r.h2hGd = 0; }
-    if (group.length < 2) continue;
-    for (const g of seasonGames) {
-      if (!ids.has(g.home_club_id) || !ids.has(g.away_club_id)) continue;
-      const home = table.get(g.home_club_id);
-      const away = table.get(g.away_club_id);
-      const diff = int(g.home_club_goals) - int(g.away_club_goals);
-      home.h2hGd += diff; away.h2hGd -= diff;
-      if (diff > 0) home.h2hPoints += 3;
-      else if (diff < 0) away.h2hPoints += 3;
-      else { home.h2hPoints++; away.h2hPoints++; }
-    }
-  }
-
-  const sorted = [...table.values()].sort((a, b) =>
-    b.points - a.points
-    || b.h2hPoints - a.h2hPoints
-    || b.h2hGd - a.h2hGd
-    || (b.gf - b.ga) - (a.gf - a.ga)
-    || b.gf - a.gf);
-  sorted.forEach((r, i) => {
-    r.position = i + 1;
-    r.form = r.results.slice(-5).join(''); // los últimos 5, el más reciente al final
-  });
-
-  // Comprobación con el puesto que da Transfermarkt en el último partido de cada equipo
-  const lastPosition = new Map();
-  for (const g of ordered) {
-    if (text(g.home_club_position)) lastPosition.set(g.home_club_id, int(g.home_club_position));
-    if (text(g.away_club_position)) lastPosition.set(g.away_club_id, int(g.away_club_position));
-  }
-  const disagreements = sorted.filter((r) => lastPosition.has(r.teamId) && lastPosition.get(r.teamId) !== r.position);
-
-  return { rows: sorted, checked: lastPosition.size, disagreements };
-}
-
-// =====================================================================
-// 3. Carga en la base de datos
+// 2. Carga en la base de datos
 // =====================================================================
 
 async function load(client, src) {
@@ -277,13 +198,14 @@ async function load(client, src) {
         date(p.date_of_birth), text(p.country_of_citizenship), positionGroup(p.position),
         detailedPosition(p.sub_position), foot(p.foot), height(p.height_in_cm),
         text(p.image_url), value != null && value >= 0 ? value : null,
-        // Equipo actual solo si es uno de LaLiga; la temporada actual (paso 4) lo corrige
+        // Equipo actual solo si es uno de LaLiga. Solo se pone al crear el jugador:
+        // después manda el importador de la temporada actual (importCurrent.js)
         teamId.get(text(p.current_club_id)) ?? null];
     }),
-    // Si el jugador ya está enlazado con football-data (fd_id), su nombre y equipo mandan
+    // Al repetir: no se toca el equipo actual (lo lleva la temporada actual) y,
+    // si el jugador ya está enlazado con football-data (fd_id), tampoco su nombre
     onConflict: `ON CONFLICT (tm_id) DO UPDATE SET
-      name          = CASE WHEN players.fd_id IS NULL THEN EXCLUDED.name ELSE players.name END,
-      team_id       = CASE WHEN players.fd_id IS NULL THEN EXCLUDED.team_id ELSE players.team_id END,
+      name = CASE WHEN players.fd_id IS NULL THEN EXCLUDED.name ELSE players.name END,
       first_name = EXCLUDED.first_name, last_name = EXCLUDED.last_name,
       date_of_birth = EXCLUDED.date_of_birth, nationality = EXCLUDED.nationality,
       position = COALESCE(EXCLUDED.position, players.position),
@@ -446,37 +368,19 @@ async function load(client, src) {
     WHERE referee_season_stats.source = 'TRANSFERMARKT'`, [seasonIds]);
   log(`estadísticas de árbitro por temporada: ${refereeStats}`);
 
-  // --- Clasificaciones finales ----------------------------------------
-  const gamesBySeason = Map.groupBy(src.games, (g) => int(g.season));
-  const standingRows = [];
-  for (const [year, seasonGames] of [...gamesBySeason].sort((a, b) => a[0] - b[0])) {
-    const { rows, checked, disagreements } = computeStandings(seasonGames);
-    const note = disagreements.length
-      ? ` · distinto de Transfermarkt: ${disagreements.map((r) => `${CLUBS[r.teamId].shortName} (${r.position})`).join(', ')}`
-      : '';
-    log(`  ${seasonLabel(year)}: campeón ${CLUBS[rows[0].teamId].shortName} con ${rows[0].points} pts `
-      + `(comprobados ${checked} puestos con Transfermarkt${note})`);
-    for (const r of rows) {
-      standingRows.push([seasonId.get(year), teamId.get(r.teamId), r.position, r.played, r.won, r.drawn,
-        r.lost, r.gf, r.ga, r.points, r.form]);
-    }
+  // --- Clasificaciones finales (mismo cálculo que la temporada actual: ../standings.js) ---
+  let standingRows = 0;
+  for (const [year, id] of [...seasonId].sort((x, y) => x[0] - y[0])) {
+    const table = await recalculateStandings(client, id);
+    standingRows += table.length;
+    const champion = CLUBS[[...teamId].find(([, dbId]) => dbId === table[0].teamId)[0]];
+    log(`  ${seasonLabel(year)}: campeón ${champion.shortName} con ${table[0].points} pts`);
   }
-  await bulkUpsert(client, {
-    table: 'standings',
-    columns: [['season_id', 'bigint'], ['team_id', 'bigint'], ['position', 'smallint'], ['played', 'smallint'],
-      ['won', 'smallint'], ['drawn', 'smallint'], ['lost', 'smallint'], ['goals_for', 'smallint'],
-      ['goals_against', 'smallint'], ['points', 'smallint'], ['form', 'varchar']],
-    rows: standingRows,
-    onConflict: `ON CONFLICT (season_id, team_id) DO UPDATE SET
-      position = EXCLUDED.position, played = EXCLUDED.played, won = EXCLUDED.won, drawn = EXCLUDED.drawn,
-      lost = EXCLUDED.lost, goals_for = EXCLUDED.goals_for, goals_against = EXCLUDED.goals_against,
-      points = EXCLUDED.points, form = EXCLUDED.form`,
-  });
-  log(`clasificaciones: ${standingRows.length} filas`);
+  log(`clasificaciones: ${standingRows} filas`);
 
   return seasonRows.length + teamRows.length + insertedReferees.length + playerRows.length
     + matchRows.length + appearanceRows.length + eventRows.length + playerStats + refereeStats
-    + standingRows.length;
+    + standingRows;
 }
 
 // =====================================================================
