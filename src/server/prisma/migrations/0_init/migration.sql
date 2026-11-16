@@ -1,12 +1,21 @@
 -- =====================================================================
--- FutKingva · Esquema de la base de datos (PostgreSQL 17)
+-- FutKingva · Migración inicial (0_init): esquema completo de la base de datos
 -- =====================================================================
--- Flujo: este archivo crea las tablas → `npx prisma db pull` genera
--- schema.prisma a partir de la BD → `npx prisma generate` crea el cliente.
--- Las tablas se cambian AQUÍ, nunca en schema.prisma.
+-- Es el punto de partida de Prisma Migrate. Crea las 26 tablas VACÍAS.
 --
--- Aplicar sobre la BD de Docker (vacía):
---   docker exec -i futkingva-db psql -U futkingva -d futkingva -v ON_ERROR_STOP=1 < src/server/db/schema.sql
+--   BD nueva:      npx prisma@7.10.1 migrate deploy                    (desde src/server)
+--   BD que ya tenía estas tablas (creada antes con schema.sql):
+--                  npx prisma@7.10.1 migrate resolve --applied 0_init  (la marca como aplicada)
+--
+-- Cambiar el esquema a partir de ahora = una migración nueva:
+--   1. Cambiar prisma/schema.prisma.
+--   2. npx prisma@7.10.1 migrate dev --create-only --name <cambio>
+--   3. REVISAR el SQL generado antes de aplicarlo: Prisma no conoce los CHECK, los triggers
+--      de updated_at ni los índices sobre expresiones (lower(email), lower(name)) de este
+--      archivo; si la migración nueva intenta borrarlos (DROP INDEX / DROP CONSTRAINT), quitar
+--      esas líneas. Lo que Prisma no sabe expresar se escribe a mano en el migration.sql.
+--   4. npx prisma@7.10.1 migrate dev   (aplica la migración y regenera el cliente)
+--   Si migrate dev propone RESETEAR la base de datos, responder que NO: borraría todos los datos.
 --
 -- Convenciones:
 --   · Tablas y columnas en inglés, snake_case, tablas en plural.
@@ -20,8 +29,6 @@
 --   · Origen de cada dato (data_source) para mostrar «estimado» o «corregido por un editor»
 --     y para que la sincronización no pise lo que ha puesto un editor.
 -- =====================================================================
-
-BEGIN;
 
 -- ---------------------------------------------------------------------
 -- Tipos enumerados
@@ -541,4 +548,3 @@ CREATE TRIGGER users_updated_at               BEFORE UPDATE ON users            
 CREATE TRIGGER ideal_teams_updated_at         BEFORE UPDATE ON ideal_teams         FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER articles_updated_at            BEFORE UPDATE ON articles            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-COMMIT;

@@ -5,16 +5,16 @@
   "description": "Servidor de FutKingva: API REST, base de datos y tiempo real",
   "type": "module",
   "engines": {
-    "node": ">=22.13"
+    "node": ">=22.18"
   },
   "scripts": {
-    "import": "npm run import:history && npm run import:current",
-    "import:history": "node sync/transfermarkt/importHistory.js",
-    "import:current": "node sync/footballData/importCurrent.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
+    "express": "5.3.0",
     "pg": "^8.23.1"
   }
 }

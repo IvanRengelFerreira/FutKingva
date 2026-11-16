@@ -10,6 +10,10 @@ try {
 
 export default {
   schema: 'prisma/schema.prisma',
+  // Migraciones (Prisma Migrate): 0_init crea el esquema completo. Ver su cabecera.
+  migrations: {
+    path: 'prisma/migrations',
+  },
   datasource: {
     url: process.env.DATABASE_URL,
   },
