@@ -3,13 +3,14 @@
 import { config } from './config.js';
 import { prisma } from './db.js';
 import { createApp } from './app.js';
+import { sessionStore } from './middleware/session.js';
 
 const app = createApp();
 const server = app.listen(config.port, () => {
   console.log(`FutKingva API escuchando en http://localhost:${config.port}/api`);
 });
 
-// Cierre ordenado: deja de aceptar conexiones, termina las que hay y cierra Prisma
+// Cierre ordenado: deja de aceptar conexiones, termina las que hay y cierra Prisma y las sesiones
 let closing = false;
 async function shutdown(reason, exitCode = 0) {
   if (closing) return;
@@ -18,7 +19,7 @@ async function shutdown(reason, exitCode = 0) {
   const force = setTimeout(() => process.exit(exitCode || 1), 5000).unref();
   server.close(async () => {
     try {
-      await prisma.$disconnect();
+      await Promise.all([prisma.$disconnect(), sessionStore.close()]);
     } catch (error) {
       console.error('Error al cerrar la conexión con la base de datos:', error);
     } finally {

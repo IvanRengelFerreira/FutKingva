@@ -5,6 +5,8 @@
 import express from 'express';
 import { prisma } from './db.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { sessionMiddleware } from './middleware/session.js';
+import { loadUser } from './middleware/auth.js';
 
 export function createApp() {
   const app = express();
@@ -19,6 +21,10 @@ export function createApp() {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ok', database: 'ok', time: new Date().toISOString() });
   });
+
+  // Sesión (cookie) y usuario de la sesión en req.user para todas las rutas de abajo.
+  // Para proteger una ruta: requireAuth / requireRole('editor') (middleware/auth.js)
+  app.use('/api', sessionMiddleware, loadUser);
 
   // --- Rutas de la API ------------------------------------------------------
   // Aquí se montan los routers de cada recurso, p. ej.: app.use('/api/teams', teamsRouter);

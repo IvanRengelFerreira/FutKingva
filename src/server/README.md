@@ -58,6 +58,12 @@ cd src/server
 Copy-Item .env.example .env
 ```
 
+Genera la clave de las sesiones con este comando y pega el resultado en `.env`, detrás de `SESSION_SECRET=`:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
 Si el puerto 3000 ya lo usa otra aplicación, abre `.env` y cambia `PORT=3000` por otro (por ejemplo `PORT=3100`).
 
 ### 5. Instalar las dependencias
@@ -126,7 +132,7 @@ npx prisma@7.10.1 generate
 | Mensaje | Solución |
 |---|---|
 | `Falta el cliente de Prisma` | Paso 6 |
-| `Falta la variable de entorno DATABASE_URL` | Paso 4 |
+| `Falta la variable de entorno DATABASE_URL` o `SESSION_SECRET` | Paso 4 |
 | `/api/health` responde `SERVICE_UNAVAILABLE` (503) | Docker Desktop cerrado o la BD parada → paso 2 |
 | `EADDRINUSE` (puerto ocupado) o `/api/health` muestra otra web | Otra aplicación usa ese puerto → cambia `PORT=` en `.env` |
 | `pg_restore: error: ... already exists` | La BD ya tenía tablas → empieza de cero (abajo, borra los datos) y repite el paso 3 |

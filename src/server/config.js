@@ -18,5 +18,7 @@ function required(name) {
 export const config = {
   port: Number(process.env.PORT) || 3000,
   databaseUrl: required('DATABASE_URL'),
+  // Firma la cookie de sesión. Texto largo y aleatorio (ver .env.example)
+  sessionSecret: required('SESSION_SECRET'),
   isProduction: process.env.NODE_ENV === 'production',
 };

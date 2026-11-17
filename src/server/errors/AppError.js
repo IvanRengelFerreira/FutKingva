@@ -22,4 +22,19 @@ export class AppError extends Error {
   static notFound(message = 'No se ha encontrado lo que buscas') {
     return new AppError(404, 'NOT_FOUND', message);
   }
+
+  /** Sin sesión (o la sesión ha caducado) */
+  static unauthorized(message = 'Tienes que iniciar sesión para hacer esto') {
+    return new AppError(401, 'UNAUTHORIZED', message);
+  }
+
+  /** Con sesión, pero sin permiso (rol insuficiente, cuenta bloqueada, recurso de otro usuario…) */
+  static forbidden(message = 'No tienes permiso para hacer esto') {
+    return new AppError(403, 'FORBIDDEN', message);
+  }
+
+  /** Choca con algo que ya existe (email ya registrado, posición repetida en el equipo ideal…) */
+  static conflict(message, fields) {
+    return new AppError(409, 'CONFLICT', message, fields);
+  }
 }
