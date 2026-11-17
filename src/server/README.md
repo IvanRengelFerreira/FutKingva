@@ -149,6 +149,6 @@ docker compose up -d --wait db
 
 Y repetir el paso 3.
 
-## Cambiar las tablas
+## Añadir rutas o cambiar las tablas
 
-No editar tablas a mano. Avisar a Ivan: los cambios se hacen con una migración nueva en `prisma/migrations/`, y solo una persona a la vez.
+Antes de programar, lee **[CONVENCIONES.md](CONVENCIONES.md)**: dónde va cada archivo, el formato del JSON, los errores, cómo proteger una ruta y cómo hacer una migración.
