@@ -17,9 +17,14 @@ async function shutdown(reason, exitCode = 0) {
   console.log(`\nCerrando el servidor (${reason})…`);
   const force = setTimeout(() => process.exit(exitCode || 1), 5000).unref();
   server.close(async () => {
-    await prisma.$disconnect();
-    clearTimeout(force);
-    process.exit(exitCode);
+    try {
+      await prisma.$disconnect();
+    } catch (error) {
+      console.error('Error al cerrar la conexión con la base de datos:', error);
+    } finally {
+      clearTimeout(force);
+      process.exit(exitCode);
+    }
   });
 }
 

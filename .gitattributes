@@ -1,0 +1,5 @@
+# Las migraciones de Prisma se guardan siempre con saltos de línea LF.
+# Prisma comprueba cada migración aplicada con un checksum del archivo: si Git la convierte
+# a CRLF en Windows, el checksum cambia y «prisma migrate dev» propone borrar la base de datos.
+*.sql text eol=lf
+src/server/prisma/migrations/migration_lock.toml text eol=lf

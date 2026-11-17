@@ -1,16 +1,19 @@
 # Servidor de FutKingva — puesta en marcha
 
-Comandos para **PowerShell** (Windows). Rama: `backend`.
+Guía paso a paso para tener el servidor y la base de datos funcionando en tu ordenador.
+Todos los comandos son para **PowerShell** (Windows).
 
-## Antes de empezar
+## Qué necesitas
 
-- Node.js **22.18 o superior** → `node -v`
-- **Docker Desktop** instalado y abierto
-- El archivo de datos **`futkingva-2026-11-11.dump`** (te lo pasa Ivan)
+- **Node.js 22.18 o superior.** Compruébalo con `node -v`.
+- **Docker Desktop** instalado y **abierto**.
+- El archivo **`futkingva-2026-11-16.dump`** con los datos (te lo pasa Ivan). Guárdalo en una carpeta fácil, por ejemplo `C:\datos\`.
 
 ## Primera vez
 
-**1. Bajar la rama** (desde la raíz del repositorio)
+### 1. Bajar la rama `backend`
+
+Desde la carpeta del repositorio:
 
 ```powershell
 git fetch
@@ -18,54 +21,86 @@ git switch backend
 git pull
 ```
 
-**2. Arrancar la base de datos** (desde la raíz)
+### 2. Arrancar la base de datos
+
+Desde la carpeta del repositorio:
 
 ```powershell
-docker compose up -d db
-docker ps
+docker compose up -d --wait db
 ```
 
-Tiene que salir `futkingva-db` con `(healthy)`.
+El comando termina cuando la base de datos está lista (`Container futkingva-db Healthy`).
 
-**3. Crear el `.env`**
+> **¿Ya habías arrancado esta base de datos antes?** Para cargar los datos tiene que estar vacía.
+> El siguiente comando **borra todo lo que tenga** (no se puede deshacer). Si nunca has guardado
+> nada tuyo en ella, no pierdes nada:
+> ```powershell
+> docker compose down -v
+> docker compose up -d --wait db
+> ```
+
+### 3. Cargar los datos
+
+Cambia `C:\datos\` por la carpeta donde guardaste el archivo:
+
+```powershell
+docker cp C:\datos\futkingva-2026-11-16.dump futkingva-db:/tmp/datos.dump
+docker exec futkingva-db pg_restore -U futkingva -d futkingva --no-owner /tmp/datos.dump
+docker exec futkingva-db rm /tmp/datos.dump
+```
+
+Si no sale ningún error, está todo cargado: tablas, datos y el registro de migraciones.
+
+### 4. Crear el archivo `.env`
 
 ```powershell
 cd src/server
 Copy-Item .env.example .env
 ```
 
-Si el puerto 3000 ya lo usa otra aplicación, cambia `PORT=` en `.env`.
+Si el puerto 3000 ya lo usa otra aplicación, abre `.env` y cambia `PORT=3000` por otro (por ejemplo `PORT=3100`).
 
-**4. Instalar dependencias**
+### 5. Instalar las dependencias
+
+Dentro de `src/server`:
 
 ```powershell
 npm install
 ```
 
-**5. Generar el cliente de Prisma**
+### 6. Generar el cliente de Prisma
+
+Dentro de `src/server`:
 
 ```powershell
 npx prisma@7.10.1 generate
 ```
 
-**6. Cargar los datos** (cambia la ruta por la de tu archivo `.dump`)
+Si pregunta `Ok to proceed? (y)`, escribe `y` y pulsa Enter.
+
+### 7. Comprobar que la base de datos está al día
+
+Dentro de `src/server`:
 
 ```powershell
-docker cp C:\ruta\al\futkingva-2026-11-11.dump futkingva-db:/tmp/datos.dump
-docker exec futkingva-db pg_restore -U futkingva -d futkingva --no-owner /tmp/datos.dump
-docker exec futkingva-db rm /tmp/datos.dump
-npx prisma@7.10.1 migrate resolve --applied 0_init
+npx prisma@7.10.1 migrate status
 ```
 
-**7. Arrancar el servidor**
+Tiene que decir **`Database schema is up to date!`**.
+
+### 8. Arrancar el servidor
+
+Dentro de `src/server`:
 
 ```powershell
 npm run dev
 ```
 
-Abre <http://localhost:3000/api/health> → tiene que salir `"status":"ok"`.
+Abre <http://localhost:3000/api/health> (o el puerto que pusieras). Tiene que salir `"status":"ok"`.
 
-**8. Arrancar el front** (otra terminal, desde la raíz)
+### 9. Arrancar la web
+
+En **otra** terminal, desde la carpeta del repositorio:
 
 ```powershell
 cd src/client
@@ -75,29 +110,39 @@ npm run dev
 
 ## Cada día
 
-1. Abrir Docker Desktop.
+1. Abrir Docker Desktop (la base de datos arranca sola; si no, `docker compose up -d --wait db`).
 2. `npm run dev` en `src/server`.
 3. `npm run dev` en `src/client`.
+
+Después de un `git pull`, si ha llegado una migración nueva (carpeta nueva en `prisma/migrations/`), ejecuta en `src/server`:
+
+```powershell
+npx prisma@7.10.1 migrate deploy
+npx prisma@7.10.1 generate
+```
 
 ## Si algo falla
 
 | Mensaje | Solución |
 |---|---|
-| `Falta el cliente de Prisma` | Paso 5 |
-| `Falta la variable de entorno DATABASE_URL` | Paso 3 |
+| `Falta el cliente de Prisma` | Paso 6 |
+| `Falta la variable de entorno DATABASE_URL` | Paso 4 |
 | `/api/health` responde `SERVICE_UNAVAILABLE` (503) | Docker Desktop cerrado o la BD parada → paso 2 |
-| `EADDRINUSE` (puerto ocupado) | Cambia `PORT=` en `.env` |
-| `/api/health` muestra otra web | Otra aplicación usa ese puerto → cambia `PORT=` en `.env` |
+| `EADDRINUSE` (puerto ocupado) o `/api/health` muestra otra web | Otra aplicación usa ese puerto → cambia `PORT=` en `.env` |
+| `pg_restore: error: ... already exists` | La BD ya tenía tablas → empieza de cero (abajo, borra los datos) y repite el paso 3 |
+| `migrate status` dice que falta alguna migración | `npx prisma@7.10.1 migrate deploy` |
 
-## Empezar de cero (borra todos los datos)
+## Empezar de cero
+
+⚠️ **Borra todos los datos de tu base de datos y no se puede deshacer.** Desde la carpeta del repositorio:
 
 ```powershell
 docker compose down -v
-docker compose up -d db
+docker compose up -d --wait db
 ```
 
-Y repetir el paso 6.
+Y repetir el paso 3.
 
 ## Cambiar las tablas
 
-No editar tablas a mano. Avisar a Ivan: los cambios se hacen con una migración nueva (`prisma/migrations/`), y solo una persona a la vez.
+No editar tablas a mano. Avisar a Ivan: los cambios se hacen con una migración nueva en `prisma/migrations/`, y solo una persona a la vez.

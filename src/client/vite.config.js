@@ -1,5 +1,18 @@
+import { readFileSync } from 'node:fs';
+import { parseEnv } from 'node:util';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
+// Puerto del servidor Express: el PORT de src/server/.env (cada uno puede tener uno distinto), o 3000.
+// Se lee el archivo sin cargarlo en process.env, para no mezclar las variables del servidor con las de Vite.
+function serverPort() {
+  try {
+    const env = parseEnv(readFileSync(new URL('../server/.env', import.meta.url), 'utf8'));
+    return Number(env.PORT) || 3000;
+  } catch {
+    return 3000; // Sin .env en el servidor
+  }
+}
 
 // La entrega se abre con doble clic en index.html (file://, sin servidor). Chrome bloquea ahí los
 // scripts de tipo «module» y los archivos pedidos con «crossorigin», que es lo que genera Vite por
@@ -24,6 +37,13 @@ function openFromFile() {
 export default defineConfig({
   plugins: [react(), openFromFile()],
   base: './', // Rutas relativas (./assets/…) para poder abrir dist/index.html desde cualquier carpeta
+  // Solo con «npm run dev»: las peticiones a /api las reenvía Vite al servidor Express. Para el
+  // navegador todo viene del mismo sitio (localhost:5173), así no hay CORS y la cookie de sesión funciona.
+  server: {
+    proxy: {
+      '/api': `http://localhost:${serverPort()}`,
+    },
+  },
   build: {
     // Un solo JS normal (no módulo) para que funcione con <script defer> en file://
     rolldownOptions: {
