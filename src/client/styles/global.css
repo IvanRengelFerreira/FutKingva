@@ -42,6 +42,21 @@ body {
   flex: 1;
 }
 
+/* Caja de aviso de los estados de carga y error (LoadingState, ErrorState).
+ * Misma caja que los avisos de «vacío» de Inicio y Análisis (.home__empty, .analysis__empty). */
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 /* Provisional: vistas todavía sin maquetar; se borra cuando estén las 20 páginas (Ivan) */
 .placeholder {
   padding: 40px;

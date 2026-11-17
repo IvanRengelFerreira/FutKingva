@@ -1,0 +1,36 @@
+/*
+ * Aviso de carga (la caja es .state-box, en styles/global.css)
+ * Acordado con Ivan el 17/11/2026
+ */
+
+/* Indicador giratorio: anillo del color del borde con un tramo en oro */
+.loading-state__spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent-gold);
+  border-radius: 50%;
+  animation: loading-state-spin 0.8s linear infinite;
+}
+
+@keyframes loading-state-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-state__spinner {
+    animation: none;
+  }
+}
+
+/* Durante el retraso: no ocupa sitio ni se ve, pero los lectores de pantalla lo leen */
+.loading-state__label--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

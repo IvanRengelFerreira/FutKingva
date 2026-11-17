@@ -1,0 +1,14 @@
+/*
+ * Aviso de error al cargar datos (la caja es .state-box, en styles/global.css)
+ * Acordado con Ivan el 17/11/2026
+ */
+
+.error-state__title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.error-state__message {
+  margin: 0;
+}
