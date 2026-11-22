@@ -185,4 +185,5 @@ Lo comprueba el agente revisor antes de cada commit.
 | **Nombres que se explican** | En inglés y por lo que hacen (`findUserByEmail`, `clearServerError`), no `data2`, `aux` ni `handle`. Booleanos como pregunta (`sending`, `isValidEmail`). |
 | **Comentarios del porqué** | En español, explicando lo que el código no dice (por qué el hash señuelo, por qué un 404 y no un 403). Nada de repetir lo que ya se lee. |
 | **Sin restos** | Ni código comentado, ni `console.log` de depuración, ni imports o variables sin usar. `console.warn` solo para fallos que se recuperan solos. |
+| **Lint y formato** | Antes de cada commit, `npm run lint` sin errores y `npm run format` (Prettier, configuración en `src/.prettierrc.json`) en `src/client` y `src/server`. |
 | **Cada uno, lo suyo** | Solo tocas tus archivos y tu línea de `app.js`. Si algo común no te vale, se habla antes de cambiarlo. |

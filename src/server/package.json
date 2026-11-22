@@ -10,7 +10,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "seed:demo": "node seed/demoUsers.js"
+    "seed:demo": "node seed/demoUsers.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
@@ -19,5 +22,12 @@
     "express": "5.3.0",
     "express-session": "1.19.0",
     "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.15.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "prettier": "3.10.1"
   }
 }

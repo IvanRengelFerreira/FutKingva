@@ -21,6 +21,8 @@ import { STANDINGS_LALIGA, STANDINGS_ZONES, getTeam, getStandingsZone } from '..
 //   <StandingsTable highlightTeamId="real-madrid" />            → resalta una fila (p. ej. desde la ficha de equipo)
 //   <StandingsTable standings={otraTabla} caption="Clasificación de la Premier League" />
 //   <StandingsTable legendExtra={<span>Actualizada hace 5 min</span>} />   → algo más a la derecha de la leyenda
+// Con datos de la API (GET /api/standings) cada fila trae su equipo (row.team) y no se busca en mockData.js:
+//   <StandingsTable standings={data.table} />
 export default function StandingsTable({
   standings = STANDINGS_LALIGA,
   variant = 'full',
@@ -60,7 +62,7 @@ export default function StandingsTable({
           </thead>
           <tbody>
             {rows.map((row) => {
-              const team = getTeam(row.teamId);
+              const team = row.team ?? getTeam(row.teamId);
               const leader = row.position === 1;
               const zone = full ? getStandingsZone(row.position) : undefined;
               const rowClasses = [
@@ -75,7 +77,7 @@ export default function StandingsTable({
                   <td className="standings-table__pos">{row.position}</td>
                   <th scope="row" className="standings-table__team">
                     <span className="standings-table__team-cell">
-                      <Crest teamId={row.teamId} size={full ? 28 : 24} />
+                      <Crest team={team} size={full ? 28 : 24} />
                       <Link className="standings-table__team-name" to={`/equipos/${row.teamId}`}>
                         {team?.name ?? row.teamId}
                       </Link>

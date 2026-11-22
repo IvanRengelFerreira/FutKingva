@@ -15,7 +15,7 @@
 //   comprueba `loading` antes que `data` si los datos de la petición anterior no deben verse
 //   (p. ej. al pasar de la ficha de un equipo a la de otro). Si hay error, data vuelve a null.
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useState } from 'react';
 
 /**
  * @template T
@@ -40,15 +40,14 @@ export function useApi(request, deps = []) {
   }
 
   // Siempre la última versión de la función, sin tener que ponerla en las dependencias
-  const requestRef = useRef(request);
-  requestRef.current = request;
+  const runRequest = useEffectEvent((signal) => request(signal));
 
+  // «Cargando» ya se ha marcado arriba, en el render: aquí solo se pide y se guarda el resultado.
+  // (Si el efecto se repite sin cambiar la clave, p. ej. con Fast Refresh, se vuelve a pedir sin pasar por «cargando».)
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
-    setError(null);
 
-    requestRef.current(controller.signal)
+    runRequest(controller.signal)
       .then((result) => {
         if (!controller.signal.aborted) setData(result);
       })

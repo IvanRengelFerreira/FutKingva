@@ -10,10 +10,12 @@ import './Crest.css';
 //   <Crest teamId="real-madrid" />              → 28 px (tablas)
 //   <Crest teamId={match.homeId} size={36} />   → tarjetas de partido, próximos partidos
 //   <Crest teamId="real-madrid" size={128} />   → cabecera de la ficha de equipo
+// Con datos de la API se le pasa el equipo ya cargado ({ name, code, color }, el formato común del servidor):
+//   <Crest team={row.team} />
 // Va al lado del nombre del equipo, así que los lectores de pantalla lo saltan.
 // Si va solo (sin el nombre al lado), pasa labelled para que lean el nombre del equipo.
-export default function Crest({ teamId, size = 28, labelled = false, className = '' }) {
-  const team = getTeam(teamId);
+export default function Crest({ team: apiTeam, teamId, size = 28, labelled = false, className = '' }) {
+  const team = apiTeam ?? getTeam(teamId);
   const code = team?.code ?? '?';
 
   const style = {
@@ -21,7 +23,7 @@ export default function Crest({ teamId, size = 28, labelled = false, className =
     '--crest-font-size': `${Math.round(size * 0.38)}px`,
     '--crest-border': size >= 64 ? '2px' : '1.5px',
   };
-  if (team) style['--crest-color'] = team.color; // Color del club (viene de los datos, no de colors.css)
+  if (team?.color) style['--crest-color'] = team.color; // Color del club (viene de los datos, no de colors.css)
 
   return (
     <span

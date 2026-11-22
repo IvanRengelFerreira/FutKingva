@@ -1,6 +1,6 @@
 // Reglas y cálculos del equipo ideal (11 · Mi equipo ideal): qué jugador cabe en cada posición,
 // cómo se reubica el once al cambiar de formación y los totales del resumen.
-import { FORMATIONS, slotPosition } from '../../components/Pitch/Pitch.jsx';
+import { FORMATIONS, slotPosition } from '../../components/Pitch/formations.js';
 import { PLAYERS, PLAYER_AGES_ESTIMATED, getPlayer } from '../../data/mockData.js';
 
 export const FORMATION_NAMES = Object.keys(FORMATIONS);

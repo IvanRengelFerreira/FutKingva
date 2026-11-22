@@ -3,7 +3,7 @@ import TextField from '../../components/TextField/TextField.jsx';
 import Select from '../../components/Select/Select.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Rating from '../../components/Rating/Rating.jsx';
-import { slotPosition } from '../../components/Pitch/Pitch.jsx';
+import { slotPosition } from '../../components/Pitch/formations.js';
 import { SORTS, candidatesFor, fitsSlot } from './team.js';
 import { getTeam } from '../../data/mockData.js';
 import searchIcon from '../../assets/icon-search-small.svg';

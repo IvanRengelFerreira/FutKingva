@@ -3,7 +3,8 @@ import { useUserData } from '../../context/UserDataContext.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Select from '../../components/Select/Select.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
-import Pitch, { POSITION_NAMES, slotPosition } from '../../components/Pitch/Pitch.jsx';
+import Pitch from '../../components/Pitch/Pitch.jsx';
+import { POSITION_NAMES, slotPosition } from '../../components/Pitch/formations.js';
 import CandidateList from './CandidateList.jsx';
 import TeamSummary from './TeamSummary.jsx';
 import {

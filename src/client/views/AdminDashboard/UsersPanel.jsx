@@ -4,6 +4,7 @@ import Select from '../../components/Select/Select.jsx';
 import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import AdminIcon from './AdminIcons.jsx';
+import { isFiltering } from './filterUsers.js';
 import searchIcon from '../../assets/icon-search-small.svg';
 
 // Pestaña «Usuarios»: buscador, filtros por rol y estado, tabla (escritorio) o tarjetas (móvil)
@@ -21,25 +22,6 @@ const STATUS_FILTER = [
   { value: 'active', label: 'Activo' },
   { value: 'blocked', label: 'Bloqueado' },
 ];
-
-// Quita tildes y mayúsculas para buscar
-function normalize(text = '') {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-}
-
-export function isFiltering({ query, role, status }) {
-  return Boolean(query.trim()) || role !== 'all' || status !== 'all';
-}
-
-export function filterUsers(users, { query, role, status }) {
-  const search = normalize(query);
-  return users.filter(
-    (user) =>
-      (role === 'all' || user.role === role) &&
-      (status === 'all' || user.status === status) &&
-      (!search || normalize(user.name).includes(search) || normalize(user.email).includes(search))
-  );
-}
 
 // Acciones de una fila: la cuenta propia no se puede bloquear ni eliminar («—»)
 function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete, compact }) {

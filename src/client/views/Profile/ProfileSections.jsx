@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Rating from '../../components/Rating/Rating.jsx';
-import { FORMATIONS } from '../../components/Pitch/Pitch.jsx';
+import { FORMATIONS } from '../../components/Pitch/formations.js';
 import { summarize, toAssigned } from '../IdealTeam/team.js';
 import { getTeam, getPlayer, STANDINGS_LALIGA } from '../../data/mockData.js';
 import starFilledIcon from '../../assets/icon-star-filled.svg';
