@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import './Notifications.css';
-import { useSession } from '../../context/SessionContext.jsx';
+import { useNotifications } from '../../context/NotificationsContext.jsx';
 import NotificationToast from './NotificationToast.jsx';
 import bellIcon from '../../assets/icon-bell.svg';
 import bellReadIcon from '../../assets/icon-bell-read.svg';
@@ -13,7 +13,7 @@ import settingsIcon from '../../assets/icon-settings.svg';
 // Diseño: Figma › Mockups › 00 · Componentes interactivos › Panel de notificaciones abierto
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=67-1582
 // Va dentro de la Navbar solo cuando hay sesión: <Notifications />
-// Los avisos salen de la sesión (useSession → notifications, unreadCount, markAllRead).
+// Los avisos salen de useNotifications (notifications, unreadCount, markAllRead).
 
 // Icono y color de cada tipo de aviso (data/mockData.js › NOTIFICATIONS)
 const TYPES = {
@@ -23,7 +23,7 @@ const TYPES = {
 };
 
 export default function Notifications() {
-  const { notifications, unreadCount, markAllRead } = useSession();
+  const { notifications, unreadCount, markAllRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 

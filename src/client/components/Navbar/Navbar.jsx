@@ -26,7 +26,7 @@ const LINKS = [
 ];
 
 // Navbar: versión de escritorio y, por debajo de 1440 px, versión móvil con ☰.
-// Sin sesión: «Iniciar sesión» y «Registrarse». Con sesión: campana y usuario (sesión simulada, ver SessionContext).
+// Sin sesión: «Iniciar sesión» y «Registrarse». Con sesión: campana y usuario (ver SessionContext).
 // Diseño: Figma › Mockups › Componentes de mockup › Cabecera y Cabecera móvil (en Figma se llaman así) › Sesión=No / Sesión=Sí
 export default function Navbar() {
   const navigate = useNavigate();

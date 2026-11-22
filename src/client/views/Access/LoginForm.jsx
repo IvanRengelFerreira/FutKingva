@@ -3,27 +3,33 @@ import { Link } from 'react-router';
 import TextField from '../../components/TextField/TextField.jsx';
 import Checkbox from '../../components/Checkbox/Checkbox.jsx';
 import Button from '../../components/Button/Button.jsx';
-import { isValidEmail } from './validation.js';
+import FieldError from '../../components/FieldError/FieldError.jsx';
+import { validateLogin } from '../../../shared/validation/auth.js';
+import { useFormSubmit } from '../../services/useFormSubmit.js';
 import mailIcon from '../../assets/icon-mail.svg';
 import lockIcon from '../../assets/icon-lock.svg';
 
 // Pestaña «Iniciar sesión» de 14 · Acceso.
 // Los errores salen al pulsar «Entrar» y se van en cuanto se corrige el campo.
+// onSubmit({ email, password, remember }) llama al servidor; si falla, aquí se enseña el porqué.
 export default function LoginForm({ onSubmit, onSwitch }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
   const [remember, setRemember] = useState(true);
-  const [submitted, setSubmitted] = useState(false);
+  const { submitted, sending, serverFields, message, clearServerError, submit } = useFormSubmit();
 
-  const errors = {
-    email: !email ? 'Escribe tu correo electrónico' : !isValidEmail(email) ? 'El correo no es válido' : null,
-    password: !password ? 'Escribe tu contraseña' : null,
-  };
+  const errors = validateLogin(form);
+  const shown = (field) => (submitted ? errors[field] : null) ?? serverFields[field];
+
+  function update(field) {
+    return (e) => {
+      setForm({ ...form, [field]: e.target.value });
+      clearServerError(field);
+    };
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    setSubmitted(true);
-    if (!errors.email && !errors.password) onSubmit(remember);
+    submit(() => onSubmit({ email: form.email.trim(), password: form.password, remember }), errors);
   }
 
   return (
@@ -35,9 +41,9 @@ export default function LoginForm({ onSubmit, onSwitch }) {
         autoComplete="email"
         placeholder="tu@correo.com"
         icon={mailIcon}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={submitted ? errors.email : null}
+        value={form.email}
+        onChange={update('email')}
+        error={shown('email')}
       />
       <TextField
         label="Contraseña"
@@ -45,18 +51,19 @@ export default function LoginForm({ onSubmit, onSwitch }) {
         name="password"
         autoComplete="current-password"
         icon={lockIcon}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={submitted ? errors.password : null}
+        value={form.password}
+        onChange={update('password')}
+        error={shown('password')}
       />
 
       <div className="access__row">
         <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>Recordarme</Checkbox>
-        {/* No hay recuperación de contraseña sin servidor: lleva a Contacto */}
+        {/* De momento no hay recuperación de contraseña: lleva a Contacto */}
         <Link className="access__link" to="/contacto">¿Olvidaste tu contraseña?</Link>
       </div>
 
-      <Button className="access__submit" type="submit">Entrar</Button>
+      <FieldError>{message}</FieldError>
+      <Button className="access__submit" type="submit" disabled={sending}>Entrar</Button>
 
       <p className="access__switch">
         ¿No tienes cuenta?{' '}

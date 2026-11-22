@@ -55,6 +55,21 @@ export async function detail(req, res) {
 - Errores esperados con `AppError`; para el resto (BD caída, fallos de Prisma) basta con no capturarlos.
 - Las consultas, con **Prisma** (`prisma.<tabla>`). SQL a mano solo si Prisma no puede (`prisma.$queryRaw`).
 - Comprueba siempre los datos que llegan (`req.params`, `req.query`, `req.body`): **el servidor nunca se fía del cliente**.
+- Una consulta que necesitan **varios archivos** va en `db.js` junto a `prisma` (p. ej. `findUserByEmail`), no copiada en cada uno. *Provisional: si se aprueba una capa de servicios, se moverá allí.*
+
+### Validar el cuerpo de un formulario
+
+Las reglas de un formulario van en `src/shared/validation/<recurso>.js`: **las mismas funciones** las usa el front (error junto al campo antes de enviar) y el servidor. Cada función recibe los datos y devuelve `{ campo: 'mensaje' }` solo con lo que falla (`{}` si todo vale). En el servidor se ponen en la ruta con `validate`:
+
+```js
+// routes/auth.js
+import { validate } from '../middleware/validate.js';
+import { validateLogin } from '../../shared/validation/auth.js';
+
+authRouter.post('/login', validate(validateLogin), auth.login);
+```
+
+Si algo falla, `validate` responde **400** con esos `fields` y el controlador no llega a ejecutarse: dentro de él, `req.body` ya está comprobado. No repitas el `if (Object.keys(fields).length) …` en cada controlador.
 
 ## 3. Formato de las respuestas
 
@@ -76,6 +91,7 @@ Formato común: `{ "error": { "code", "message", "fields"? } }`. `message` va **
 |---|---|---|
 | Datos no válidos | `AppError.badRequest('…', { campo: 'motivo' })` | 400 `VALIDATION_ERROR` |
 | Sin sesión | `requireAuth` / `AppError.unauthorized()` | 401 `UNAUTHORIZED` |
+| Correo o contraseña incorrectos | `AppError.invalidCredentials()` | 401 `INVALID_CREDENTIALS` |
 | Sin permiso | `requireRole(...)` / `AppError.forbidden()` | 403 `FORBIDDEN` |
 | No existe | `AppError.notFound('…')` | 404 `NOT_FOUND` |
 | Ya existe o choca | `AppError.conflict('…', fields)` | 409 `CONFLICT` |
@@ -124,6 +140,28 @@ if (error) return <ErrorState error={error} onRetry={reload} />;
 - En desarrollo, Vite manda las peticiones a `/api` al servidor (proxy en `vite.config.js`, con el `PORT` de `src/server/.env`): hay que tener **los dos** en marcha (`npm run dev` en `src/server` y en `src/client`).
 - Las vistas conectadas a la API **dejan de importar `mockData.js`**.
 
+### Formularios que envían a la API
+
+Con **`useFormSubmit`** (`services/useFormSubmit.js`), que lleva el «enviando» y los errores del servidor. No copies ese estado en cada formulario.
+
+```jsx
+import { useFormSubmit } from '../../services/useFormSubmit.js';
+
+const errors = validateLogin(form);                         // mismas reglas que el servidor
+const { submitted, sending, serverFields, message, clearServerError, submit } = useFormSubmit();
+const shown = (field) => (submitted ? errors[field] : null) ?? serverFields[field];
+
+<form onSubmit={(e) => { e.preventDefault(); submit(() => onSubmit(form), errors); }} noValidate>
+  <TextField … error={shown('email')} onChange={(e) => { setForm(…); clearServerError('email'); }} />
+  <FieldError>{message}</FieldError>
+  <Button type="submit" disabled={sending}>Enviar</Button>
+</form>
+```
+
+- Errores de un campo (400, 409): junto a su campo, con la prop `error` de `TextField` / `Checkbox`.
+- El resto (401, 403, sin conexión): `message`, en un `FieldError` **encima del botón**.
+- El botón de enviar, `disabled={sending}` mientras se envía.
+
 ## 7. Cambiar las tablas
 
 Nunca a mano. Una migración nueva, **una persona a la vez** y avisando al resto:
@@ -133,3 +171,18 @@ Nunca a mano. Una migración nueva, **una persona a la vez** y avisando al resto
 3. **Revisa el SQL generado**: Prisma no conoce los CHECK, los triggers ni los índices sobre expresiones (`lower(email)`) y puede intentar borrarlos.
 4. `npx prisma@7.10.1 migrate dev` para aplicarla y `git add` de la carpeta nueva de `prisma/migrations/`.
 5. Los demás, después de `git pull`: `npx prisma@7.10.1 migrate deploy` y `npx prisma@7.10.1 generate`.
+
+## 8. Código limpio
+
+Lo comprueba el agente revisor antes de cada commit.
+
+| Norma | En la práctica |
+|---|---|
+| **Una responsabilidad por pieza** | Rutas: URL y permisos. Controladores: leer la petición, consultar y responder. Componentes: pintar. La lógica que se repite, a un hook o a un módulo propio. Un contexto por tema (`SessionContext` sesión, `NotificationsContext` avisos). |
+| **Funciones cortas** | Si una función pasa de unas 30 líneas o hace dos cosas, se divide y cada parte lleva un nombre que diga qué hace. |
+| **Sin duplicar** | Antes de escribir algo, busca si ya existe (`components/`, `services/`, `src/shared/`, `middleware/`, `db.js`). Si lo necesitan dos archivos, va a un sitio común, no copiado. |
+| **Sin números ni textos mágicos** | Valores con significado como constantes con nombre (`REMEMBER_MS`, `PASSWORD_MIN`). Un mensaje que sale en dos sitios, una constante. |
+| **Nombres que se explican** | En inglés y por lo que hacen (`findUserByEmail`, `clearServerError`), no `data2`, `aux` ni `handle`. Booleanos como pregunta (`sending`, `isValidEmail`). |
+| **Comentarios del porqué** | En español, explicando lo que el código no dice (por qué el hash señuelo, por qué un 404 y no un 403). Nada de repetir lo que ya se lee. |
+| **Sin restos** | Ni código comentado, ni `console.log` de depuración, ni imports o variables sin usar. `console.warn` solo para fallos que se recuperan solos. |
+| **Cada uno, lo suyo** | Solo tocas tus archivos y tu línea de `app.js`. Si algo común no te vale, se habla antes de cambiarlo. |

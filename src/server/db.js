@@ -21,3 +21,10 @@ export const prisma = new PrismaClient({
     options: '-c TimeZone=UTC',
   }),
 });
+
+// Usuario por email sin distinguir mayúsculas (usa el índice único users_email_lower_idx, que Prisma
+// no sabe consultar: por eso el SQL). Lo comparten el registro, el login y las cuentas de demo.
+export async function findUserByEmail(email) {
+  const [row] = await prisma.$queryRaw`SELECT id FROM users WHERE lower(email) = lower(${email}) LIMIT 1`;
+  return row ? prisma.users.findUnique({ where: { id: row.id } }) : null;
+}

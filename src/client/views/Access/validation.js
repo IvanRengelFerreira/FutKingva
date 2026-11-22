@@ -1,13 +1,13 @@
-// Comprobaciones de los formularios de 14 · Acceso (sin servidor: solo en el navegador).
+// Ayudas de los formularios de 14 · Acceso que solo existen en el navegador.
+// Las reglas que deciden si los datos valen están en src/shared/validation/auth.js
+// (las mismas que comprueba el servidor).
 
-// Correo con forma algo@algo.algo
-export function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
+// 16 · Contacto también lo importa desde aquí
+export { isValidEmail } from '../../../shared/validation/auth.js';
 
-// Seguridad de la contraseña de 0 a 4: un punto por cada cosa que cumple
-// (8 caracteres o más, mayúsculas y minúsculas, algún número, algún símbolo).
-// Con menos de 6 caracteres nunca pasa de «Débil».
+// Seguridad de la contraseña de 0 a 4, solo como ayuda visual (barra bajo «Contraseña»):
+// un punto por cada cosa que cumple (8 caracteres o más, mayúsculas y minúsculas, algún número,
+// algún símbolo). Con menos de 6 caracteres nunca pasa de «Débil».
 export function passwordStrength(password) {
   if (!password) return 0;
   let score = 0;

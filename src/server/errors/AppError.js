@@ -28,6 +28,11 @@ export class AppError extends Error {
     return new AppError(401, 'UNAUTHORIZED', message);
   }
 
+  /** Correo o contraseña incorrectos al iniciar sesión (no se dice cuál de los dos falla) */
+  static invalidCredentials(message = 'El correo o la contraseña no son correctos') {
+    return new AppError(401, 'INVALID_CREDENTIALS', message);
+  }
+
   /** Con sesión, pero sin permiso (rol insuficiente, cuenta bloqueada, recurso de otro usuario…) */
   static forbidden(message = 'No tienes permiso para hacer esto') {
     return new AppError(403, 'FORBIDDEN', message);

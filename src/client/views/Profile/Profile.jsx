@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import { useLogout, useSession } from '../../context/SessionContext.jsx';
+import { useNotifications } from '../../context/NotificationsContext.jsx';
 import { useUserData } from '../../context/UserDataContext.jsx';
 import { PROFILE_EXAMPLE } from '../../data/mockData.js';
 import {
@@ -18,14 +19,15 @@ import logoutIcon from '../../assets/icon-logout-light.svg';
 import './Profile.css';
 
 // 12 · Mi perfil (RF3): datos del usuario, favoritos, comparativas guardadas, equipo ideal y notificaciones.
-// Solo con sesión (RequireRole en App.jsx). El nombre, las iniciales y el correo salen de la sesión simulada;
+// Solo con sesión (RequireRole en App.jsx). El nombre, las iniciales y el correo salen de la sesión (useSession);
 // los favoritos, las comparativas y el equipo ideal, de lo que el usuario ha guardado (useUserData,
 // que empieza con los datos de ejemplo de mockData.js y se guarda en el navegador).
 // Pestaña Favoritos: el resumen del mockup (todo); las demás enseñan solo su bloque.
 // Diseño: Figma › Mockups › 12 · Mi perfil
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=56-781
 export default function Profile() {
-  const { user, notifications, unreadCount, markAllRead } = useSession();
+  const { user } = useSession();
+  const { notifications, unreadCount, markAllRead } = useNotifications();
   const handleLogout = useLogout();
   const [tab, setTab] = useState('favorites');
   const {

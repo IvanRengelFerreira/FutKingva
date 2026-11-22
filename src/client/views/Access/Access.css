@@ -222,6 +222,15 @@
   outline-offset: 2px;
 }
 
+/* Mientras entra con una cuenta de prueba: igual que los botones deshabilitados (Button.css) */
+.access__quick-button:disabled,
+.access__quick-button:disabled:hover {
+  border-color: transparent;
+  background: var(--bg-elevated);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
 .access__quick-button--user { --role-color: var(--status-win); }
 .access__quick-button--editor { --role-color: var(--status-info); }
 .access__quick-button--admin { --role-color: var(--status-loss); }

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
-import { ROLE_PANELS, useLogout, useSession } from '../../context/SessionContext.jsx';
+import { ROLE_PANELS, useLogout } from '../../context/SessionContext.jsx';
+import { useNotifications } from '../../context/NotificationsContext.jsx';
 import './MobileMenu.css';
 import logo from '../../assets/logo-mobile.svg'; // Mismo logo que la navbar móvil
 import closeIcon from '../../assets/icon-close.svg';
@@ -37,10 +38,10 @@ const PANEL_ICONS = { editor: editIcon, admin: shieldIcon };
 // Cajón lateral que se abre con ☰ en móvil.
 // Diseño: Figma › Mockups › 00 · Componentes interactivos › Menú móvil abierto (Sesión=Sí)
 // Sin sesión (user = null) no se muestran el bloque del perfil, «Mi perfil» ni «Cerrar sesión».
-// user: el usuario de la sesión simulada (ver SessionContext).
+// user: el usuario de la sesión (ver SessionContext).
 export default function MobileMenu({ open, onClose, user = null }) {
   const { pathname } = useLocation();
-  const { unreadCount } = useSession();
+  const { unreadCount } = useNotifications();
   const logout = useLogout();
   const closeButtonRef = useRef(null);
 

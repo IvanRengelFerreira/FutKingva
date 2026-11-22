@@ -1,7 +1,9 @@
 import { Link, Navigate, useLocation } from 'react-router';
 import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
+import LoadingState from '../LoadingState/LoadingState.jsx';
 
 // Página solo para usuarios con sesión (y, si se indica, con ciertos roles).
+// Al cargar la web espera a saber si hay sesión (si no, al recargar una página privada mandaría a Acceso).
 // Sin sesión lleva a Acceso; al entrar, Acceso vuelve a esta página.
 // Con sesión pero sin el rol necesario (p. ej. un usuario en el panel de editor) se avisa de que no tiene
 // permiso, con enlaces a Inicio, a su propio panel y a Acceso para entrar con otra cuenta.
@@ -9,8 +11,12 @@ import { ROLE_PANELS, useSession } from '../../context/SessionContext.jsx';
 //   <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />
 //   <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />
 export default function RequireRole({ roles, children }) {
-  const { user } = useSession();
+  const { user, ready } = useSession();
   const location = useLocation();
+
+  if (!ready) {
+    return <LoadingState label="Comprobando tu sesión…" />;
+  }
 
   if (!user) {
     return <Navigate to="/acceso" replace state={{ from: location.pathname }} />;

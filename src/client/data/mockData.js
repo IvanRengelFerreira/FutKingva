@@ -474,7 +474,7 @@ export const TEAM_RECENT_RESULTS = {
 /* --- Página 12 · Mi perfil ---                                     */
 /* ---------------------------------------------------------------- */
 
-// Datos del usuario de ejemplo (rol «user» de la sesión simulada). Favoritos y comparativas: ids de TEAMS y PLAYERS.
+// Datos del usuario de ejemplo (antes de conectar la sesión real; hoy solo los usa UserDataContext). Favoritos y comparativas: ids de TEAMS y PLAYERS.
 // Las comparativas guardadas abren el Comparador (10). memberSince: mes y año de alta.
 export const PROFILE_EXAMPLE = {
   email: 'usuario@ejemplo.com',

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { parseEnv } from 'node:util';
-import { defineConfig } from 'vite';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // Puerto del servidor Express: el PORT de src/server/.env (cada uno puede tener uno distinto), o 3000.
@@ -40,6 +41,11 @@ export default defineConfig({
   // Solo con «npm run dev»: las peticiones a /api las reenvía Vite al servidor Express. Para el
   // navegador todo viene del mismo sitio (localhost:5173), así no hay CORS y la cookie de sesión funciona.
   server: {
+    // src/shared (reglas de los formularios comunes con el servidor) está fuera de src/client:
+    // hay que permitir a Vite servirlo en desarrollo (en el build ya va dentro del JS)
+    fs: {
+      allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL('../shared', import.meta.url))],
+    },
     proxy: {
       '/api': `http://localhost:${serverPort()}`,
     },

@@ -1,29 +1,21 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { NOTIFICATIONS } from '../data/mockData.js';
+import * as authApi from '../services/auth.js';
 
-// Sesión simulada: no hay servidor, así que «iniciar sesión» solo guarda el rol elegido
-// en el navegador (localStorage). Se mantiene al recargar y al cambiar de página.
+// Sesión del usuario (RF1), guardada en el servidor: el navegador solo tiene la cookie.
+// Al cargar la web se pregunta al servidor quién es (GET /api/auth/me); mientras tanto ready = false.
 //
 // Uso en cualquier componente o vista:
-//   const { user, login, logout } = useSession();
-//   user      → null si es un invitado; si no, uno de los usuarios de DEMO_USERS
-//   login('user' | 'editor' | 'admin', { name, remember })  → name: el nombre elegido al registrarse (opcional)
-//                                                              remember: false para no recordarla al recargar
+//   const { user, ready, login, register, logout } = useSession();
+//   user      → null si es un invitado; si no, { id, name, email, role, initials } (role: 'user' | 'editor' | 'admin')
+//   ready     → false hasta saber si hay sesión (al cargar la web). Con false, user todavía es null.
+//   await login({ email, password, remember })                 → inicia sesión (lanza ApiError si falla)
+//   await register({ name, email, password, repeat, accepted }) → crea la cuenta y entra (lanza ApiError si falla)
 //   logout()  → cierra la sesión ya. Para un botón «Cerrar sesión», mejor useLogout() (ver abajo).
-//   notifications, unreadCount, markAllRead()  → avisos del usuario (campana y Mi perfil)
 //   Ejemplo: {user?.role === 'editor' && <p>Solo para editores</p>}
+// Los avisos del usuario están aparte: context/NotificationsContext.jsx (useNotifications).
 // Para que una página sea solo para ciertos roles, ver components/RequireRole.
-
-const STORAGE_KEY = 'futkingva-session';
-const NAME_KEY = 'futkingva-session-name'; // Nombre elegido al registrarse
-
-// Usuario de ejemplo de cada rol: se llama como el rol (sale así en la navbar y en el menú móvil).
-const DEMO_USERS = {
-  user: { role: 'user', name: 'Usuario', initials: 'U', email: 'usuario@ejemplo.com' },
-  editor: { role: 'editor', name: 'Editor', initials: 'E', email: 'editor@ejemplo.com' },
-  admin: { role: 'admin', name: 'Admin', initials: 'A', email: 'admin@ejemplo.com' },
-};
+// ⚠ Ocultar algo en el front es solo comodidad: quien protege de verdad es el servidor.
 
 // Panel de cada rol (los usuarios normales no tienen). Lo usan la navbar y el menú móvil.
 export const ROLE_PANELS = {
@@ -33,63 +25,52 @@ export const ROLE_PANELS = {
 
 const SessionContext = createContext(null);
 
-// Si el navegador bloquea localStorage (p. ej. con las cookies desactivadas), la sesión
-// funciona igual pero no se recuerda al recargar, en vez de dejar la página en blanco.
-function readStoredUser() {
-  try {
-    return makeUser(localStorage.getItem(STORAGE_KEY), localStorage.getItem(NAME_KEY));
-  } catch {
-    return null;
-  }
-}
-
-function storeUser(role, name) {
-  try {
-    if (role) localStorage.setItem(STORAGE_KEY, role);
-    else localStorage.removeItem(STORAGE_KEY);
-    if (role && name) localStorage.setItem(NAME_KEY, name);
-    else localStorage.removeItem(NAME_KEY);
-  } catch {
-    // Sin localStorage: la sesión dura hasta recargar.
-  }
-}
-
-// Usuario de ejemplo del rol, con el nombre elegido al registrarse si lo hay (null si el rol no vale)
-function makeUser(role, name) {
-  const base = Object.hasOwn(DEMO_USERS, role) ? DEMO_USERS[role] : null;
-  if (!base) return null;
-  const custom = name?.trim();
-  return custom ? { ...base, name: custom, initials: custom[0].toUpperCase() } : base;
-}
-
 // Envuelve toda la web en App.jsx para que cualquier página pueda leer la sesión.
 export function SessionProvider({ children }) {
-  // Usuario guardado de la visita anterior (si no hay o no es válido, invitado).
-  const [user, setUser] = useState(readStoredUser);
-  // Avisos de ejemplo (data/mockData.js). «Leídas» dura hasta recargar o volver a entrar.
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const [user, setUser] = useState(null);
+  const [ready, setReady] = useState(false);
   // «Cerrar sesión» pendiente: se cierra al llegar a Inicio (ver useLogout y LogoutOnHome)
   const [logoutPending, setLogoutPending] = useState(false);
 
-  function login(role, { name, remember = true } = {}) {
-    storeUser(remember ? role : null, name);
-    setUser(makeUser(role, name));
-    setNotifications(NOTIFICATIONS);
+  // ¿Hay sesión de una visita anterior? Si el servidor no responde, se entra como invitado.
+  useEffect(() => {
+    const controller = new AbortController();
+    authApi
+      .getMe({ signal: controller.signal })
+      // Si mientras tanto ya ha entrado (login en /acceso), no se pisa ese usuario
+      .then((me) => setUser((current) => current ?? me))
+      .catch((error) => {
+        if (error.name === 'AbortError') return;
+        console.warn('[sesión] No se ha podido comprobar la sesión:', error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setReady(true);
+      });
+    return () => controller.abort();
+  }, []);
+
+  async function login(credentials) {
+    setUser(await authApi.login(credentials));
   }
 
-  function markAllRead() {
-    setNotifications((list) => list.map((n) => ({ ...n, unread: false })));
+  async function register(data) {
+    setUser(await authApi.register(data));
   }
 
-  function logout() {
-    storeUser(null);
-    setUser(null);
+  async function logout() {
     setLogoutPending(false);
+    try {
+      await authApi.logout();
+    } catch (error) {
+      // Sin conexión: en esta pestaña se sale igual, pero la sesión sigue abierta en el servidor
+      // (al recargar volvería a entrar) hasta que caduque la cookie o se cierre sesión con conexión
+      console.warn('[sesión] No se ha podido cerrar la sesión en el servidor:', error.message);
+    }
+    setUser(null);
   }
 
   return (
-    <SessionContext.Provider value={{ user, login, logout, logoutPending, setLogoutPending, notifications, unreadCount, markAllRead }}>
+    <SessionContext.Provider value={{ user, ready, login, register, logout, logoutPending, setLogoutPending }}>
       {children}
     </SessionContext.Provider>
   );

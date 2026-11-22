@@ -94,7 +94,17 @@ npx prisma@7.10.1 migrate status
 
 Tiene que decir **`Database schema is up to date!`**.
 
-### 8. Arrancar el servidor
+### 8. Crear las cuentas de prueba
+
+Dentro de `src/server`:
+
+```powershell
+npm run seed:demo
+```
+
+Crea `usuario@futkingva.es`, `editor@futkingva.es` y `admin@futkingva.es` (contraseña `futkingva2026`), que son las que usan los botones «Acceso rápido de prueba» de la página de Acceso. Se puede repetir sin problema: si ya existen, las deja como nuevas.
+
+### 9. Arrancar el servidor
 
 Dentro de `src/server`:
 
@@ -104,7 +114,7 @@ npm run dev
 
 Abre <http://localhost:3000/api/health> (o el puerto que pusieras). Tiene que salir `"status":"ok"`.
 
-### 9. Arrancar la web
+### 10. Arrancar la web
 
 En **otra** terminal, desde la carpeta del repositorio:
 
@@ -137,6 +147,7 @@ npx prisma@7.10.1 generate
 | `EADDRINUSE` (puerto ocupado) o `/api/health` muestra otra web | Otra aplicación usa ese puerto → cambia `PORT=` en `.env` |
 | `pg_restore: error: ... already exists` | La BD ya tenía tablas → empieza de cero (abajo, borra los datos) y repite el paso 3 |
 | `migrate status` dice que falta alguna migración | `npx prisma@7.10.1 migrate deploy` |
+| «Faltan las cuentas de prueba» al pulsar Usuario / Editor / Admin en Acceso | Paso 8 |
 
 ## Empezar de cero
 

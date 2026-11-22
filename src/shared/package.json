@@ -1,0 +1,6 @@
+{
+  "name": "futkingva-shared",
+  "private": true,
+  "description": "Código común del cliente y el servidor (reglas de los formularios)",
+  "type": "module"
+}
