@@ -88,7 +88,9 @@ export default function MobileMenu({ open, onClose, user = null }) {
         <span className="mobile-menu__icon" style={{ '--icon': `url("${link.icon}")` }} aria-hidden="true" />
         <span className="mobile-menu__label">{link.label}</span>
         {badge ? (
-          <span className="mobile-menu__badge" aria-label={`${badge} avisos nuevos`}>{badge}</span>
+          <span className="mobile-menu__badge" aria-label={`${badge} avisos nuevos`}>
+            {badge}
+          </span>
         ) : (
           <img src={chevronIcon} alt="" width="14" height="14" />
         )}
@@ -107,7 +109,13 @@ export default function MobileMenu({ open, onClose, user = null }) {
             <img src={logo} alt="" width="30" height="30" />
             <span className="mobile-menu__title">FUTKINGVA</span>
           </Link>
-          <button ref={closeButtonRef} className="mobile-menu__close" type="button" onClick={onClose} aria-label="Cerrar menú">
+          <button
+            ref={closeButtonRef}
+            className="mobile-menu__close"
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar menú"
+          >
             <img src={closeIcon} alt="" width="22" height="22" />
           </button>
         </div>
@@ -123,9 +131,7 @@ export default function MobileMenu({ open, onClose, user = null }) {
         )}
 
         <nav className="mobile-menu__nav" aria-label="Menú principal">
-          <div className="mobile-menu__group">
-            {MAIN_LINKS.map((link) => renderLink(link))}
-          </div>
+          <div className="mobile-menu__group">{MAIN_LINKS.map((link) => renderLink(link))}</div>
 
           <p className="mobile-menu__heading">MI ZONA</p>
           <div className="mobile-menu__group mobile-menu__group--my-zone">
@@ -143,8 +149,12 @@ export default function MobileMenu({ open, onClose, user = null }) {
             </button>
           )}
           <div className="mobile-menu__extra-links">
-            <Link className="mobile-menu__extra-link" to="/sobre-nosotros" onClick={onClose}>Sobre nosotros</Link>
-            <Link className="mobile-menu__extra-link" to="/contacto" onClick={onClose}>Contacto</Link>
+            <Link className="mobile-menu__extra-link" to="/sobre-nosotros" onClick={onClose}>
+              Sobre nosotros
+            </Link>
+            <Link className="mobile-menu__extra-link" to="/contacto" onClick={onClose}>
+              Contacto
+            </Link>
           </div>
         </div>
       </div>

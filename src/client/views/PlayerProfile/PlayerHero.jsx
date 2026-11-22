@@ -26,13 +26,24 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
   // Escritorio: nombre completo, edad, país, altura y pie · móvil: solo edad, país y altura
   // Edad: la de PLAYERS o, si no está, la estimada (la misma que usa el equipo ideal)
   const age = ageOf(player);
-  const details = (isMobile
-    ? [age != null && `${age} años`, player.country, extras.height]
-    : [extras.fullName, age != null && `${age} años`, player.country, extras.height, extras.foot]
+  const details = (
+    isMobile
+      ? [age != null && `${age} años`, player.country, extras.height]
+      : [extras.fullName, age != null && `${age} años`, player.country, extras.height, extras.foot]
   ).filter(Boolean);
 
-  const followLabel = following ? (isMobile ? 'Siguiendo' : 'En favoritos') : isMobile ? 'Seguir' : 'Añadir a favoritos';
-  const star = <span className="player-hero__star" aria-hidden="true">{following ? '★' : '☆'}</span>;
+  const followLabel = following
+    ? isMobile
+      ? 'Siguiendo'
+      : 'En favoritos'
+    : isMobile
+      ? 'Seguir'
+      : 'Añadir a favoritos';
+  const star = (
+    <span className="player-hero__star" aria-hidden="true">
+      {following ? '★' : '☆'}
+    </span>
+  );
 
   return (
     <header className="player-hero" style={team ? { '--team-color': team.color } : undefined}>
@@ -53,7 +64,9 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
         {player.rating != null ? (
           <Rating value={player.rating} size="lg" className="player-hero__rating" />
         ) : (
-          <span className="player-hero__no-rating" role="img" aria-label="Sin valoración">{MISSING}</span>
+          <span className="player-hero__no-rating" role="img" aria-label="Sin valoración">
+            {MISSING}
+          </span>
         )}
         <div className="player-hero__rating-text">
           <p className="player-hero__rating-label">Valoración media</p>

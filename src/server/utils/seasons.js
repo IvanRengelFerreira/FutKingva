@@ -35,10 +35,10 @@ export async function resolveSeason(seasonParam) {
     season = competition.current_season_id
       ? await prisma.seasons.findUnique({ where: { id: competition.current_season_id }, select: SEASON_FIELDS })
       : await prisma.seasons.findFirst({
-        where: { competition_id: competition.id },
-        orderBy: { start_year: 'desc' },
-        select: SEASON_FIELDS,
-      });
+          where: { competition_id: competition.id },
+          orderBy: { start_year: 'desc' },
+          select: SEASON_FIELDS,
+        });
   } else {
     const year = Number(seasonParam);
     if (!Number.isInteger(year) || year < 1900 || year > 2100) {

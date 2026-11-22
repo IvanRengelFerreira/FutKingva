@@ -19,13 +19,27 @@ export function TeamSquadTable({ players, className = '' }) {
         <caption className="team-profile__sr-only">Plantilla</caption>
         <thead>
           <tr>
-            <th scope="col" className="team-squad__number">Dorsal</th>
-            <th scope="col" className="team-squad__player">Jugador</th>
-            <th scope="col" className="team-squad__position">Posición</th>
-            <th scope="col" className="team-squad__num"><abbr title="Partidos jugados">PJ</abbr></th>
-            <th scope="col" className="team-squad__num">Goles</th>
-            <th scope="col" className="team-squad__num"><abbr title="Asistencias">Asist.</abbr></th>
-            <th scope="col" className="team-squad__rating"><abbr title="Valoración media">Val.</abbr></th>
+            <th scope="col" className="team-squad__number">
+              Dorsal
+            </th>
+            <th scope="col" className="team-squad__player">
+              Jugador
+            </th>
+            <th scope="col" className="team-squad__position">
+              Posición
+            </th>
+            <th scope="col" className="team-squad__num">
+              <abbr title="Partidos jugados">PJ</abbr>
+            </th>
+            <th scope="col" className="team-squad__num">
+              Goles
+            </th>
+            <th scope="col" className="team-squad__num">
+              <abbr title="Asistencias">Asist.</abbr>
+            </th>
+            <th scope="col" className="team-squad__rating">
+              <abbr title="Valoración media">Val.</abbr>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -40,7 +54,9 @@ export function TeamSquadTable({ players, className = '' }) {
               </th>
               <td className="team-squad__position">{player.position}</td>
               <td className="team-squad__num team-squad__played">{player.matches ?? '—'}</td>
-              <td className={`team-squad__num team-squad__big${player.goals > 0 && player.goals === topGoals ? ' team-squad__big--top' : ''}`}>
+              <td
+                className={`team-squad__num team-squad__big${player.goals > 0 && player.goals === topGoals ? ' team-squad__big--top' : ''}`}
+              >
                 {player.goals ?? '—'}
               </td>
               <td className="team-squad__num team-squad__big">{player.assists ?? '—'}</td>

@@ -142,9 +142,15 @@
   height: 17px;
 }
 
-.notifications__icon--gold { color: var(--accent-gold); }
-.notifications__icon--win { color: var(--status-win); }
-.notifications__icon--loss { color: var(--status-loss); }
+.notifications__icon--gold {
+  color: var(--accent-gold);
+}
+.notifications__icon--win {
+  color: var(--status-win);
+}
+.notifications__icon--loss {
+  color: var(--status-loss);
+}
 
 .notifications__text {
   display: flex;

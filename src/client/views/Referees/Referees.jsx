@@ -39,13 +39,11 @@ export default function Referees() {
   const [mobileCount, setMobileCount] = useState(MOBILE_STEP);
 
   const text = normalize(query);
-  const referees = REFEREES
-    .filter((referee) => normalize(referee.name).includes(text))
-    .sort((a, b) =>
-      sort === 'name'
-        ? a.name.localeCompare(b.name, 'es')
-        : (b[sort] ?? 0) - (a[sort] ?? 0) || b.cardsPerMatch - a.cardsPerMatch
-    );
+  const referees = REFEREES.filter((referee) => normalize(referee.name).includes(text)).sort((a, b) =>
+    sort === 'name'
+      ? a.name.localeCompare(b.name, 'es')
+      : (b[sort] ?? 0) - (a[sort] ?? 0) || b.cardsPerMatch - a.cardsPerMatch,
+  );
   const totalPages = Math.ceil(referees.length / PER_PAGE);
   const pageRows = referees.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
@@ -65,7 +63,8 @@ export default function Referees() {
       <header className="page-header">
         <div className="page-header__text">
           <p className="page-header__eyebrow">
-            LaLiga · <span className="referees__desktop">Temporada </span>{SEASON}
+            LaLiga · <span className="referees__desktop">Temporada </span>
+            {SEASON}
           </p>
           <h1 className="page-header__title">Árbitros</h1>
           <p className="page-header__subtitle">Estadísticas de los árbitros de cada competición.</p>
@@ -84,10 +83,34 @@ export default function Referees() {
           onChange={(event) => changeQuery(event.target.value)}
         />
         {/* Escritorio «Liga: LaLiga» / «Temporada 2026/27»; móvil, textos cortos como en el mockup */}
-        <Select className="referees__filter referees__desktop-block" size="sm" label="Liga" hideLabel options={[{ value: 'laliga', label: 'Liga: LaLiga' }]} />
-        <Select className="referees__filter referees__desktop-block" size="sm" label="Temporada" hideLabel options={[{ value: SEASON, label: `Temporada ${SEASON}` }]} />
-        <Select className="referees__filter referees__mobile-flex" size="sm" label="Liga" hideLabel options={[{ value: 'laliga', label: 'LaLiga' }]} />
-        <Select className="referees__filter referees__mobile-flex" size="sm" label="Temporada" hideLabel options={[{ value: SEASON, label: SEASON }]} />
+        <Select
+          className="referees__filter referees__desktop-block"
+          size="sm"
+          label="Liga"
+          hideLabel
+          options={[{ value: 'laliga', label: 'Liga: LaLiga' }]}
+        />
+        <Select
+          className="referees__filter referees__desktop-block"
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[{ value: SEASON, label: `Temporada ${SEASON}` }]}
+        />
+        <Select
+          className="referees__filter referees__mobile-flex"
+          size="sm"
+          label="Liga"
+          hideLabel
+          options={[{ value: 'laliga', label: 'LaLiga' }]}
+        />
+        <Select
+          className="referees__filter referees__mobile-flex"
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[{ value: SEASON, label: SEASON }]}
+        />
         <Select
           className="referees__filter referees__filter--sort"
           size="sm"
@@ -97,7 +120,9 @@ export default function Referees() {
           value={sort}
           onChange={changeSort}
         />
-        <Button type="submit" className="referees__submit">Buscar</Button>
+        <Button type="submit" className="referees__submit">
+          Buscar
+        </Button>
       </form>
 
       {referees.length === 0 ? (
@@ -110,12 +135,24 @@ export default function Referees() {
               <thead>
                 <tr>
                   <th scope="col">Árbitro</th>
-                  <th scope="col" className="referees__committee">Comité</th>
-                  <th scope="col" className="referees__num">Partidos</th>
-                  <th scope="col" className="referees__cards">Tarjetas / partido</th>
-                  <th scope="col" className="referees__num referees__num--sm">Rojas</th>
-                  <th scope="col" className="referees__num referees__num--sm">Penaltis</th>
-                  <th scope="col" className="referees__link"><span className="referees__sr-only">Ficha</span></th>
+                  <th scope="col" className="referees__committee">
+                    Comité
+                  </th>
+                  <th scope="col" className="referees__num">
+                    Partidos
+                  </th>
+                  <th scope="col" className="referees__cards">
+                    Tarjetas / partido
+                  </th>
+                  <th scope="col" className="referees__num referees__num--sm">
+                    Rojas
+                  </th>
+                  <th scope="col" className="referees__num referees__num--sm">
+                    Penaltis
+                  </th>
+                  <th scope="col" className="referees__link">
+                    <span className="referees__sr-only">Ficha</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -134,16 +171,22 @@ export default function Referees() {
                       <span className="referees__cards-cell">
                         <span className="referees__big">{formatDecimal(referee.cardsPerMatch)}</span>
                         <span className="referees__bar" aria-hidden="true">
-                          <span style={{ width: `${Math.min(100, (referee.cardsPerMatch / MAX_CARDS_PER_MATCH) * 100)}%` }} />
+                          <span
+                            style={{ width: `${Math.min(100, (referee.cardsPerMatch / MAX_CARDS_PER_MATCH) * 100)}%` }}
+                          />
                         </span>
                       </span>
                     </td>
-                    <td className={`referees__num referees__num--sm referees__big${referee.redCards > 0 ? ' referees__big--red' : ' referees__big--muted'}`}>
+                    <td
+                      className={`referees__num referees__num--sm referees__big${referee.redCards > 0 ? ' referees__big--red' : ' referees__big--muted'}`}
+                    >
                       {referee.redCards ?? '—'}
                     </td>
                     <td className="referees__num referees__num--sm referees__big">{referee.penalties ?? '—'}</td>
                     <td className="referees__link">
-                      <Link to={`/arbitros/${referee.id}`} aria-label={`Ver ficha de ${referee.name}`}>Ver ficha →</Link>
+                      <Link to={`/arbitros/${referee.id}`} aria-label={`Ver ficha de ${referee.name}`}>
+                        Ver ficha →
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -179,7 +222,11 @@ export default function Referees() {
       <Pagination className="referees__desktop-flex" page={page} totalPages={totalPages} onChange={setPage} />
 
       {mobileCount < referees.length && (
-        <Button variant="tertiary" className="referees__more referees__mobile-flex" onClick={() => setMobileCount(mobileCount + MOBILE_STEP)}>
+        <Button
+          variant="tertiary"
+          className="referees__more referees__mobile-flex"
+          onClick={() => setMobileCount(mobileCount + MOBILE_STEP)}
+        >
           Cargar más
         </Button>
       )}

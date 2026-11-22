@@ -24,20 +24,34 @@ import { getTeam } from '../../data/mockData.js';
 // Las coordenadas son las de Figma; el SVG las escala al tamaño real.
 const GEOMETRY = {
   card: {
-    width: 436, height: 200,
+    width: 436,
+    height: 200,
     pitch: { x: 21.85, y: 16, w: 393.3, h: 168, r: 36 },
     play: 'M87.4 140C131.1 86.67 182.08 66.67 240.35 80L327.75 50',
-    dots: [[87.4, 140], [240.35, 80], [327.75, 50]], dotR: 7,
-    score: { y: 100, size: 84 }, caption: { y: 158, size: 12 },
+    dots: [
+      [87.4, 140],
+      [240.35, 80],
+      [327.75, 50],
+    ],
+    dotR: 7,
+    score: { y: 100, size: 84 },
+    caption: { y: 158, size: 12 },
     crests: { left: 131.1, right: 305.9, r: 40.5, size: 32, vs: 28 },
     bars: { x: 52.44, step: 48.07, w: 30.59, base: 170, max: 117, r: 4 },
   },
   thumb: {
-    width: 96, height: 84,
+    width: 96,
+    height: 84,
     pitch: { x: 4.8, y: 6.72, w: 86.4, h: 70.56, r: 15.12 },
     play: 'M19.2 58.8C28.8 36.4 40 28 52.8 33.6L72 21',
-    dots: [[19.2, 58.8], [52.8, 33.6], [72, 21]], dotR: 2.94,
-    score: { y: 40, size: 36 }, caption: { y: 69, size: 9 },
+    dots: [
+      [19.2, 58.8],
+      [52.8, 33.6],
+      [72, 21],
+    ],
+    dotR: 2.94,
+    score: { y: 40, size: 36 },
+    caption: { y: 69, size: 9 },
     crests: { left: 28.8, right: 67.2, r: 16, size: 13, vs: 11 },
     bars: { x: 11.52, step: 10.56, w: 6.72, base: 71.4, max: 49.14, r: 3.36 },
   },
@@ -80,7 +94,9 @@ function TacticsDrawing({ geo, stat }) {
       {stat && width === 436 && (
         <g>
           <polygon className="illustration__hexagon" points="363,50 402,72.5 402,117.5 363,140 324,117.5 324,72.5" />
-          <text className="illustration__hexagon-text" x="363" y="96">{stat}</text>
+          <text className="illustration__hexagon-text" x="363" y="96">
+            {stat}
+          </text>
         </g>
       )}
     </>
@@ -92,8 +108,12 @@ function ChronicleDrawing({ geo, score = '2 – 1', caption = 'FINAL' }) {
   const x = geo.width / 2;
   return (
     <>
-      <text className="illustration__score" x={x} y={geo.score.y} fontSize={geo.score.size}>{score}</text>
-      <text className="illustration__caption" x={x} y={geo.caption.y} fontSize={geo.caption.size}>{caption}</text>
+      <text className="illustration__score" x={x} y={geo.score.y} fontSize={geo.score.size}>
+        {score}
+      </text>
+      <text className="illustration__caption" x={x} y={geo.caption.y} fontSize={geo.caption.size}>
+        {caption}
+      </text>
     </>
   );
 }
@@ -105,7 +125,9 @@ function PreviewDrawing({ geo, home = 'real-madrid', away = 'barcelona' }) {
   return (
     <>
       <Crest team={getTeam(home)} cx={crests.left} cy={cy} r={crests.r} size={crests.size} />
-      <text className="illustration__vs" x={width / 2} y={cy} fontSize={crests.vs}>VS</text>
+      <text className="illustration__vs" x={width / 2} y={cy} fontSize={crests.vs}>
+        VS
+      </text>
       <Crest team={getTeam(away)} cx={crests.right} cy={cy} r={crests.r} size={crests.size} />
     </>
   );
@@ -116,7 +138,9 @@ function Crest({ team, cx, cy, r, size }) {
   return (
     <g>
       <circle className="illustration__crest" cx={cx} cy={cy} r={r} style={{ '--crest-color': team?.color }} />
-      <text className="illustration__crest-text" x={cx} y={cy} fontSize={size}>{team?.code ?? '?'}</text>
+      <text className="illustration__crest-text" x={cx} y={cy} fontSize={size}>
+        {team?.code ?? '?'}
+      </text>
     </g>
   );
 }
@@ -158,7 +182,8 @@ const DRAWINGS = {
 // Texto alternativo para lectores de pantalla
 function label(key, { score, home, away }) {
   if (key === 'cronica') return `Ilustración: marcador ${score ?? ''}`.trim();
-  if (key === 'previa') return `Ilustración: ${getTeam(home ?? 'real-madrid')?.name} contra ${getTeam(away ?? 'barcelona')?.name}`;
+  if (key === 'previa')
+    return `Ilustración: ${getTeam(home ?? 'real-madrid')?.name} contra ${getTeam(away ?? 'barcelona')?.name}`;
   if (key === 'datos') return 'Ilustración: gráfico de barras';
   return 'Ilustración: jugada dibujada sobre el campo';
 }

@@ -56,9 +56,16 @@ export default function PerformanceChart({ player, isMobile }) {
               barWidth={isMobile ? 24 : 56}
             />
             <ul className="player-legend">
-              <li className="player-legend__item"><span className="player-legend__swatch player-legend__swatch--gold" />≥ 8</li>
-              <li className="player-legend__item"><span className="player-legend__swatch player-legend__swatch--win" />7 – 8</li>
-              <li className="player-legend__item"><span className="player-legend__dash" />Media {formatNumber(average, 1)}</li>
+              <li className="player-legend__item">
+                <span className="player-legend__swatch player-legend__swatch--gold" />≥ 8
+              </li>
+              <li className="player-legend__item">
+                <span className="player-legend__swatch player-legend__swatch--win" />7 – 8
+              </li>
+              <li className="player-legend__item">
+                <span className="player-legend__dash" />
+                Media {formatNumber(average, 1)}
+              </li>
             </ul>
           </>
         ) : (

@@ -16,9 +16,10 @@ const RESULTS = {
 
 export default function FormGuide({ form = '', size = 24, className = '' }) {
   const results = form.split('').map((letter) => ({ letter, ...(RESULTS[letter] ?? RESULTS.E) }));
-  const label = results.length === 1
-    ? results[0].label
-    : `Últimos ${results.length} resultados: ${results.map((r) => r.label.toLowerCase()).join(', ')}`;
+  const label =
+    results.length === 1
+      ? results[0].label
+      : `Últimos ${results.length} resultados: ${results.map((r) => r.label.toLowerCase()).join(', ')}`;
 
   const style = {
     '--form-size': `${size}px`,

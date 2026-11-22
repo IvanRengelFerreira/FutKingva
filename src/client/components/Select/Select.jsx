@@ -38,19 +38,14 @@ export default function Select({
   const fieldId = id ?? autoId;
   const messageId = `${fieldId}-message`;
 
-  const controlClasses = [
-    'select__control',
-    `select__control--${size}`,
-    error && 'select__control--error',
-  ].filter(Boolean).join(' ');
+  const controlClasses = ['select__control', `select__control--${size}`, error && 'select__control--error']
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className={`select ${className}`.trim()}>
       {label && (
-        <label
-          className={`select__label${hideLabel ? ' select__label--hidden' : ''}`}
-          htmlFor={fieldId}
-        >
+        <label className={`select__label${hideLabel ? ' select__label--hidden' : ''}`} htmlFor={fieldId}>
           {label}
         </label>
       )}
@@ -64,10 +59,18 @@ export default function Select({
           aria-describedby={error ? messageId : undefined}
           {...rest}
         >
-          {placeholder && <option value="" disabled>{placeholder}</option>}
+          {placeholder && (
+            <option value="" disabled>
+              {placeholder}
+            </option>
+          )}
           {options.map((option) => {
             const { value, label: text } = typeof option === 'object' ? option : { value: option, label: option };
-            return <option key={value} value={value}>{text}</option>;
+            return (
+              <option key={value} value={value}>
+                {text}
+              </option>
+            );
           })}
         </select>
         <img

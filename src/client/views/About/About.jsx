@@ -65,9 +65,9 @@ export default function About() {
           <p className="page-header__eyebrow">Sobre nosotros</p>
           <h1 className="about__title">Sobre FutKingva</h1>
           <p className="about__lead">
-            Los datos de fútbol están dispersos entre apps de noticias, notificaciones y redes sociales, y casi nunca
-            se pueden explorar. FutKingva reúne en un solo sitio los datos reales de las principales ligas europeas
-            para que cada aficionado los consulte, los compare y los guarde a su manera.
+            Los datos de fútbol están dispersos entre apps de noticias, notificaciones y redes sociales, y casi nunca se
+            pueden explorar. FutKingva reúne en un solo sitio los datos reales de las principales ligas europeas para
+            que cada aficionado los consulte, los compare y los guarde a su manera.
           </p>
           <dl className="about__figures">
             {FIGURES.map((figure) => (
@@ -111,7 +111,9 @@ export default function About() {
             return (
               <li key={feature.title}>
                 {feature.to ? (
-                  <Link className="about__feature about__feature--link" to={feature.to}>{content}</Link>
+                  <Link className="about__feature about__feature--link" to={feature.to}>
+                    {content}
+                  </Link>
                 ) : (
                   <div className="about__feature">{content}</div>
                 )}
@@ -143,7 +145,8 @@ export default function About() {
         <div>
           <p className="about__source-title">Fuente de los datos</p>
           <p className="about__source-text">
-            Los datos proceden de football-data.org y se actualizan automáticamente cada pocos minutos durante los partidos.
+            Los datos proceden de football-data.org y se actualizan automáticamente cada pocos minutos durante los
+            partidos.
           </p>
         </div>
       </div>

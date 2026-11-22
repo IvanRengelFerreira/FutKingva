@@ -66,14 +66,16 @@ export default function Teams() {
 
   const toggleFavorite = toggleFavoriteTeam;
 
-  const noun = tab === 'teams' ? (rows.length === 1 ? 'equipo' : 'equipos') : (rows.length === 1 ? 'jugador' : 'jugadores');
+  const noun =
+    tab === 'teams' ? (rows.length === 1 ? 'equipo' : 'equipos') : rows.length === 1 ? 'jugador' : 'jugadores';
 
   return (
     <section className="page teams">
       <header className="page-header">
         <div className="page-header__text">
           <p className="page-header__eyebrow">
-            Temporada {SEASON}<span className="teams__desktop"> · LaLiga · 20 equipos</span>
+            Temporada {SEASON}
+            <span className="teams__desktop"> · LaLiga · 20 equipos</span>
           </p>
           <h1 className="page-header__title">Equipos y jugadores</h1>
           <p className="page-header__subtitle">
@@ -97,20 +99,49 @@ export default function Teams() {
           onChange={(event) => changeQuery(event.target.value)}
         />
         {/* Escritorio «Liga: LaLiga» / «Temporada 2026/27»; móvil, textos cortos como en el mockup */}
-        <Select className="teams__filter teams__desktop-block" size="sm" label="Liga" hideLabel options={[{ value: 'laliga', label: 'Liga: LaLiga' }]} />
-        <Select className="teams__filter teams__desktop-block" size="sm" label="Temporada" hideLabel options={[{ value: SEASON, label: `Temporada ${SEASON}` }]} />
-        <Select className="teams__filter teams__mobile-flex" size="sm" label="Liga" hideLabel options={[{ value: 'laliga', label: 'LaLiga' }]} />
-        <Select className="teams__filter teams__mobile-flex" size="sm" label="Temporada" hideLabel options={[{ value: SEASON, label: SEASON }]} />
+        <Select
+          className="teams__filter teams__desktop-block"
+          size="sm"
+          label="Liga"
+          hideLabel
+          options={[{ value: 'laliga', label: 'Liga: LaLiga' }]}
+        />
+        <Select
+          className="teams__filter teams__desktop-block"
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[{ value: SEASON, label: `Temporada ${SEASON}` }]}
+        />
+        <Select
+          className="teams__filter teams__mobile-flex"
+          size="sm"
+          label="Liga"
+          hideLabel
+          options={[{ value: 'laliga', label: 'LaLiga' }]}
+        />
+        <Select
+          className="teams__filter teams__mobile-flex"
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[{ value: SEASON, label: SEASON }]}
+        />
         <Select
           className="teams__filter teams__filter--sort"
           size="sm"
           label="Ordenar"
           hideLabel
-          options={(tab === 'teams' ? TEAM_SORTS : PLAYER_SORTS).map((item) => ({ value: item.value, label: `Ordenar: ${item.label}` }))}
+          options={(tab === 'teams' ? TEAM_SORTS : PLAYER_SORTS).map((item) => ({
+            value: item.value,
+            label: `Ordenar: ${item.label}`,
+          }))}
           value={sort[tab]}
           onChange={changeSort}
         />
-        <Button type="submit" className="teams__submit">Buscar</Button>
+        <Button type="submit" className="teams__submit">
+          Buscar
+        </Button>
       </form>
 
       <div className="teams__summary">
@@ -118,21 +149,23 @@ export default function Teams() {
           {rows.length} {noun} en LaLiga
         </p>
         {query.trim() && (
-          <button type="button" className="teams__chip" onClick={() => changeQuery('')} aria-label={`Quitar la búsqueda «${query}»`}>
+          <button
+            type="button"
+            className="teams__chip"
+            onClick={() => changeQuery('')}
+            aria-label={`Quitar la búsqueda «${query}»`}
+          >
             «{query}» ×
           </button>
         )}
       </div>
 
       {rows.length === 0 ? (
-        <p className="teams__empty">No hay {tab === 'teams' ? 'equipos' : 'jugadores'} que coincidan con «{query}».</p>
+        <p className="teams__empty">
+          No hay {tab === 'teams' ? 'equipos' : 'jugadores'} que coincidan con «{query}».
+        </p>
       ) : tab === 'teams' ? (
-        <TeamGrid
-          rows={pageRows}
-          mobileRows={mobileRows}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-        />
+        <TeamGrid rows={pageRows} mobileRows={mobileRows} favorites={favorites} onToggleFavorite={toggleFavorite} />
       ) : (
         <PlayerList rows={pageRows} mobileRows={mobileRows} />
       )}
@@ -140,7 +173,11 @@ export default function Teams() {
       <Pagination className="teams__desktop-flex" page={page} totalPages={totalPages} onChange={setPage} />
 
       {mobileCount < rows.length && (
-        <Button variant="tertiary" className="teams__more teams__mobile-flex" onClick={() => setMobileCount(mobileCount + MOBILE_STEP)}>
+        <Button
+          variant="tertiary"
+          className="teams__more teams__mobile-flex"
+          onClick={() => setMobileCount(mobileCount + MOBILE_STEP)}
+        >
           Cargar más
         </Button>
       )}

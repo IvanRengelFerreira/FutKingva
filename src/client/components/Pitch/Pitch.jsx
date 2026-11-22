@@ -70,7 +70,7 @@ function PitchSlot({ slot, player, active, onClick }) {
           <img src={plusIcon} alt="" width="24" height="24" />
         </span>
       )}
-      <span className="pitch__name">{player ? player.shortName ?? player.name : 'Añadir'}</span>
+      <span className="pitch__name">{player ? (player.shortName ?? player.name) : 'Añadir'}</span>
       <span className="pitch__position">{position}</span>
     </Tag>
   );

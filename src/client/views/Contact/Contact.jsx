@@ -36,11 +36,13 @@ const MAX_MESSAGE = 1000;
 const FAQS = [
   {
     question: '¿De dónde salen los datos?',
-    answer: 'Las clasificaciones, los partidos, los jugadores y los árbitros salen de football-data.org. Lo que no se puede consultar ahí está marcado como estimado.',
+    answer:
+      'Las clasificaciones, los partidos, los jugadores y los árbitros salen de football-data.org. Lo que no se puede consultar ahí está marcado como estimado.',
   },
   {
     question: '¿Cada cuánto se actualizan?',
-    answer: 'Se actualizan automáticamente cada pocos minutos durante los partidos, y la clasificación al terminar cada uno.',
+    answer:
+      'Se actualizan automáticamente cada pocos minutos durante los partidos, y la clasificación al terminar cada uno.',
   },
   {
     question: '¿Cómo creo mi equipo ideal?',
@@ -71,7 +73,11 @@ export default function Contact() {
   // Errores de cada campo (null = está bien); se calculan siempre y se enseñan tras pulsar «Enviar»
   const errors = {
     name: !form.name.trim() ? 'Escribe tu nombre' : null,
-    email: !form.email.trim() ? 'Escribe tu correo electrónico' : !isValidEmail(form.email) ? 'El correo no es válido' : null,
+    email: !form.email.trim()
+      ? 'Escribe tu correo electrónico'
+      : !isValidEmail(form.email)
+        ? 'El correo no es válido'
+        : null,
     subject: !form.subject ? 'Elige un asunto' : null,
     message: !form.message.trim() ? 'Escribe tu mensaje' : null,
     accepted: !form.accepted ? 'Tienes que aceptar la política de privacidad' : null,
@@ -198,7 +204,9 @@ export default function Contact() {
                   {faq.link && (
                     <>
                       {' '}
-                      <Link className="contact__faq-link" to={faq.link.to}>{faq.link.label}</Link>
+                      <Link className="contact__faq-link" to={faq.link.to}>
+                        {faq.link.label}
+                      </Link>
                     </>
                   )}
                 </p>

@@ -7,7 +7,9 @@ import { Link } from 'react-router';
 export default function SectionHeader({ id, title, badge, to, linkLabel, mobileLabel }) {
   return (
     <div className="home-section-header">
-      <h2 id={id} className="home-section-header__title">{title}</h2>
+      <h2 id={id} className="home-section-header__title">
+        {title}
+      </h2>
       {badge}
       <span className="home-section-header__line" aria-hidden="true" />
       {to && (

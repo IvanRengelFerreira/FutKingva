@@ -12,11 +12,11 @@ import './Radar.css';
 // Cada eje va de su «min» (centro, 0 si no se indica) a su «max» (borde). El primer eje va arriba y el resto en el sentido del reloj.
 // Los colores salen del orden de los jugadores: --series-1 a --series-4 (máximo 4, como en el comparador).
 
-const SIZE = 400;          // El dibujo se hace en 400 × 400 y se escala al ancho disponible
+const SIZE = 400; // El dibujo se hace en 400 × 400 y se escala al ancho disponible
 const CENTER = SIZE / 2;
-const RADIUS = 136;        // Radio del hexágono exterior
-const LABEL_RADIUS = 158;  // Distancia de los nombres de los ejes
-const RINGS = 4;           // Hexágonos de guía
+const RADIUS = 136; // Radio del hexágono exterior
+const LABEL_RADIUS = 158; // Distancia de los nombres de los ejes
+const RINGS = 4; // Hexágonos de guía
 
 // Punto a una distancia del centro sobre el eje «index» (el 0 arriba)
 function pointAt(index, count, distance) {
@@ -42,8 +42,13 @@ export default function Radar({ axes, series, label, className = '' }) {
   // Texto para lectores de pantalla: «Pedri: Goles 2, Asistencias 4…»
   const summary = [
     label,
-    ...series.map((player) => `${player.name}: ${axes.map((axis) => `${axis.label} ${(player.values[axis.id] ?? 0).toLocaleString('es-ES')}`).join(', ')}`),
-  ].filter(Boolean).join('. ');
+    ...series.map(
+      (player) =>
+        `${player.name}: ${axes.map((axis) => `${axis.label} ${(player.values[axis.id] ?? 0).toLocaleString('es-ES')}`).join(', ')}`,
+    ),
+  ]
+    .filter(Boolean)
+    .join('. ');
 
   return (
     <figure className={`radar ${className}`.trim()}>

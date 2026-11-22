@@ -38,7 +38,11 @@
   gap: 32px;
   padding: 36px 40px;
   /* El color del club (viene de los datos) tiñe la cabecera */
-  background: linear-gradient(135deg, color-mix(in srgb, var(--team-color, var(--brand-green-700)) 28%, var(--bg-surface)), var(--bg-surface) 70%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--team-color, var(--brand-green-700)) 28%, var(--bg-surface)),
+    var(--bg-surface) 70%
+  );
   border: 1px solid var(--border);
   border-radius: 16px;
 }
@@ -201,8 +205,12 @@
   text-align: center;
 }
 
-.player-stat--gold { --stat-color: var(--accent-gold); }
-.player-stat--win { --stat-color: var(--status-win); }
+.player-stat--gold {
+  --stat-color: var(--accent-gold);
+}
+.player-stat--win {
+  --stat-color: var(--status-win);
+}
 
 .player-stat__value {
   font-family: 'Big Shoulders Display', sans-serif;
@@ -319,8 +327,12 @@
   border-radius: 2px;
 }
 
-.player-legend__swatch--gold { background: var(--accent-gold); }
-.player-legend__swatch--win { background: var(--status-win); }
+.player-legend__swatch--gold {
+  background: var(--accent-gold);
+}
+.player-legend__swatch--win {
+  background: var(--status-win);
+}
 
 .player-legend__dash {
   width: 14px;
@@ -393,8 +405,12 @@
   color: var(--text-tertiary);
 }
 
-.player-matches__goals--on { color: var(--accent-gold); }
-.player-matches__assists--on { color: var(--text-primary); }
+.player-matches__goals--on {
+  color: var(--accent-gold);
+}
+.player-matches__assists--on {
+  color: var(--text-primary);
+}
 
 .player-match__rival {
   display: flex;

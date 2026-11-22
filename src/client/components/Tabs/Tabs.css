@@ -7,7 +7,7 @@
   display: flex;
   gap: 28px;
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;   /* En móvil, si no caben, se deslizan de lado */
+  overflow-x: auto; /* En móvil, si no caben, se deslizan de lado */
   scrollbar-width: none;
 }
 

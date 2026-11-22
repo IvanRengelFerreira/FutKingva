@@ -41,9 +41,14 @@ export default function Standings() {
           <p className="page-header__eyebrow">
             {info ? (
               <>
-                <span className="standings__desktop">Temporada {info.label}{matchday ? ` · Jornada ${matchday}` : ''}</span>
+                <span className="standings__desktop">
+                  Temporada {info.label}
+                  {matchday ? ` · Jornada ${matchday}` : ''}
+                </span>
                 <span className="standings__mobile">
-                  {info.label}{matchday ? ` · Jornada ${matchday}` : ''}{info.isCurrent ? ' en juego' : ''}
+                  {info.label}
+                  {matchday ? ` · Jornada ${matchday}` : ''}
+                  {info.isCurrent ? ' en juego' : ''}
                 </span>
               </>
             ) : (
@@ -51,7 +56,9 @@ export default function Standings() {
             )}
           </p>
           <h1 className="page-header__title">Clasificaciones</h1>
-          <p className="page-header__subtitle standings__desktop">Tablas actualizadas automáticamente tras cada jornada.</p>
+          <p className="page-header__subtitle standings__desktop">
+            Tablas actualizadas automáticamente tras cada jornada.
+          </p>
         </div>
         {info?.isCurrent && matchday && (
           <p className="standings__live">
@@ -108,7 +115,8 @@ export default function Standings() {
         <div className="standings__empty">
           <p className="standings__empty-title">Próximamente</p>
           <p className="standings__empty-text">
-            Todavía no tenemos la clasificación de la {current.label}: en esta primera versión, FutKingva solo tiene los datos de LaLiga.
+            Todavía no tenemos la clasificación de la {current.label}: en esta primera versión, FutKingva solo tiene los
+            datos de LaLiga.
           </p>
           <button type="button" className="standings__empty-link" onClick={() => setLeague('laliga')}>
             Ver la clasificación de LaLiga →
@@ -127,7 +135,9 @@ function LaLigaTable({ data, error, loading, reload }) {
     return (
       <div className="standings__empty">
         <p className="standings__empty-title">Sin clasificación</p>
-        <p className="standings__empty-text">Todavía no tenemos la clasificación de la temporada {data.season.label}.</p>
+        <p className="standings__empty-text">
+          Todavía no tenemos la clasificación de la temporada {data.season.label}.
+        </p>
       </div>
     );
   }

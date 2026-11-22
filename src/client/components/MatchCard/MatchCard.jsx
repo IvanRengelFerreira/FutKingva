@@ -49,7 +49,9 @@ export default function MatchCard({ match, className = '' }) {
           <Crest teamId={match.homeId} size={40} className="match-card__crest" />
           <span className="match-card__team-name">{home.shortName}</span>
         </span>
-        <span className="match-card__score">{homeGoals} – {awayGoals}</span>
+        <span className="match-card__score">
+          {homeGoals} – {awayGoals}
+        </span>
         <span className="match-card__team">
           <Crest teamId={match.awayId} size={40} className="match-card__crest" />
           <span className="match-card__team-name">{away.shortName}</span>

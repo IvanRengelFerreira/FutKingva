@@ -51,7 +51,9 @@ export default function TextField({
     multiline && 'text-field__control--multiline',
     error && 'text-field__control--error',
     disabled && 'text-field__control--disabled',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const inputProps = {
     id: fieldId,
@@ -66,15 +68,20 @@ export default function TextField({
 
   return (
     <div className={`text-field ${className}`.trim()}>
-      <label
-        className={`text-field__label${hideLabel ? ' text-field__label--hidden' : ''}`}
-        htmlFor={fieldId}
-      >
+      <label className={`text-field__label${hideLabel ? ' text-field__label--hidden' : ''}`} htmlFor={fieldId}>
         {label}
       </label>
 
       <div className={controlClasses}>
-        {icon && <img className="text-field__icon" src={icon} alt="" width={size === 'sm' ? 16 : 17} height={size === 'sm' ? 16 : 17} />}
+        {icon && (
+          <img
+            className="text-field__icon"
+            src={icon}
+            alt=""
+            width={size === 'sm' ? 16 : 17}
+            height={size === 'sm' ? 16 : 17}
+          />
+        )}
 
         {multiline ? <textarea {...inputProps} /> : <input type={inputType} {...inputProps} />}
 

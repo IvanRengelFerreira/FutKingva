@@ -49,7 +49,9 @@ export default function PlayerSearch({ selectedIds, onSelect, autoFocus = false,
                 <Avatar name={player.name} size={32} />
                 <span className="comparator-search__text">
                   <span className="comparator-search__name">{player.name}</span>
-                  <span className="comparator-search__meta">{getTeam(player.teamId)?.name} · {player.position}</span>
+                  <span className="comparator-search__meta">
+                    {getTeam(player.teamId)?.name} · {player.position}
+                  </span>
                 </span>
               </button>
             </li>

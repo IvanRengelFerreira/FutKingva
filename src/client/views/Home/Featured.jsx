@@ -26,7 +26,9 @@ export default function Featured() {
 
   return (
     <aside className="home-featured" aria-labelledby="home-featured-title">
-      <h2 id="home-featured-title" className="home-section-header__title">Destacados</h2>
+      <h2 id="home-featured-title" className="home-section-header__title">
+        Destacados
+      </h2>
 
       {article && (
         <ArticleCard
@@ -47,8 +49,7 @@ export default function Featured() {
             </span>
             <span className="home-star__name">{player.name}</span>
             <span className="home-star__note">
-              {team?.name ?? '—'} ·{' '}
-              <span className="home__desktop">{PLAYER_OF_THE_ROUND.note}</span>
+              {team?.name ?? '—'} · <span className="home__desktop">{PLAYER_OF_THE_ROUND.note}</span>
               <span className="home__mobile">{HOME_PLAYER_NOTE_SHORT}</span>
             </span>
           </span>
@@ -66,22 +67,33 @@ function Favorites() {
 
   return (
     <section className="home-favorites" aria-labelledby="home-favorites-title">
-      <h3 id="home-favorites-title" className="home-favorites__title">Tus favoritos</h3>
+      <h3 id="home-favorites-title" className="home-favorites__title">
+        Tus favoritos
+      </h3>
       {user ? (
         <>
           <p className="home-favorites__text">
-            <span className="home__desktop">Hola, {user.name}. Sigue a tus equipos y jugadores desde sus fichas para recibir avisos de goles en directo.</span>
+            <span className="home__desktop">
+              Hola, {user.name}. Sigue a tus equipos y jugadores desde sus fichas para recibir avisos de goles en
+              directo.
+            </span>
             <span className="home__mobile">Sigue equipos y jugadores desde sus fichas.</span>
           </p>
-          <Button variant="secondary" to="/equipos" className="home-favorites__button">Explorar equipos</Button>
+          <Button variant="secondary" to="/equipos" className="home-favorites__button">
+            Explorar equipos
+          </Button>
         </>
       ) : (
         <>
           <p className="home-favorites__text">
-            <span className="home__desktop">Inicia sesión para seguir a tus equipos y jugadores y recibir avisos de goles en directo.</span>
+            <span className="home__desktop">
+              Inicia sesión para seguir a tus equipos y jugadores y recibir avisos de goles en directo.
+            </span>
             <span className="home__mobile">Inicia sesión para seguir equipos y jugadores.</span>
           </p>
-          <Button variant="secondary" to="/acceso" className="home-favorites__button">Iniciar sesión</Button>
+          <Button variant="secondary" to="/acceso" className="home-favorites__button">
+            Iniciar sesión
+          </Button>
         </>
       )}
     </section>

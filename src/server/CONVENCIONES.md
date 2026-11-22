@@ -55,7 +55,7 @@ export async function detail(req, res) {
 - Errores esperados con `AppError`; para el resto (BD caída, fallos de Prisma) basta con no capturarlos.
 - Las consultas, con **Prisma** (`prisma.<tabla>`). SQL a mano solo si Prisma no puede (`prisma.$queryRaw`).
 - Comprueba siempre los datos que llegan (`req.params`, `req.query`, `req.body`): **el servidor nunca se fía del cliente**.
-- Una consulta que necesitan **varios archivos** va en `db.js` junto a `prisma` (p. ej. `findUserByEmail`), no copiada en cada uno. *Provisional: si se aprueba una capa de servicios, se moverá allí.*
+- Una consulta que necesitan **varios archivos** va en `db.js` junto a `prisma` (p. ej. `findUserByEmail`), no copiada en cada uno. _Provisional: si se aprueba una capa de servicios, se moverá allí._
 
 ### Validar el cuerpo de un formulario
 
@@ -73,29 +73,29 @@ Si algo falla, `validate` responde **400** con esos `fields` y el controlador no
 
 ## 3. Formato de las respuestas
 
-| Qué | Norma |
-|---|---|
-| Nombres de campos | **camelCase** en el JSON (`shortName`), aunque en la BD sean `short_name`: se convierten en el controlador |
-| Ids | Números. Los `BigInt` de Prisma se convierten solos al responder |
-| Fechas | Texto ISO (`2026-11-17T20:00:00.000Z`); Prisma ya las da así al hacer `res.json` |
-| Listados | `{ items, total, limit, offset }`. `?limit=` por defecto 20 y máximo 100; `?offset=` por defecto 0 |
-| Crear | **201** con lo creado |
-| Borrar o acción sin respuesta | **204** sin cuerpo (`res.status(204).end()`) |
-| Usuarios | Siempre con `publicUser(user)` (`middleware/auth.js`): nunca se envía `password_hash` |
+| Qué                           | Norma                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Nombres de campos             | **camelCase** en el JSON (`shortName`), aunque en la BD sean `short_name`: se convierten en el controlador |
+| Ids                           | Números. Los `BigInt` de Prisma se convierten solos al responder                                           |
+| Fechas                        | Texto ISO (`2026-11-17T20:00:00.000Z`); Prisma ya las da así al hacer `res.json`                           |
+| Listados                      | `{ items, total, limit, offset }`. `?limit=` por defecto 20 y máximo 100; `?offset=` por defecto 0         |
+| Crear                         | **201** con lo creado                                                                                      |
+| Borrar o acción sin respuesta | **204** sin cuerpo (`res.status(204).end()`)                                                               |
+| Usuarios                      | Siempre con `publicUser(user)` (`middleware/auth.js`): nunca se envía `password_hash`                      |
 
 ## 4. Errores
 
 Formato común: `{ "error": { "code", "message", "fields"? } }`. `message` va **en español** porque el front lo enseña tal cual.
 
-| Cuándo | Cómo | Respuesta |
-|---|---|---|
-| Datos no válidos | `AppError.badRequest('…', { campo: 'motivo' })` | 400 `VALIDATION_ERROR` |
-| Sin sesión | `requireAuth` / `AppError.unauthorized()` | 401 `UNAUTHORIZED` |
-| Correo o contraseña incorrectos | `AppError.invalidCredentials()` | 401 `INVALID_CREDENTIALS` |
-| Sin permiso | `requireRole(...)` / `AppError.forbidden()` | 403 `FORBIDDEN` |
-| No existe | `AppError.notFound('…')` | 404 `NOT_FOUND` |
-| Ya existe o choca | `AppError.conflict('…', fields)` | 409 `CONFLICT` |
-| BD caída | (automático) | 503 `SERVICE_UNAVAILABLE` |
+| Cuándo                          | Cómo                                            | Respuesta                 |
+| ------------------------------- | ----------------------------------------------- | ------------------------- |
+| Datos no válidos                | `AppError.badRequest('…', { campo: 'motivo' })` | 400 `VALIDATION_ERROR`    |
+| Sin sesión                      | `requireAuth` / `AppError.unauthorized()`       | 401 `UNAUTHORIZED`        |
+| Correo o contraseña incorrectos | `AppError.invalidCredentials()`                 | 401 `INVALID_CREDENTIALS` |
+| Sin permiso                     | `requireRole(...)` / `AppError.forbidden()`     | 403 `FORBIDDEN`           |
+| No existe                       | `AppError.notFound('…')`                        | 404 `NOT_FOUND`           |
+| Ya existe o choca               | `AppError.conflict('…', fields)`                | 409 `CONFLICT`            |
+| BD caída                        | (automático)                                    | 503 `SERVICE_UNAVAILABLE` |
 
 `fields` son los errores de cada campo del formulario. El front los pinta junto al campo con `FieldError`.
 
@@ -104,9 +104,9 @@ Formato común: `{ "error": { "code", "message", "fields"? } }`. `message` va **
 ```js
 import { requireAuth, requireRole } from '../middleware/auth.js';
 
-meRouter.get('/favorites', requireAuth, favorites.list);               // con sesión
-articlesRouter.post('/', requireRole('editor'), articles.create);      // solo editores
-adminRouter.patch('/users/:id', requireRole('admin'), users.update);   // solo administradores
+meRouter.get('/favorites', requireAuth, favorites.list); // con sesión
+articlesRouter.post('/', requireRole('editor'), articles.create); // solo editores
+adminRouter.patch('/users/:id', requireRole('admin'), users.update); // solo administradores
 ```
 
 - El usuario de la sesión está en `req.user` (`{ id, name, email, role, status }`), o es `null`.
@@ -176,14 +176,14 @@ Nunca a mano. Una migración nueva, **una persona a la vez** y avisando al resto
 
 Lo comprueba el agente revisor antes de cada commit.
 
-| Norma | En la práctica |
-|---|---|
+| Norma                             | En la práctica                                                                                                                                                                                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Una responsabilidad por pieza** | Rutas: URL y permisos. Controladores: leer la petición, consultar y responder. Componentes: pintar. La lógica que se repite, a un hook o a un módulo propio. Un contexto por tema (`SessionContext` sesión, `NotificationsContext` avisos). |
-| **Funciones cortas** | Si una función pasa de unas 30 líneas o hace dos cosas, se divide y cada parte lleva un nombre que diga qué hace. |
-| **Sin duplicar** | Antes de escribir algo, busca si ya existe (`components/`, `services/`, `src/shared/`, `middleware/`, `db.js`). Si lo necesitan dos archivos, va a un sitio común, no copiado. |
-| **Sin números ni textos mágicos** | Valores con significado como constantes con nombre (`REMEMBER_MS`, `PASSWORD_MIN`). Un mensaje que sale en dos sitios, una constante. |
-| **Nombres que se explican** | En inglés y por lo que hacen (`findUserByEmail`, `clearServerError`), no `data2`, `aux` ni `handle`. Booleanos como pregunta (`sending`, `isValidEmail`). |
-| **Comentarios del porqué** | En español, explicando lo que el código no dice (por qué el hash señuelo, por qué un 404 y no un 403). Nada de repetir lo que ya se lee. |
-| **Sin restos** | Ni código comentado, ni `console.log` de depuración, ni imports o variables sin usar. `console.warn` solo para fallos que se recuperan solos. |
-| **Lint y formato** | Antes de cada commit, `npm run lint` sin errores y `npm run format` (Prettier, configuración en `src/.prettierrc.json`) en `src/client` y `src/server`. |
-| **Cada uno, lo suyo** | Solo tocas tus archivos y tu línea de `app.js`. Si algo común no te vale, se habla antes de cambiarlo. |
+| **Funciones cortas**              | Si una función pasa de unas 30 líneas o hace dos cosas, se divide y cada parte lleva un nombre que diga qué hace.                                                                                                                           |
+| **Sin duplicar**                  | Antes de escribir algo, busca si ya existe (`components/`, `services/`, `src/shared/`, `middleware/`, `db.js`). Si lo necesitan dos archivos, va a un sitio común, no copiado.                                                              |
+| **Sin números ni textos mágicos** | Valores con significado como constantes con nombre (`REMEMBER_MS`, `PASSWORD_MIN`). Un mensaje que sale en dos sitios, una constante.                                                                                                       |
+| **Nombres que se explican**       | En inglés y por lo que hacen (`findUserByEmail`, `clearServerError`), no `data2`, `aux` ni `handle`. Booleanos como pregunta (`sending`, `isValidEmail`).                                                                                   |
+| **Comentarios del porqué**        | En español, explicando lo que el código no dice (por qué el hash señuelo, por qué un 404 y no un 403). Nada de repetir lo que ya se lee.                                                                                                    |
+| **Sin restos**                    | Ni código comentado, ni `console.log` de depuración, ni imports o variables sin usar. `console.warn` solo para fallos que se recuperan solos.                                                                                               |
+| **Lint y formato**                | Antes de cada commit, `npm run lint` sin errores y `npm run format` (Prettier, configuración en `src/.prettierrc.json`) en `src/client` y `src/server`.                                                                                     |
+| **Cada uno, lo suyo**             | Solo tocas tus archivos y tu línea de `app.js`. Si algo común no te vale, se habla antes de cambiarlo.                                                                                                                                      |

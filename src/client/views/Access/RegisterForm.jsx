@@ -103,20 +103,20 @@ export default function RegisterForm({ onSubmit, onSwitch }) {
         error={shown('repeat')}
       />
 
-      <Checkbox
-        checked={accepted}
-        onChange={handleAccepted}
-        error={shown('accepted')}
-      >
+      <Checkbox checked={accepted} onChange={handleAccepted} error={shown('accepted')}>
         Acepto las condiciones de uso y la política de privacidad
       </Checkbox>
 
       <FieldError>{message}</FieldError>
-      <Button className="access__submit" type="submit" disabled={sending}>Crear cuenta</Button>
+      <Button className="access__submit" type="submit" disabled={sending}>
+        Crear cuenta
+      </Button>
 
       <p className="access__switch">
         ¿Ya tienes cuenta?{' '}
-        <button className="access__link" type="button" onClick={onSwitch}>Inicia sesión</button>
+        <button className="access__link" type="button" onClick={onSwitch}>
+          Inicia sesión
+        </button>
       </p>
     </form>
   );

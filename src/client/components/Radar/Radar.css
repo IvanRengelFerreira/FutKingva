@@ -42,10 +42,18 @@
 }
 
 /* Áreas de los jugadores: el color sale de --series-N */
-.radar__series--1 { --radar-color: var(--series-1); }
-.radar__series--2 { --radar-color: var(--series-2); }
-.radar__series--3 { --radar-color: var(--series-3); }
-.radar__series--4 { --radar-color: var(--series-4); }
+.radar__series--1 {
+  --radar-color: var(--series-1);
+}
+.radar__series--2 {
+  --radar-color: var(--series-2);
+}
+.radar__series--3 {
+  --radar-color: var(--series-3);
+}
+.radar__series--4 {
+  --radar-color: var(--series-4);
+}
 
 .radar__area {
   fill: color-mix(in srgb, var(--radar-color) 16%, transparent);

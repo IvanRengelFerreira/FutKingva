@@ -42,13 +42,11 @@ export default function Analysis() {
   // Sin filtros, el destacado va arriba y no se repite en la lista. Al buscar o elegir categoría, el destacado
   // se oculta y entra en los resultados como uno más (si no, buscar «Pedri» decía «No hay análisis»).
   const filtering = Boolean(category || query.trim()) || !featured;
-  const latest = ARTICLES
-    .filter((article) => article.status === 'published' && (filtering || article.id !== FEATURED_ARTICLE_ID))
-    .sort((a, b) => toTime(b.date) - toTime(a.date));
+  const latest = ARTICLES.filter(
+    (article) => article.status === 'published' && (filtering || article.id !== FEATURED_ARTICLE_ID),
+  ).sort((a, b) => toTime(b.date) - toTime(a.date));
 
-  const results = latest.filter((article) =>
-    (!category || article.category === category) && matches(article, query)
-  );
+  const results = latest.filter((article) => (!category || article.category === category) && matches(article, query));
   const totalPages = Math.ceil(results.length / PER_PAGE);
   const visible = results.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
@@ -116,7 +114,9 @@ export default function Analysis() {
               <Tag category={featured.category} />
             </div>
             <h2 className="analysis__featured-title">
-              <Link className="analysis__featured-link" to={`/analisis/${featured.id}`}>{featured.title}</Link>
+              <Link className="analysis__featured-link" to={`/analisis/${featured.id}`}>
+                {featured.title}
+              </Link>
             </h2>
             <p className="analysis__featured-excerpt">{featuredExtras.excerpt}</p>
             <p className="analysis__featured-meta">
@@ -125,7 +125,9 @@ export default function Analysis() {
               <span className="analysis__desktop-only"> · {featured.date}</span>
               {featuredExtras.readingTime && ` · ${featuredExtras.readingTime}`}
             </p>
-            <Button className="analysis__featured-button" to={`/analisis/${featured.id}`}>Leer análisis</Button>
+            <Button className="analysis__featured-button" to={`/analisis/${featured.id}`}>
+              Leer análisis
+            </Button>
           </div>
         </article>
       )}
@@ -164,7 +166,11 @@ export default function Analysis() {
                 />
               ))}
               {results.length > mobileCount && (
-                <Button variant="tertiary" className="analysis__more" onClick={() => setMobileCount((n) => n + MOBILE_STEP)}>
+                <Button
+                  variant="tertiary"
+                  className="analysis__more"
+                  onClick={() => setMobileCount((n) => n + MOBILE_STEP)}
+                >
                   Cargar más
                 </Button>
               )}
@@ -175,12 +181,7 @@ export default function Analysis() {
         )}
 
         <div className="analysis__desktop-only">
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onChange={setPage}
-            label="Páginas de análisis"
-          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} label="Páginas de análisis" />
         </div>
       </div>
     </section>

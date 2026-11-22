@@ -200,9 +200,15 @@
   flex-shrink: 0;
 }
 
-.admin-action--gold { --action-color: var(--accent-gold); }
-.admin-action--win { --action-color: var(--status-win); }
-.admin-action--loss { --action-color: var(--status-loss); }
+.admin-action--gold {
+  --action-color: var(--accent-gold);
+}
+.admin-action--win {
+  --action-color: var(--status-win);
+}
+.admin-action--loss {
+  --action-color: var(--status-loss);
+}
 
 .admin-users__none {
   color: var(--text-tertiary);

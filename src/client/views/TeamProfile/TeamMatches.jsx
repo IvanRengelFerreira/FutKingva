@@ -26,12 +26,20 @@ export function UpcomingMatches({ matches }) {
               <span className="team-upcoming__month">{match.month}</span>
             </span>
             <span className="team-upcoming__text">
-              <span className="team-upcoming__teams">{home?.name} – {away?.name}</span>
+              <span className="team-upcoming__teams">
+                {home?.name} – {away?.name}
+              </span>
               <span className="team-upcoming__meta">
-                {[match.weekday, match.time, match.competition, match.round && `J${match.round}`].filter(Boolean).join(' · ')}
+                {[match.weekday, match.time, match.competition, match.round && `J${match.round}`]
+                  .filter(Boolean)
+                  .join(' · ')}
               </span>
             </span>
-            <Link className="team-upcoming__opponent" to={`/equipos/${match.opponentId}`} aria-label={`Ficha de ${getTeam(match.opponentId)?.name}`}>
+            <Link
+              className="team-upcoming__opponent"
+              to={`/equipos/${match.opponentId}`}
+              aria-label={`Ficha de ${getTeam(match.opponentId)?.name}`}
+            >
               <Crest teamId={match.opponentId} size={36} />
             </Link>
           </li>
@@ -44,7 +52,11 @@ export function UpcomingMatches({ matches }) {
 export function RecentResults({ results }) {
   if (results.length === 0) {
     // Solo hay marcadores de algunos partidos (mockData.js): la forma de arriba resume sus últimos resultados
-    return <p className="team-profile__empty">Todavía no tenemos el detalle de sus partidos. Su racha está en «Forma», arriba.</p>;
+    return (
+      <p className="team-profile__empty">
+        Todavía no tenemos el detalle de sus partidos. Su racha está en «Forma», arriba.
+      </p>
+    );
   }
 
   return (
@@ -54,8 +66,12 @@ export function RecentResults({ results }) {
         <thead>
           <tr>
             <th scope="col">Rival</th>
-            <th scope="col" className="team-results__score">Resultado</th>
-            <th scope="col" className="team-results__date">Fecha</th>
+            <th scope="col" className="team-results__score">
+              Resultado
+            </th>
+            <th scope="col" className="team-results__date">
+              Fecha
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +91,9 @@ export function RecentResults({ results }) {
                 <td className="team-results__score">
                   <span className="team-results__score-cell">
                     <FormGuide form={match.result} size={20} />
-                    <span className="team-results__goals">{match.score[0]} – {match.score[1]}</span>
+                    <span className="team-results__goals">
+                      {match.score[0]} – {match.score[1]}
+                    </span>
                   </span>
                 </td>
                 <td className="team-results__date">{match.date}</td>

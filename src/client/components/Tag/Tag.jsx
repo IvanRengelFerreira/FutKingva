@@ -10,11 +10,7 @@ import './Tag.css';
 //   <Tag featured>Destacado</Tag>
 export default function Tag({ category, featured = false, children, className = '' }) {
   const variant = featured ? 'featured' : toKey(category);
-  return (
-    <span className={`tag tag--${variant} ${className}`.trim()}>
-      {children ?? category}
-    </span>
-  );
+  return <span className={`tag tag--${variant} ${className}`.trim()}>{children ?? category}</span>;
 }
 
 // «Crónica» → «cronica» (sin tildes ni mayúsculas) para elegir el color

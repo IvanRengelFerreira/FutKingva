@@ -27,8 +27,7 @@ function byName(a, b) {
 // Equipos de LaLiga con su fila de la clasificación: { ...team, row }
 export function getTeamRows(query, sort) {
   const text = normalize(query);
-  const rows = STANDINGS_LALIGA
-    .filter((row) => TEAMS[row.teamId])
+  const rows = STANDINGS_LALIGA.filter((row) => TEAMS[row.teamId])
     .map((row) => ({ ...TEAMS[row.teamId], row }))
     .filter((team) => normalize(team.name).includes(text) || normalize(team.shortName ?? '').includes(text));
 

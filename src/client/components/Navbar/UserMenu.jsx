@@ -61,11 +61,20 @@ export default function UserMenu({ user }) {
 
       {open && (
         <div className="user-menu__dropdown" role="menu">
-          <Link className="user-menu__item" to="/perfil" role="menuitem" onClick={() => setOpen(false)}>Mi perfil</Link>
+          <Link className="user-menu__item" to="/perfil" role="menuitem" onClick={() => setOpen(false)}>
+            Mi perfil
+          </Link>
           {panel && (
-            <Link className="user-menu__item" to={panel.path} role="menuitem" onClick={() => setOpen(false)}>{panel.label}</Link>
+            <Link className="user-menu__item" to={panel.path} role="menuitem" onClick={() => setOpen(false)}>
+              {panel.label}
+            </Link>
           )}
-          <button className="user-menu__item user-menu__item--danger" type="button" role="menuitem" onClick={handleLogout}>
+          <button
+            className="user-menu__item user-menu__item--danger"
+            type="button"
+            role="menuitem"
+            onClick={handleLogout}
+          >
             Cerrar sesión
           </button>
         </div>

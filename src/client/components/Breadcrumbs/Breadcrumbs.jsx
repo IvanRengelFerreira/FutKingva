@@ -37,11 +37,16 @@ export default function Breadcrumbs({ items, className = '' }) {
               className={`breadcrumbs__item ${item.hideOnMobile ? 'breadcrumbs__item--desktop' : ''}`.trim()}
             >
               {isLast || !item.to ? (
-                <span className={isLast ? 'breadcrumbs__current' : undefined} aria-current={isLast ? 'page' : undefined}>
+                <span
+                  className={isLast ? 'breadcrumbs__current' : undefined}
+                  aria-current={isLast ? 'page' : undefined}
+                >
                   {text}
                 </span>
               ) : (
-                <Link className="breadcrumbs__link" to={item.to}>{text}</Link>
+                <Link className="breadcrumbs__link" to={item.to}>
+                  {text}
+                </Link>
               )}
             </li>
           );

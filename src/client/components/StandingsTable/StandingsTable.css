@@ -169,10 +169,18 @@ td.standings-table__points {
 }
 
 /* Franja de la izquierda según la zona de la tabla */
-.standings-table__row--champions { --zone-color: var(--status-info); }
-.standings-table__row--europa { --zone-color: var(--accent-amber); }
-.standings-table__row--conference { --zone-color: var(--status-win); }
-.standings-table__row--relegation { --zone-color: var(--status-loss); }
+.standings-table__row--champions {
+  --zone-color: var(--status-info);
+}
+.standings-table__row--europa {
+  --zone-color: var(--accent-amber);
+}
+.standings-table__row--conference {
+  --zone-color: var(--status-win);
+}
+.standings-table__row--relegation {
+  --zone-color: var(--status-loss);
+}
 
 .standings-table__row td:first-child {
   box-shadow: inset 3px 0 0 var(--zone-color, transparent);
@@ -270,10 +278,18 @@ td.standings-table__points {
   background: var(--zone-color);
 }
 
-.standings-table__legend-item--champions { --zone-color: var(--status-info); }
-.standings-table__legend-item--europa { --zone-color: var(--accent-amber); }
-.standings-table__legend-item--conference { --zone-color: var(--status-win); }
-.standings-table__legend-item--relegation { --zone-color: var(--status-loss); }
+.standings-table__legend-item--champions {
+  --zone-color: var(--status-info);
+}
+.standings-table__legend-item--europa {
+  --zone-color: var(--accent-amber);
+}
+.standings-table__legend-item--conference {
+  --zone-color: var(--status-win);
+}
+.standings-table__legend-item--relegation {
+  --zone-color: var(--status-loss);
+}
 
 /* Móvil: solo # · Equipo · PJ · DG · PTS (Figma › 05 · Clasificaciones · Móvil) */
 @media (max-width: 799px) {

@@ -57,17 +57,25 @@ export default function LoginForm({ onSubmit, onSwitch }) {
       />
 
       <div className="access__row">
-        <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>Recordarme</Checkbox>
+        <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>
+          Recordarme
+        </Checkbox>
         {/* De momento no hay recuperación de contraseña: lleva a Contacto */}
-        <Link className="access__link" to="/contacto">¿Olvidaste tu contraseña?</Link>
+        <Link className="access__link" to="/contacto">
+          ¿Olvidaste tu contraseña?
+        </Link>
       </div>
 
       <FieldError>{message}</FieldError>
-      <Button className="access__submit" type="submit" disabled={sending}>Entrar</Button>
+      <Button className="access__submit" type="submit" disabled={sending}>
+        Entrar
+      </Button>
 
       <p className="access__switch">
         ¿No tienes cuenta?{' '}
-        <button className="access__link" type="button" onClick={onSwitch}>Regístrate</button>
+        <button className="access__link" type="button" onClick={onSwitch}>
+          Regístrate
+        </button>
       </p>
     </form>
   );

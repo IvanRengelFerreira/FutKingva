@@ -16,37 +16,37 @@
 
 :root {
   /* Fondos (de más oscuro a más claro) */
-  --bg-base: #07120E;         /* Fondo general de la página */
-  --bg-surface: #0D1C16;      /* Tarjetas, tablas, navbar, pie */
-  --bg-elevated: #132820;     /* Elementos sobre tarjetas, menús, cabeceras de tabla */
-  --bg-hover: #1A3329;        /* Fila o tarjeta al pasar el ratón */
-  --border: #213D31;          /* Bordes y separadores */
+  --bg-base: #07120e; /* Fondo general de la página */
+  --bg-surface: #0d1c16; /* Tarjetas, tablas, navbar, pie */
+  --bg-elevated: #132820; /* Elementos sobre tarjetas, menús, cabeceras de tabla */
+  --bg-hover: #1a3329; /* Fila o tarjeta al pasar el ratón */
+  --border: #213d31; /* Bordes y separadores */
 
   /* Marca */
-  --brand-green-900: #0B3D2E; /* Verde del logo (inicio de degradados) */
-  --brand-green-700: #0E5A40; /* Verde claro (final de degradados) */
-  --accent-gold: #F5C542;     /* Acción principal, líder, destacados, enlace activo */
-  --accent-amber: #F2A000;    /* Hover del oro, final del degradado de la corona */
-  --accent-gold-soft: #2B2814; /* Fondo de chips y etiquetas doradas */
+  --brand-green-900: #0b3d2e; /* Verde del logo (inicio de degradados) */
+  --brand-green-700: #0e5a40; /* Verde claro (final de degradados) */
+  --accent-gold: #f5c542; /* Acción principal, líder, destacados, enlace activo */
+  --accent-amber: #f2a000; /* Hover del oro, final del degradado de la corona */
+  --accent-gold-soft: #2b2814; /* Fondo de chips y etiquetas doradas */
 
   /* Texto */
-  --text-primary: #F3F6F4;    /* Títulos y texto principal */
-  --text-secondary: #A3B8AD;  /* Texto de apoyo, etiquetas */
-  --text-tertiary: #66806F;   /* Metadatos, placeholders, deshabilitado */
+  --text-primary: #f3f6f4; /* Títulos y texto principal */
+  --text-secondary: #a3b8ad; /* Texto de apoyo, etiquetas */
+  --text-tertiary: #66806f; /* Metadatos, placeholders, deshabilitado */
 
   /* Estados */
-  --status-win: #3DDC97;      /* Victoria, subida, valor positivo, correcto */
-  --status-draw: #9AA8A1;     /* Empate, sin cambios */
-  --status-loss: #FF5C5C;     /* Derrota, bajada, error, eliminar */
-  --status-live: #FF3D57;     /* Partido en directo, avisos nuevos */
-  --status-info: #5CB8FF;     /* Información, zona Champions, rol editor */
-  --card-yellow: #FFD43B;     /* Tarjetas amarillas (árbitros); las rojas usan --status-loss */
+  --status-win: #3ddc97; /* Victoria, subida, valor positivo, correcto */
+  --status-draw: #9aa8a1; /* Empate, sin cambios */
+  --status-loss: #ff5c5c; /* Derrota, bajada, error, eliminar */
+  --status-live: #ff3d57; /* Partido en directo, avisos nuevos */
+  --status-info: #5cb8ff; /* Información, zona Champions, rol editor */
+  --card-yellow: #ffd43b; /* Tarjetas amarillas (árbitros); las rojas usan --status-loss */
 
   /* Series del comparador (jugador A, B, C y D; máximo 4 jugadores) */
-  --series-1: #F5C542;        /* Jugador A · oro */
-  --series-2: #5CB8FF;        /* Jugador B · azul */
-  --series-3: #C08CFF;        /* Jugador C · violeta */
-  --series-4: #FF8F5C;        /* Jugador D · coral */
+  --series-1: #f5c542; /* Jugador A · oro */
+  --series-2: #5cb8ff; /* Jugador B · azul */
+  --series-3: #c08cff; /* Jugador C · violeta */
+  --series-4: #ff8f5c; /* Jugador D · coral */
 
   /* Velo detrás del menú móvil y de las ventanas emergentes */
   --overlay: rgba(0, 0, 0, 0.6);

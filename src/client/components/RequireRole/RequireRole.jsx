@@ -28,14 +28,21 @@ export default function RequireRole({ roles, children }) {
       <section className="placeholder">
         <h1>No tienes permiso para ver esta página</h1>
         <p>
-          Esta zona es solo para {roles.map((role) => ROLE_NAMES[role].plural).join(' y ')}.
-          Has entrado como {ROLE_NAMES[user.role].singular}.
+          Esta zona es solo para {roles.map((role) => ROLE_NAMES[role].plural).join(' y ')}. Has entrado como{' '}
+          {ROLE_NAMES[user.role].singular}.
         </p>
         <p>
           <Link to="/">Volver a Inicio</Link>
-          {ownPanel && <> · <Link to={ownPanel.path}>Ir a tu {ownPanel.label.toLowerCase()}</Link></>}
+          {ownPanel && (
+            <>
+              {' '}
+              · <Link to={ownPanel.path}>Ir a tu {ownPanel.label.toLowerCase()}</Link>
+            </>
+          )}
           {' · '}
-          <Link to="/acceso" state={{ from: location.pathname }}>Entrar con otra cuenta</Link>
+          <Link to="/acceso" state={{ from: location.pathname }}>
+            Entrar con otra cuenta
+          </Link>
         </p>
       </section>
     );

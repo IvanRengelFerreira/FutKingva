@@ -60,7 +60,9 @@ export default function Comparator() {
             Comparador<span className="comparator__desktop"> de jugadores</span>
           </h1>
           <p className="page-header__subtitle">
-            <span className="comparator__desktop">Elige dos o más jugadores y compara sus estadísticas de la temporada.</span>
+            <span className="comparator__desktop">
+              Elige dos o más jugadores y compara sus estadísticas de la temporada.
+            </span>
             <span className="comparator__mobile">Compara dos o más jugadores.</span>
           </p>
         </div>
@@ -78,10 +80,42 @@ export default function Comparator() {
 
       <div className="comparator__filters">
         {/* Temporada y competición: solo hay una de cada; en móvil el texto es más corto */}
-        <Select size="sm" label="Temporada" hideLabel options={[`Temporada ${SEASON}`]} value={`Temporada ${SEASON}`} onChange={() => {}} className="comparator__desktop-block" />
-        <Select size="sm" label="Competición" hideLabel options={['Competición: LaLiga']} value="Competición: LaLiga" onChange={() => {}} className="comparator__desktop-block" />
-        <Select size="sm" label="Temporada" hideLabel options={[SEASON]} value={SEASON} onChange={() => {}} className="comparator__mobile-block" />
-        <Select size="sm" label="Competición" hideLabel options={['LaLiga']} value="LaLiga" onChange={() => {}} className="comparator__mobile-block" />
+        <Select
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[`Temporada ${SEASON}`]}
+          value={`Temporada ${SEASON}`}
+          onChange={() => {}}
+          className="comparator__desktop-block"
+        />
+        <Select
+          size="sm"
+          label="Competición"
+          hideLabel
+          options={['Competición: LaLiga']}
+          value="Competición: LaLiga"
+          onChange={() => {}}
+          className="comparator__desktop-block"
+        />
+        <Select
+          size="sm"
+          label="Temporada"
+          hideLabel
+          options={[SEASON]}
+          value={SEASON}
+          onChange={() => {}}
+          className="comparator__mobile-block"
+        />
+        <Select
+          size="sm"
+          label="Competición"
+          hideLabel
+          options={['LaLiga']}
+          value="LaLiga"
+          onChange={() => {}}
+          className="comparator__mobile-block"
+        />
         <Select
           size="sm"
           label="Totales o por partido"
@@ -117,7 +151,9 @@ export default function Comparator() {
               </p>
               <p className="comparator-player__team">
                 <Crest teamId={player.teamId} size={20} className="comparator-player__crest" />
-                <span className="comparator__desktop">{team?.name} · {player.position}</span>
+                <span className="comparator__desktop">
+                  {team?.name} · {player.position}
+                </span>
                 <span className="comparator__mobile">{team?.code}</span>
               </p>
             </li>
@@ -152,7 +188,9 @@ export default function Comparator() {
 
       {players.length < 2 && (
         <p className="comparator__empty">
-          {players.length === 0 ? 'Añade al menos dos jugadores para compararlos.' : 'Añade otro jugador para compararlo.'}
+          {players.length === 0
+            ? 'Añade al menos dos jugadores para compararlos.'
+            : 'Añade otro jugador para compararlo.'}
         </p>
       )}
 
@@ -171,7 +209,9 @@ export default function Comparator() {
           </section>
 
           <section className="comparator__radar" aria-labelledby="comparator-radar-title">
-            <h2 id="comparator-radar-title" className="comparator__section-title">Gráfico radar</h2>
+            <h2 id="comparator-radar-title" className="comparator__section-title">
+              Gráfico radar
+            </h2>
             <div className="comparator__radar-card">
               <Radar
                 label={`Comparativa de ${players.map(compactName).join(', ')}`}

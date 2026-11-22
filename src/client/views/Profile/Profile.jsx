@@ -31,8 +31,13 @@ export default function Profile() {
   const handleLogout = useLogout();
   const [tab, setTab] = useState('favorites');
   const {
-    favoriteTeams, favoritePlayers, savedComparisons: comparisons, idealTeam,
-    toggleFavoriteTeam, toggleFavoritePlayer, removeComparison,
+    favoriteTeams,
+    favoritePlayers,
+    savedComparisons: comparisons,
+    idealTeam,
+    toggleFavoriteTeam,
+    toggleFavoritePlayer,
+    removeComparison,
   } = useUserData();
   const [editNotice, setEditNotice] = useState(false);
 
@@ -45,7 +50,11 @@ export default function Profile() {
       label: (
         <>
           Notificaciones
-          {unreadCount > 0 && <span className="profile__badge" aria-label={`${unreadCount} sin leer`}>{unreadCount}</span>}
+          {unreadCount > 0 && (
+            <span className="profile__badge" aria-label={`${unreadCount} sin leer`}>
+              {unreadCount}
+            </span>
+          )}
         </>
       ),
     },
@@ -58,12 +67,24 @@ export default function Profile() {
   return (
     <section className="page profile">
       <header className="profile-hero">
-        <Avatar name={user.name} initials={user.initials} size={96} className="profile-hero__avatar profile__desktop-flex" />
-        <Avatar name={user.name} initials={user.initials} size={80} className="profile-hero__avatar profile__mobile-flex" />
+        <Avatar
+          name={user.name}
+          initials={user.initials}
+          size={96}
+          className="profile-hero__avatar profile__desktop-flex"
+        />
+        <Avatar
+          name={user.name}
+          initials={user.initials}
+          size={80}
+          className="profile-hero__avatar profile__mobile-flex"
+        />
         <div className="profile-hero__text">
           <p className="profile-hero__eyebrow">{ROLE_LABELS[user.role] ?? 'Usuario registrado'}</p>
           <h1 className="profile-hero__name">{user.name}</h1>
-          <p className="profile-hero__meta">{user.email} · Miembro desde {PROFILE_EXAMPLE.memberSince}</p>
+          <p className="profile-hero__meta">
+            {user.email} · Miembro desde {PROFILE_EXAMPLE.memberSince}
+          </p>
         </div>
         <dl className="profile-hero__counts">
           <div>
@@ -117,13 +138,19 @@ export default function Profile() {
           <div className="profile__columns">
             <div className="profile__main">
               <section className="profile__section" aria-labelledby="profile-comparisons-title">
-                <SectionHeader id="profile-comparisons-title" title={<Short long="Comparativas guardadas" short="Comparativas" />}>
+                <SectionHeader
+                  id="profile-comparisons-title"
+                  title={<Short long="Comparativas guardadas" short="Comparativas" />}
+                >
                   <NewComparisonLink />
                 </SectionHeader>
                 <SavedComparisons comparisons={comparisons} onRemove={removeComparison} />
               </section>
 
-              <section className="profile__section profile__desktop-block" aria-labelledby="profile-notifications-title">
+              <section
+                className="profile__section profile__desktop-block"
+                aria-labelledby="profile-notifications-title"
+              >
                 <SectionHeader id="profile-notifications-title" title="Notificaciones recientes">
                   <button type="button" className="profile__more" onClick={() => setTab('notifications')}>
                     Ver todas <span aria-hidden="true">→</span>

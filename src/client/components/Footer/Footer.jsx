@@ -22,8 +22,12 @@ export default function Footer() {
       </p>
 
       <nav className="footer__links" aria-label="Enlaces del pie">
-        <Link className="footer__link" to="/sobre-nosotros">Sobre nosotros</Link>
-        <Link className="footer__link" to="/contacto">Contacto</Link>
+        <Link className="footer__link" to="/sobre-nosotros">
+          Sobre nosotros
+        </Link>
+        <Link className="footer__link" to="/contacto">
+          Contacto
+        </Link>
       </nav>
     </footer>
   );

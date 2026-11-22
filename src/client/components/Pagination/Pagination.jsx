@@ -29,7 +29,9 @@ export default function Pagination({ page, totalPages, onChange, label = 'Pagina
 
       {getPages(page, totalPages).map((item, i) =>
         item === '…' ? (
-          <span key={`gap-${i}`} className="pagination__gap" aria-hidden="true">…</span>
+          <span key={`gap-${i}`} className="pagination__gap" aria-hidden="true">
+            …
+          </span>
         ) : (
           <button
             key={item}
@@ -41,7 +43,7 @@ export default function Pagination({ page, totalPages, onChange, label = 'Pagina
           >
             {item}
           </button>
-        )
+        ),
       )}
 
       <button

@@ -33,7 +33,7 @@ export default function Navbar() {
   const { user } = useSession();
   const { pathname, search } = useLocation();
   // En Resultados de búsqueda, el buscador enseña lo buscado; en las demás páginas sale vacío
-  const searchedText = pathname === '/buscar' ? new URLSearchParams(search).get('q') ?? '' : '';
+  const searchedText = pathname === '/buscar' ? (new URLSearchParams(search).get('q') ?? '') : '';
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef(null);
 
@@ -106,9 +106,20 @@ export default function Navbar() {
       </nav>
 
       <div className="navbar__actions">
-        <form className={user ? 'navbar__search navbar__search--wide' : 'navbar__search'} role="search" onSubmit={handleSearch}>
+        <form
+          className={user ? 'navbar__search navbar__search--wide' : 'navbar__search'}
+          role="search"
+          onSubmit={handleSearch}
+        >
           <img src={searchIcon} alt="" width="18" height="18" />
-          <input key={searchedText} type="search" name="q" defaultValue={searchedText} placeholder="Buscar…" aria-label="Buscar equipos y jugadores" />
+          <input
+            key={searchedText}
+            type="search"
+            name="q"
+            defaultValue={searchedText}
+            placeholder="Buscar…"
+            aria-label="Buscar equipos y jugadores"
+          />
         </form>
 
         {/* Solo en móvil: lupa (lleva a Resultados de búsqueda) */}
@@ -121,14 +132,22 @@ export default function Navbar() {
             <Notifications />
             <UserMenu user={user} />
             {/* Solo en móvil: el avatar lleva a Mi perfil */}
-            <Link className="navbar__avatar navbar__mobile-only" to="/perfil" aria-label="Mi perfil">{user.initials}</Link>
+            <Link className="navbar__avatar navbar__mobile-only" to="/perfil" aria-label="Mi perfil">
+              {user.initials}
+            </Link>
           </>
         ) : (
           <>
-            <Link className="navbar__button navbar__button--secondary navbar__desktop-only" to="/acceso">Iniciar sesión</Link>
-            <Link className="navbar__button navbar__button--primary navbar__desktop-only" to="/acceso?registro">Registrarse</Link>
+            <Link className="navbar__button navbar__button--secondary navbar__desktop-only" to="/acceso">
+              Iniciar sesión
+            </Link>
+            <Link className="navbar__button navbar__button--primary navbar__desktop-only" to="/acceso?registro">
+              Registrarse
+            </Link>
             {/* Solo en móvil */}
-            <Link className="navbar__button navbar__button--secondary navbar__mobile-only" to="/acceso">Entrar</Link>
+            <Link className="navbar__button navbar__button--secondary navbar__mobile-only" to="/acceso">
+              Entrar
+            </Link>
           </>
         )}
       </div>

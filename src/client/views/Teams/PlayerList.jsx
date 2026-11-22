@@ -18,12 +18,24 @@ export default function PlayerList({ rows, mobileRows }) {
           <thead>
             <tr>
               <th scope="col">Jugador</th>
-              <th scope="col" className="teams__team-col">Equipo</th>
-              <th scope="col" className="teams__position-col">Posición</th>
-              <th scope="col" className="teams__num"><abbr title="Partidos jugados">PJ</abbr></th>
-              <th scope="col" className="teams__num">Goles</th>
-              <th scope="col" className="teams__num"><abbr title="Asistencias">Asist.</abbr></th>
-              <th scope="col" className="teams__rating-col"><abbr title="Valoración media">Val.</abbr></th>
+              <th scope="col" className="teams__team-col">
+                Equipo
+              </th>
+              <th scope="col" className="teams__position-col">
+                Posición
+              </th>
+              <th scope="col" className="teams__num">
+                <abbr title="Partidos jugados">PJ</abbr>
+              </th>
+              <th scope="col" className="teams__num">
+                Goles
+              </th>
+              <th scope="col" className="teams__num">
+                <abbr title="Asistencias">Asist.</abbr>
+              </th>
+              <th scope="col" className="teams__rating-col">
+                <abbr title="Valoración media">Val.</abbr>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -65,7 +77,11 @@ export default function PlayerList({ rows, mobileRows }) {
                   {player.team?.code} · {player.position} · {player.goals ?? 0} G · {player.assists ?? 0} A
                 </span>
               </span>
-              {player.rating != null ? <Rating value={player.rating} size="md" /> : <img src={chevronIcon} alt="" width="18" height="18" />}
+              {player.rating != null ? (
+                <Rating value={player.rating} size="md" />
+              ) : (
+                <img src={chevronIcon} alt="" width="18" height="18" />
+              )}
             </Link>
           </li>
         ))}

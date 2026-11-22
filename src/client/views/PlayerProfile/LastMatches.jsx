@@ -33,7 +33,9 @@ export default function LastMatches({ player, extras, isMobile }) {
   return (
     <section className="player-matches" aria-labelledby="player-matches-title">
       <div className="player-section-head">
-        <h2 id="player-matches-title" className="player-section-head__title">Últimos partidos</h2>
+        <h2 id="player-matches-title" className="player-section-head__title">
+          Últimos partidos
+        </h2>
         <span className="player-section-head__line" aria-hidden="true" />
         <Link className="player-section-head__link" to={`/equipos/${player.teamId}`}>
           {isMobile ? 'Ver' : 'Ver todos'} <span aria-hidden="true">→</span>
@@ -52,7 +54,8 @@ export default function LastMatches({ player, extras, isMobile }) {
               <div className="player-match-item__info">
                 <p className="player-match-item__name">{opponentName(match, extras.venues)}</p>
                 <p className="player-match-item__stats">
-                  {formatNumber(match.goals)} G · {formatNumber(match.assists)} A · {match.minutes != null ? `${match.minutes}'` : MISSING}
+                  {formatNumber(match.goals)} G · {formatNumber(match.assists)} A ·{' '}
+                  {match.minutes != null ? `${match.minutes}'` : MISSING}
                 </p>
               </div>
               <Result match={match} />
@@ -67,10 +70,18 @@ export default function LastMatches({ player, extras, isMobile }) {
               <tr>
                 <th scope="col">Rival</th>
                 <th scope="col">Res.</th>
-                <th scope="col" className="player-matches__num">G</th>
-                <th scope="col" className="player-matches__num">A</th>
-                <th scope="col" className="player-matches__min">Min</th>
-                <th scope="col" className="player-matches__rating">Val.</th>
+                <th scope="col" className="player-matches__num">
+                  G
+                </th>
+                <th scope="col" className="player-matches__num">
+                  A
+                </th>
+                <th scope="col" className="player-matches__min">
+                  Min
+                </th>
+                <th scope="col" className="player-matches__rating">
+                  Val.
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -82,11 +93,23 @@ export default function LastMatches({ player, extras, isMobile }) {
                       {opponentName(match, extras.venues)}
                     </span>
                   </td>
-                  <td><Result match={match} /></td>
-                  <td className={`player-matches__num player-matches__goals${match.goals ? ' player-matches__goals--on' : ''}`}>{formatNumber(match.goals)}</td>
-                  <td className={`player-matches__num player-matches__assists${match.assists ? ' player-matches__assists--on' : ''}`}>{formatNumber(match.assists)}</td>
+                  <td>
+                    <Result match={match} />
+                  </td>
+                  <td
+                    className={`player-matches__num player-matches__goals${match.goals ? ' player-matches__goals--on' : ''}`}
+                  >
+                    {formatNumber(match.goals)}
+                  </td>
+                  <td
+                    className={`player-matches__num player-matches__assists${match.assists ? ' player-matches__assists--on' : ''}`}
+                  >
+                    {formatNumber(match.assists)}
+                  </td>
                   <td className="player-matches__min">{match.minutes != null ? `${match.minutes}'` : MISSING}</td>
-                  <td className="player-matches__rating"><Value rating={match.rating} size="sm" /></td>
+                  <td className="player-matches__rating">
+                    <Value rating={match.rating} size="sm" />
+                  </td>
                 </tr>
               ))}
             </tbody>

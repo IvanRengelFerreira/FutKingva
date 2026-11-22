@@ -11,9 +11,15 @@ export const MAX_NAME_LENGTH = 24;
 // Los extremos y delanteros se pueden intercambiar; los medios laterales (MI, MD) admiten también extremos.
 const FIT = {
   POR: ['Portero'],
-  LD: ['Defensa'], LI: ['Defensa'], DFC: ['Defensa'],
-  MC: ['Centrocampista'], MI: ['Centrocampista', 'Extremo'], MD: ['Centrocampista', 'Extremo'],
-  ED: ['Extremo', 'Delantero'], EI: ['Extremo', 'Delantero'], DC: ['Delantero', 'Extremo'],
+  LD: ['Defensa'],
+  LI: ['Defensa'],
+  DFC: ['Defensa'],
+  MC: ['Centrocampista'],
+  MI: ['Centrocampista', 'Extremo'],
+  MD: ['Centrocampista', 'Extremo'],
+  ED: ['Extremo', 'Delantero'],
+  EI: ['Extremo', 'Delantero'],
+  DC: ['Delantero', 'Extremo'],
 };
 
 // ¿Puede jugar este jugador en esta posición del campo (DFC1 → DFC)?
@@ -99,13 +105,17 @@ function average(values, decimals) {
 // Totales del resumen; lo que falta en los datos no cuenta y, si no queda nada, sale null («—»)
 export function summarize(assigned) {
   const players = Object.values(assigned).map(getPlayer).filter(Boolean);
-  const sum = (key) => (players.length ? players.reduce((total, p) => total + (Number.isFinite(p[key]) ? p[key] : 0), 0) : null);
+  const sum = (key) =>
+    players.length ? players.reduce((total, p) => total + (Number.isFinite(p[key]) ? p[key] : 0), 0) : null;
   return {
     count: players.length,
     goals: sum('goals'),
     assists: sum('assists'),
     averageAge: average(players.map(ageOf), 1),
-    averageRating: average(players.map((p) => p.rating), 1),
+    averageRating: average(
+      players.map((p) => p.rating),
+      1,
+    ),
   };
 }
 

@@ -34,7 +34,9 @@ export default function Tabs({ tabs, active, onChange, label, fill = false, clas
         return (
           <button
             key={tab.id}
-            ref={(element) => { tabRefs.current[index] = element; }}
+            ref={(element) => {
+              tabRefs.current[index] = element;
+            }}
             className={`tabs__tab${selected ? ' tabs__tab--active' : ''}`}
             type="button"
             role="tab"

@@ -36,7 +36,10 @@ export default function CandidateList({ slot, assigned, onAdd }) {
         placeholder="Buscar jugador…"
         icon={searchIcon}
         value={query}
-        onChange={(e) => { setQuery(e.target.value); setShowAll(false); }}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setShowAll(false);
+        }}
         autoComplete="off"
       />
 
@@ -45,9 +48,15 @@ export default function CandidateList({ slot, assigned, onAdd }) {
           size="sm"
           label="Posición"
           hideLabel
-          options={[{ value: 'slot', label: `Posición: ${position ?? '—'}` }, { value: 'all', label: 'Todas' }]}
+          options={[
+            { value: 'slot', label: `Posición: ${position ?? '—'}` },
+            { value: 'all', label: 'Todas' },
+          ]}
           value={onlySlot}
-          onChange={(e) => { setOnlySlot(e.target.value); setShowAll(false); }}
+          onChange={(e) => {
+            setOnlySlot(e.target.value);
+            setShowAll(false);
+          }}
         />
         <Select
           size="sm"
@@ -62,7 +71,9 @@ export default function CandidateList({ slot, assigned, onAdd }) {
       <ul className="ideal-team__candidates" aria-label="Jugadores disponibles">
         {candidates.length === 0 && (
           <li className="ideal-team__empty">
-            {slot ? 'No hay jugadores disponibles con estos filtros' : 'Pulsa una posición del campo para ver sus jugadores'}
+            {slot
+              ? 'No hay jugadores disponibles con estos filtros'
+              : 'Pulsa una posición del campo para ver sus jugadores'}
           </li>
         )}
         {visible.map((player, i) => {
@@ -74,7 +85,9 @@ export default function CandidateList({ slot, assigned, onAdd }) {
             i === 0 && fits && 'ideal-team-candidate--first',
             !fits && 'ideal-team-candidate--disabled',
             !showAll && i >= PAGE_SIZE_MOBILE && 'ideal-team-candidate--extra',
-          ].filter(Boolean).join(' ');
+          ]
+            .filter(Boolean)
+            .join(' ');
           return (
             <li key={player.id} className={classes}>
               <Avatar name={player.name} size={44} className="ideal-team-candidate__avatar" />
@@ -83,7 +96,8 @@ export default function CandidateList({ slot, assigned, onAdd }) {
                 <p className="ideal-team-candidate__meta">
                   <span className="ideal-team__desktop">{team?.name ?? '—'}</span>
                   <span className="ideal-team__mobile">{team?.code ?? '—'}</span>
-                  {' · '}{fits ? position : player.position} · {goals} {goals === 1 ? 'gol' : 'goles'}
+                  {' · '}
+                  {fits ? position : player.position} · {goals} {goals === 1 ? 'gol' : 'goles'}
                 </p>
               </div>
               <Rating value={player.rating} />

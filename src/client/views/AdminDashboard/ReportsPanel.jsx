@@ -12,7 +12,11 @@ const TYPES = {
 
 function TypeTag({ type }) {
   const { label, category } = TYPES[type] ?? { label: type ?? '—', category: '' };
-  return <Tag category={category} className="admin-tag">{label}</Tag>;
+  return (
+    <Tag category={category} className="admin-tag">
+      {label}
+    </Tag>
+  );
 }
 
 function ReportActions({ report, onResolve }) {
@@ -33,7 +37,9 @@ function ReportActions({ report, onResolve }) {
 export default function ReportsPanel({ reports, message, onResolve }) {
   return (
     <div className="admin-reports">
-      <p className="admin-reports__message" role="status">{message}</p>
+      <p className="admin-reports__message" role="status">
+        {message}
+      </p>
 
       {reports.length === 0 ? (
         <p className="admin-empty">No quedan reportes pendientes.</p>
@@ -49,7 +55,9 @@ export default function ReportsPanel({ reports, message, onResolve }) {
                   <th scope="col">Motivo del reporte</th>
                   <th scope="col">Autor</th>
                   <th scope="col">Fecha</th>
-                  <th scope="col" className="admin-table__end">Acciones</th>
+                  <th scope="col" className="admin-table__end">
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -57,15 +65,21 @@ export default function ReportsPanel({ reports, message, onResolve }) {
                   <tr key={report.id}>
                     <td>
                       <span className="admin-report__content">
-                        <span className="admin-report__flag"><AdminIcon name="flag" size={16} /></span>
+                        <span className="admin-report__flag">
+                          <AdminIcon name="flag" size={16} />
+                        </span>
                         {report.content ?? '—'}
                       </span>
                     </td>
-                    <td><TypeTag type={report.type} /></td>
+                    <td>
+                      <TypeTag type={report.type} />
+                    </td>
                     <td className="admin-table__muted">{report.reason ?? '—'}</td>
                     <td>{report.author ?? '—'}</td>
                     <td className="admin-table__muted">{report.date ?? '—'}</td>
-                    <td className="admin-table__end"><ReportActions report={report} onResolve={onResolve} /></td>
+                    <td className="admin-table__end">
+                      <ReportActions report={report} onResolve={onResolve} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -77,12 +91,16 @@ export default function ReportsPanel({ reports, message, onResolve }) {
             {reports.map((report) => (
               <li key={report.id} className="admin-card admin-card--report">
                 <div className="admin-report__head">
-                  <span className="admin-report__flag"><AdminIcon name="flag" /></span>
+                  <span className="admin-report__flag">
+                    <AdminIcon name="flag" />
+                  </span>
                   <TypeTag type={report.type} />
                   <span className="admin-report__date">{report.date ?? '—'}</span>
                 </div>
                 <p className="admin-report__title">{report.content ?? '—'}</p>
-                <p className="admin-report__meta">{report.reason ?? '—'} · {report.author ?? '—'}</p>
+                <p className="admin-report__meta">
+                  {report.reason ?? '—'} · {report.author ?? '—'}
+                </p>
                 <ReportActions report={report} onResolve={onResolve} />
               </li>
             ))}

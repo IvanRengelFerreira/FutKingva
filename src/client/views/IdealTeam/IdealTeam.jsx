@@ -8,8 +8,14 @@ import { POSITION_NAMES, slotPosition } from '../../components/Pitch/formations.
 import CandidateList from './CandidateList.jsx';
 import TeamSummary from './TeamSummary.jsx';
 import {
-  FORMATION_NAMES, MAX_NAME_LENGTH, lineupOf, slotsOf, toAssigned,
-  assignPlayer, removePlayer, changeFormation,
+  FORMATION_NAMES,
+  MAX_NAME_LENGTH,
+  lineupOf,
+  slotsOf,
+  toAssigned,
+  assignPlayer,
+  removePlayer,
+  changeFormation,
 } from './team.js';
 import { SEASON, getPlayer } from '../../data/mockData.js';
 import saveIcon from '../../assets/icon-save.svg';
@@ -94,7 +100,9 @@ export default function IdealTeam() {
           </p>
           <h1 className="page-header__title">Mi equipo ideal</h1>
           <p className="page-header__subtitle">
-            <span className="ideal-team__desktop">Arma tu once con jugadores de cualquier club según sus estadísticas reales.</span>
+            <span className="ideal-team__desktop">
+              Arma tu once con jugadores de cualquier club según sus estadísticas reales.
+            </span>
             <span className="ideal-team__mobile">Arma tu once con jugadores de cualquier club.</span>
           </p>
         </div>
@@ -106,7 +114,11 @@ export default function IdealTeam() {
             hideLabel
             value={name}
             maxLength={MAX_NAME_LENGTH}
-            onChange={(e) => { setName(e.target.value); setSaved(false); setNameError(null); }}
+            onChange={(e) => {
+              setName(e.target.value);
+              setSaved(false);
+              setNameError(null);
+            }}
             error={nameError}
             className="ideal-team__name"
           />
@@ -132,7 +144,11 @@ export default function IdealTeam() {
         </div>
       </header>
 
-      {notice && <p className="ideal-team__notice" role="status">{notice}</p>}
+      {notice && (
+        <p className="ideal-team__notice" role="status">
+          {notice}
+        </p>
+      )}
 
       <div className="ideal-team__main">
         <Pitch
@@ -144,7 +160,9 @@ export default function IdealTeam() {
         />
 
         <section className="ideal-team__search" aria-labelledby="ideal-team-search-title">
-          <h2 id="ideal-team-search-title" className="ideal-team__section-title">Añadir jugadores</h2>
+          <h2 id="ideal-team-search-title" className="ideal-team__section-title">
+            Añadir jugadores
+          </h2>
 
           <div className="ideal-team__choosing" aria-live="polite">
             {activeSlot ? (
@@ -154,7 +172,12 @@ export default function IdealTeam() {
                   {activePlayer && <> · ahora: {activePlayer.shortName ?? activePlayer.name}</>}
                 </span>
                 {activePlayer && (
-                  <button type="button" className="ideal-team__remove" onClick={remove} aria-label={`Quitar a ${activePlayer.name}`}>
+                  <button
+                    type="button"
+                    className="ideal-team__remove"
+                    onClick={remove}
+                    aria-label={`Quitar a ${activePlayer.name}`}
+                  >
                     <img src={removeIcon} alt="" width="14" height="14" />
                     Quitar
                   </button>
@@ -188,7 +211,13 @@ function firstEmpty(formation, assigned, after) {
 function describeChange(to, { moved, dropped }) {
   const label = (id) => getPlayer(id)?.shortName ?? getPlayer(id)?.name ?? id;
   const parts = [`Formación ${to}.`];
-  moved.filter(({ from, to: slot }) => slotPosition(from) !== slotPosition(slot)).forEach(({ playerId, from, to: slot }) => parts.push(`${label(playerId)} pasa de ${slotPosition(from)} a ${slotPosition(slot)}.`));
-  dropped.forEach(({ playerId, from }) => parts.push(`${label(playerId)} (${slotPosition(from)}) sale del once: no hay hueco para su posición.`));
+  moved
+    .filter(({ from, to: slot }) => slotPosition(from) !== slotPosition(slot))
+    .forEach(({ playerId, from, to: slot }) =>
+      parts.push(`${label(playerId)} pasa de ${slotPosition(from)} a ${slotPosition(slot)}.`),
+    );
+  dropped.forEach(({ playerId, from }) =>
+    parts.push(`${label(playerId)} (${slotPosition(from)}) sale del once: no hay hueco para su posición.`),
+  );
   return parts.join(' ');
 }

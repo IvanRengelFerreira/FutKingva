@@ -14,9 +14,14 @@ export function timeAgo(iso, now = Date.now()) {
 
 /** Fecha corta en hora de Madrid: «dom 25/10» */
 export function shortDate(iso) {
-  return new Date(iso).toLocaleDateString('es-ES', {
-    weekday: 'short', day: '2-digit', month: '2-digit', timeZone: 'Europe/Madrid',
-  }).replace(',', '');
+  return new Date(iso)
+    .toLocaleDateString('es-ES', {
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit',
+      timeZone: 'Europe/Madrid',
+    })
+    .replace(',', '');
 }
 
 /** Hora en Madrid: «21:00» */

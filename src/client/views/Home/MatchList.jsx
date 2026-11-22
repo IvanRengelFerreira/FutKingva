@@ -50,7 +50,9 @@ export default function MatchList({ items, label, emptyText, maxMobile }) {
 function TeamCell({ teamId, winner, away = false }) {
   const team = getTeam(teamId);
   return (
-    <span className={`match-list__team${away ? ' match-list__team--away' : ''}${winner ? ' match-list__team--winner' : ''}`}>
+    <span
+      className={`match-list__team${away ? ' match-list__team--away' : ''}${winner ? ' match-list__team--winner' : ''}`}
+    >
       <Crest teamId={teamId} size={26} className="match-list__crest" />
       <Link to={`/equipos/${teamId}`} className="match-list__team-name">
         <span className="home__desktop">{team.name}</span>

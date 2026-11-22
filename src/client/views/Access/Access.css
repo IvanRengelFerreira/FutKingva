@@ -231,9 +231,15 @@
   cursor: not-allowed;
 }
 
-.access__quick-button--user { --role-color: var(--status-win); }
-.access__quick-button--editor { --role-color: var(--status-info); }
-.access__quick-button--admin { --role-color: var(--status-loss); }
+.access__quick-button--user {
+  --role-color: var(--status-win);
+}
+.access__quick-button--editor {
+  --role-color: var(--status-info);
+}
+.access__quick-button--admin {
+  --role-color: var(--status-loss);
+}
 
 /* Móvil: tarjeta más estrecha y título más pequeño */
 @media (max-width: 799px) {

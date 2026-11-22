@@ -8,7 +8,8 @@ export const FEATURED_ARTICLE_ID = 'pedri-arte-de-no-perder-el-balon';
 
 export const ARTICLE_EXTRAS = {
   'pedri-arte-de-no-perder-el-balon': {
-    excerpt: 'Cinco partidos seguidos por encima del 90 % de acierto en el pase. Analizamos qué ha cambiado en su posición desde el inicio de la temporada y por qué el Barça depende de él para salir jugando.',
+    excerpt:
+      'Cinco partidos seguidos por encima del 90 % de acierto en el pase. Analizamos qué ha cambiado en su posición desde el inicio de la temporada y por qué el Barça depende de él para salir jugando.',
     readingTime: '6 min de lectura',
     illustration: { stat: '91 %' },
   },

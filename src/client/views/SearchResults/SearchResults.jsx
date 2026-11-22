@@ -72,7 +72,9 @@ export default function SearchResults() {
             </button>
           )}
         </div>
-        <button type="submit" className="search-results__submit">Buscar</button>
+        <button type="submit" className="search-results__submit">
+          Buscar
+        </button>
       </form>
 
       {!query ? (
@@ -103,7 +105,8 @@ export default function SearchResults() {
             <div className="search-results__empty">
               <p>No hay equipos ni jugadores que coincidan con «{query}».</p>
               <p>
-                Prueba con otro nombre o busca en <Link to="/arbitros">árbitros</Link> y <Link to="/analisis">análisis</Link>.
+                Prueba con otro nombre o busca en <Link to="/arbitros">árbitros</Link> y{' '}
+                <Link to="/analisis">análisis</Link>.
               </p>
             </div>
           ) : (
@@ -112,7 +115,9 @@ export default function SearchResults() {
 
               {showTeams && teams.length > 0 && (
                 <section className="search-results__section" aria-labelledby="search-teams-title">
-                  <h2 id="search-teams-title" className="search-results__section-title">Equipos</h2>
+                  <h2 id="search-teams-title" className="search-results__section-title">
+                    Equipos
+                  </h2>
                   <ul className="search-results__teams">
                     {teams.map((team) => (
                       <li key={team.id}>
@@ -126,12 +131,19 @@ export default function SearchResults() {
                             </span>
                           </span>
                           <span className="search-results__see search-results__desktop">Ver ficha →</span>
-                          <img className="search-results__mobile-flex" src={chevronIcon} alt="" width="18" height="18" />
+                          <img
+                            className="search-results__mobile-flex"
+                            src={chevronIcon}
+                            alt=""
+                            width="18"
+                            height="18"
+                          />
                         </Link>
                       </li>
                     ))}
                     <li className="search-results__also search-results__desktop-flex">
-                      Busca también en&nbsp;<Link to="/arbitros">árbitros</Link>&nbsp;y&nbsp;<Link to="/analisis">análisis</Link>&nbsp;→
+                      Busca también en&nbsp;<Link to="/arbitros">árbitros</Link>&nbsp;y&nbsp;
+                      <Link to="/analisis">análisis</Link>&nbsp;→
                     </li>
                   </ul>
                 </section>
@@ -140,7 +152,9 @@ export default function SearchResults() {
               {showPlayers && players.length > 0 && (
                 <section className="search-results__section" aria-labelledby="search-players-title">
                   <div className="search-results__section-header">
-                    <h2 id="search-players-title" className="search-results__section-title">Jugadores</h2>
+                    <h2 id="search-players-title" className="search-results__section-title">
+                      Jugadores
+                    </h2>
                     <span className="search-results__order search-results__desktop">Ordenar: relevancia</span>
                   </div>
 
@@ -150,11 +164,21 @@ export default function SearchResults() {
                       <thead>
                         <tr>
                           <th scope="col">Jugador</th>
-                          <th scope="col" className="search-results__team-col">Equipo</th>
-                          <th scope="col" className="search-results__position-col">Posición</th>
-                          <th scope="col" className="search-results__num">Goles</th>
-                          <th scope="col" className="search-results__num search-results__num--wide">Asistencias</th>
-                          <th scope="col" className="search-results__link-col"><span className="search-results__sr-only">Ficha</span></th>
+                          <th scope="col" className="search-results__team-col">
+                            Equipo
+                          </th>
+                          <th scope="col" className="search-results__position-col">
+                            Posición
+                          </th>
+                          <th scope="col" className="search-results__num">
+                            Goles
+                          </th>
+                          <th scope="col" className="search-results__num search-results__num--wide">
+                            Asistencias
+                          </th>
+                          <th scope="col" className="search-results__link-col">
+                            <span className="search-results__sr-only">Ficha</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -165,7 +189,11 @@ export default function SearchResults() {
                               <th scope="row">
                                 <span className="search-results__player">
                                   <Avatar name={player.name} size={34} color={team?.color} />
-                                  <Highlighted name={player.name} query={query} className="search-results__player-name" />
+                                  <Highlighted
+                                    name={player.name}
+                                    query={query}
+                                    className="search-results__player-name"
+                                  />
                                 </span>
                               </th>
                               <td className="search-results__team-col">
@@ -176,9 +204,15 @@ export default function SearchResults() {
                               </td>
                               <td className="search-results__position-col">{player.position}</td>
                               <td className="search-results__num search-results__big">{player.goals ?? 0}</td>
-                              <td className="search-results__num search-results__num--wide search-results__big">{player.assists ?? 0}</td>
+                              <td className="search-results__num search-results__num--wide search-results__big">
+                                {player.assists ?? 0}
+                              </td>
                               <td className="search-results__link-col">
-                                <Link className="search-results__see" to={`/jugadores/${player.id}`} aria-label={`Ver ficha de ${player.name}`}>
+                                <Link
+                                  className="search-results__see"
+                                  to={`/jugadores/${player.id}`}
+                                  aria-label={`Ver ficha de ${player.name}`}
+                                >
                                   Ver ficha →
                                 </Link>
                               </td>
@@ -223,7 +257,13 @@ function Highlighted({ name, query, className }) {
   return (
     <span className={className}>
       {splitMatch(name, query).map((part, i) =>
-        part.match ? <mark key={i} className="search-results__match">{part.text}</mark> : <span key={i}>{part.text}</span>
+        part.match ? (
+          <mark key={i} className="search-results__match">
+            {part.text}
+          </mark>
+        ) : (
+          <span key={i}>{part.text}</span>
+        ),
       )}
     </span>
   );

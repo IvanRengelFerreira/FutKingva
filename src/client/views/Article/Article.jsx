@@ -23,7 +23,20 @@ import './Article.css';
 // Diseño: Figma › Mockups › 09 · Artículo
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=53-556
 
-const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const MONTHS = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre',
+];
 
 export default function Article() {
   const { articleId } = useParams();
@@ -59,11 +72,7 @@ function ArticleView({ article }) {
     <section className="page article">
       <div className="article__column">
         <Breadcrumbs
-          items={[
-            { label: 'Análisis', to: '/analisis' },
-            { label: article.category },
-            { label: article.title },
-          ]}
+          items={[{ label: 'Análisis', to: '/analisis' }, { label: article.category }, { label: article.title }]}
         />
 
         <header className="article__header">
@@ -92,7 +101,9 @@ function ArticleView({ article }) {
           </div>
 
           <div className="article__actions">
-            <span className="article__share-message" role="status">{shareMessage}</span>
+            <span className="article__share-message" role="status">
+              {shareMessage}
+            </span>
             <button
               type="button"
               className={`article__action article__action--bookmark${saved ? ' article__action--active' : ''}`}
@@ -113,7 +124,9 @@ function ArticleView({ article }) {
 
         <Illustration className="article__illustration" type={article.category} {...extras.illustration} />
 
-        {content.body?.map((block, index) => <Block key={index} block={block} />)}
+        {content.body?.map((block, index) => (
+          <Block key={index} block={block} />
+        ))}
       </div>
 
       {related.length > 0 && (
@@ -121,12 +134,7 @@ function ArticleView({ article }) {
           <h2 className="article__related-title">Análisis relacionados</h2>
           <div className="article__related-grid">
             {related.map((item) => (
-              <ArticleCard
-                key={item.id}
-                article={item}
-                illustration={getArticleExtras(item.id).illustration}
-                minimal
-              />
+              <ArticleCard key={item.id} article={item} illustration={getArticleExtras(item.id).illustration} minimal />
             ))}
           </div>
           {/* Móvil: dos tarjetas compactas (miniatura a la izquierda) */}
@@ -232,11 +240,11 @@ function Mention({ item }) {
 function getRelated(article, ids) {
   if (ids) return ids.map(getArticle).filter(Boolean);
 
-  return ARTICLES
-    .filter((item) => item.status === 'published' && item.id !== article.id)
-    .sort((a, b) =>
-      Number(b.category === article.category) - Number(a.category === article.category) ||
-      toTime(b.date) - toTime(a.date)
+  return ARTICLES.filter((item) => item.status === 'published' && item.id !== article.id)
+    .sort(
+      (a, b) =>
+        Number(b.category === article.category) - Number(a.category === article.category) ||
+        toTime(b.date) - toTime(a.date),
     )
     .slice(0, 3);
 }

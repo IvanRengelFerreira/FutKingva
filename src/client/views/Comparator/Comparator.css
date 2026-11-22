@@ -15,10 +15,18 @@
 }
 
 /* Color de cada jugador (A oro, B azul, C violeta, D coral) */
-.comparator-series--1 { --series: var(--series-1); }
-.comparator-series--2 { --series: var(--series-2); }
-.comparator-series--3 { --series: var(--series-3); }
-.comparator-series--4 { --series: var(--series-4); }
+.comparator-series--1 {
+  --series: var(--series-1);
+}
+.comparator-series--2 {
+  --series: var(--series-2);
+}
+.comparator-series--3 {
+  --series: var(--series-3);
+}
+.comparator-series--4 {
+  --series: var(--series-4);
+}
 
 /* Botones de la cabecera: con icono */
 .comparator__actions .button {
@@ -465,11 +473,22 @@
     display: contents;
   }
 
-  .comparator__players { order: 1; }
-  .comparator__search-mobile { order: 2; display: block; }
-  .comparator__filters { order: 3; }
-  .comparator__empty { order: 4; }
-  .comparator__results { order: 5; }
+  .comparator__players {
+    order: 1;
+  }
+  .comparator__search-mobile {
+    order: 2;
+    display: block;
+  }
+  .comparator__filters {
+    order: 3;
+  }
+  .comparator__empty {
+    order: 4;
+  }
+  .comparator__results {
+    order: 5;
+  }
 
   .comparator__actions {
     order: 6;

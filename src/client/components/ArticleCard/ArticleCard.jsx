@@ -45,7 +45,9 @@ export default function ArticleCard({
       <div className="article-card__body">
         <Tag category={category} />
         <h3 className="article-card__title">
-          <Link className="article-card__link" to={href}>{title}</Link>
+          <Link className="article-card__link" to={href}>
+            {title}
+          </Link>
         </h3>
         {!compact && !minimal && excerpt && <p className="article-card__excerpt">{excerpt}</p>}
         {!minimal && (
@@ -54,7 +56,11 @@ export default function ArticleCard({
               {author}
               {shownDate && ` · ${shownDate}`}
             </span>
-            {!compact && <span className="article-card__more" aria-hidden="true">Leer →</span>}
+            {!compact && (
+              <span className="article-card__more" aria-hidden="true">
+                Leer →
+              </span>
+            )}
           </div>
         )}
       </div>

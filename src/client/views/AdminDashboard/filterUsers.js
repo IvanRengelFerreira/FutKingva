@@ -15,6 +15,6 @@ export function filterUsers(users, { query, role, status }) {
     (user) =>
       (role === 'all' || user.role === role) &&
       (status === 'all' || user.status === status) &&
-      (!search || normalize(user.name).includes(search) || normalize(user.email).includes(search))
+      (!search || normalize(user.name).includes(search) || normalize(user.email).includes(search)),
   );
 }

@@ -25,7 +25,9 @@ export default function TeamSummary({ assigned }) {
       <dl className="ideal-team-summary__list">
         {items.map((item) => (
           <div key={item.label} className="ideal-team-summary__item">
-            <dd className={`ideal-team-summary__value${item.gold ? ' ideal-team-summary__value--gold' : ''}`}>{item.value}</dd>
+            <dd className={`ideal-team-summary__value${item.gold ? ' ideal-team-summary__value--gold' : ''}`}>
+              {item.value}
+            </dd>
             <dt className="ideal-team-summary__label">{item.label}</dt>
           </div>
         ))}

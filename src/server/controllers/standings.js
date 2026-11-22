@@ -10,7 +10,10 @@ import { TEAM_SUMMARY_FIELDS, teamSummary } from '../utils/teams.js';
 const FORM_LETTERS = { W: 'V', D: 'E', L: 'D' };
 
 export function toSpanishForm(form) {
-  return (form ?? '').split('').map((letter) => FORM_LETTERS[letter] ?? '').join('');
+  return (form ?? '')
+    .split('')
+    .map((letter) => FORM_LETTERS[letter] ?? '')
+    .join('');
 }
 
 export function standingRow(row) {

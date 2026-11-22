@@ -45,7 +45,10 @@ export default function PlayerDataEditor() {
   // Datos ya corregidos ({ playerId: { campo: valor } }) e historial de cambios, guardados en el navegador
   const { playerCorrections: saved, dataHistory: history, savePlayerCorrection } = useUserData();
   const [playerId, setPlayerId] = useState(PEDRI_REPORT.playerId);
-  const [values, setValues] = useState(() => ({ ...originalValues(PEDRI_REPORT.playerId, {}), ...PEDRI_REPORT.changes }));
+  const [values, setValues] = useState(() => ({
+    ...originalValues(PEDRI_REPORT.playerId, {}),
+    ...PEDRI_REPORT.changes,
+  }));
   const [reason, setReason] = useState(PEDRI_REPORT.reason);
   const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
@@ -60,11 +63,13 @@ export default function PlayerDataEditor() {
   const player = getPlayer(playerId);
   const team = getTeam(player.teamId);
   const original = originalValues(playerId, saved);
-  const changed = [...FIELDS.map((field) => field.key), 'position'].filter((key) => !sameValue(values[key], original[key]));
+  const changed = [...FIELDS.map((field) => field.key), 'position'].filter(
+    (key) => !sameValue(values[key], original[key]),
+  );
 
   const errors = {
     ...Object.fromEntries(
-      FIELDS.map((field) => [field.key, isValidNumber(values[field.key], field.decimal) ? null : 'Número no válido'])
+      FIELDS.map((field) => [field.key, isValidNumber(values[field.key], field.decimal) ? null : 'Número no válido']),
     ),
     reason: changed.length > 0 && !reason.trim() ? 'Explica el motivo del cambio' : null,
   };
@@ -142,7 +147,9 @@ export default function PlayerDataEditor() {
 
       <header className="page-header">
         <div className="page-header__text">
-          <p className="page-header__eyebrow">Zona de editor<span className="player-data__more"> · RF11</span></p>
+          <p className="page-header__eyebrow">
+            Zona de editor<span className="player-data__more"> · RF11</span>
+          </p>
           <h1 className="page-header__title">Actualizar datos de jugadores</h1>
           <p className="page-header__subtitle player-data__more">
             Corrige o completa las estadísticas recibidas del proveedor de datos.
@@ -156,18 +163,30 @@ export default function PlayerDataEditor() {
               <span className="player-data__more">Conectado a </span>football-data.org
             </p>
             <p className="player-data__sync-time" role="status">
-              {syncing ? 'Sincronizando…' : (
+              {syncing ? (
+                'Sincronizando…'
+              ) : (
                 <>
                   <span className="player-data__more">Última sincronización: </span>
                   <span className="player-data__capital">hoy {lastSync}</span>
-                  <span className="player-data__more"> · próxima en {lastSync === TODAY.time ? SYNC_EVERY_MINUTES : SYNC_EVERY_MINUTES - 1} min</span>
+                  <span className="player-data__more">
+                    {' '}
+                    · próxima en {lastSync === TODAY.time ? SYNC_EVERY_MINUTES : SYNC_EVERY_MINUTES - 1} min
+                  </span>
                 </>
               )}
             </p>
           </div>
-          <Button variant="tertiary" className="player-data__button" onClick={() => setSyncing(true)} disabled={syncing}>
+          <Button
+            variant="tertiary"
+            className="player-data__button"
+            onClick={() => setSyncing(true)}
+            disabled={syncing}
+          >
             <img src={syncIcon} alt="" width="16" height="16" />
-            <span>Sincronizar<span className="player-data__more"> ahora</span></span>
+            <span>
+              Sincronizar<span className="player-data__more"> ahora</span>
+            </span>
           </Button>
         </div>
       </header>
@@ -175,8 +194,12 @@ export default function PlayerDataEditor() {
       <div className="player-data__filters">
         <div
           className="player-data__search"
-          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setListOpen(false); }}
-          onKeyDown={(e) => { if (e.key === 'Escape') setListOpen(false); }}
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) setListOpen(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setListOpen(false);
+          }}
         >
           <TextField
             size="sm"
@@ -185,7 +208,10 @@ export default function PlayerDataEditor() {
             placeholder={player.name}
             icon={searchIcon}
             value={query}
-            onChange={(e) => { setQuery(e.target.value); setListOpen(true); }}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setListOpen(true);
+            }}
             onFocus={() => setListOpen(true)}
             autoComplete="off"
           />
@@ -209,7 +235,10 @@ export default function PlayerDataEditor() {
           hideLabel
           options={[{ value: 'all', label: 'Equipo: Todos' }, ...teamsWithPlayers()]}
           value={teamId}
-          onChange={(e) => { setTeamId(e.target.value); setListOpen(true); }}
+          onChange={(e) => {
+            setTeamId(e.target.value);
+            setListOpen(true);
+          }}
         />
         <Select
           size="sm"
@@ -222,7 +251,14 @@ export default function PlayerDataEditor() {
       </div>
 
       <div className="player-data__layout">
-        <form className="player-data__card" onSubmit={(e) => { e.preventDefault(); save(); }} noValidate>
+        <form
+          className="player-data__card"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save();
+          }}
+          noValidate
+        >
           <div className="player-data__who">
             <span className="player-data__badge">
               <Avatar className="player-data__avatar" name={player.name} size={68} />
@@ -243,7 +279,10 @@ export default function PlayerDataEditor() {
 
           <div className="player-data__fields">
             {FIELDS.map((field) => (
-              <div key={field.key} className={`player-data__field${changed.includes(field.key) ? ' player-data__field--changed' : ''}`}>
+              <div
+                key={field.key}
+                className={`player-data__field${changed.includes(field.key) ? ' player-data__field--changed' : ''}`}
+              >
                 <TextField
                   label={field.label}
                   inputMode={field.decimal ? 'decimal' : 'numeric'}
@@ -251,11 +290,20 @@ export default function PlayerDataEditor() {
                   onChange={(e) => change(field.key, e.target.value)}
                   error={shown(field.key)}
                 />
-                {changed.includes(field.key) && <span className="player-data__before">antes {original[field.key]}</span>}
+                {changed.includes(field.key) && (
+                  <span className="player-data__before">antes {original[field.key]}</span>
+                )}
               </div>
             ))}
-            <div className={`player-data__field player-data__field--position${changed.includes('position') ? ' player-data__field--changed' : ''}`}>
-              <Select label="Posición" options={POSITIONS} value={values.position} onChange={(e) => change('position', e.target.value)} />
+            <div
+              className={`player-data__field player-data__field--position${changed.includes('position') ? ' player-data__field--changed' : ''}`}
+            >
+              <Select
+                label="Posición"
+                options={POSITIONS}
+                value={values.position}
+                onChange={(e) => change('position', e.target.value)}
+              />
             </div>
           </div>
 
@@ -270,17 +318,24 @@ export default function PlayerDataEditor() {
             label="Motivo del cambio"
             placeholder="Por qué se corrige el dato (partido, minuto…)"
             value={reason}
-            onChange={(e) => { setReason(e.target.value); setMessage(''); }}
+            onChange={(e) => {
+              setReason(e.target.value);
+              setMessage('');
+            }}
             error={shown('reason')}
           />
 
           <div className="player-data__actions">
-            <Button variant="tertiary" className="player-data__button" onClick={cancel}>Cancelar</Button>
+            <Button variant="tertiary" className="player-data__button" onClick={cancel}>
+              Cancelar
+            </Button>
             <Button type="submit" className="player-data__button">
               <img src={saveIcon} alt="" width="16" height="16" />
               Guardar cambios
             </Button>
-            <p className="player-data__message" role="status">{message}</p>
+            <p className="player-data__message" role="status">
+              {message}
+            </p>
           </div>
         </form>
 
@@ -290,10 +345,15 @@ export default function PlayerDataEditor() {
             <table>
               <thead>
                 <tr>
-                  <th scope="col"><span className="player-data__more">Fecha</span><span className="player-data__less">Día</span></th>
+                  <th scope="col">
+                    <span className="player-data__more">Fecha</span>
+                    <span className="player-data__less">Día</span>
+                  </th>
                   <th scope="col">Jugador · campo</th>
                   <th scope="col">Cambio</th>
-                  <th scope="col" className="player-data__by">Por</th>
+                  <th scope="col" className="player-data__by">
+                    Por
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -312,9 +372,12 @@ export default function PlayerDataEditor() {
                         </span>
                       </td>
                       <td className="player-data__change">
-                        {entry.from} <span className="player-data__arrow" aria-label="pasa a" /> <strong>{entry.to}</strong>
+                        {entry.from} <span className="player-data__arrow" aria-label="pasa a" />{' '}
+                        <strong>{entry.to}</strong>
                       </td>
-                      <td className="player-data__by"><Avatar initials={entry.by} name={entry.by} size={26} /></td>
+                      <td className="player-data__by">
+                        <Avatar initials={entry.by} name={entry.by} size={26} />
+                      </td>
                     </tr>
                   );
                 })}

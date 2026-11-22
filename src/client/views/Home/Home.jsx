@@ -59,8 +59,12 @@ export default function Home() {
       <header className="page-header">
         <div className="page-header__text">
           <p className="page-header__eyebrow">
-            <span className="home__desktop">{TODAY.label} · Jornada {TODAY.round}</span>
-            <span className="home__mobile">{shortDateLabel(TODAY.label)} · Jornada {TODAY.round}</span>
+            <span className="home__desktop">
+              {TODAY.label} · Jornada {TODAY.round}
+            </span>
+            <span className="home__mobile">
+              {shortDateLabel(TODAY.label)} · Jornada {TODAY.round}
+            </span>
           </p>
           <h1 className="page-header__title">Hoy en el fútbol</h1>
         </div>
@@ -108,7 +112,12 @@ export default function Home() {
       <div className="home__columns">
         <div className="home__main">
           <section aria-labelledby="home-results-title">
-            <SectionHeader id="home-results-title" title="Últimos resultados" to="/clasificaciones" linkLabel="Ver clasificación →" />
+            <SectionHeader
+              id="home-results-title"
+              title="Últimos resultados"
+              to="/clasificaciones"
+              linkLabel="Ver clasificación →"
+            />
             <MatchList
               items={results}
               label="Últimos resultados"
@@ -134,7 +143,12 @@ export default function Home() {
           </section>
 
           <section aria-labelledby="home-upcoming-title">
-            <SectionHeader id="home-upcoming-title" title="Próximos partidos" to="/clasificaciones" linkLabel="Ver clasificación →" />
+            <SectionHeader
+              id="home-upcoming-title"
+              title="Próximos partidos"
+              to="/clasificaciones"
+              linkLabel="Ver clasificación →"
+            />
             <MatchList
               items={upcoming}
               label="Próximos partidos"

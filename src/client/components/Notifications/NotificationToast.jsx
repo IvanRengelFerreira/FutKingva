@@ -8,8 +8,8 @@ import closeIcon from '../../assets/icon-close.svg';
 // Uso (lo pone Notifications): <NotificationToast title="¡GOL! Baena · 89'" detail="Espanyol 0 – 1 Atlético" />
 
 const SHOWN_KEY = 'futkingva-toast-shown';
-const DELAY = 1500;     // ms hasta que aparece
-const DURATION = 5000;  // ms que se queda en pantalla
+const DELAY = 1500; // ms hasta que aparece
+const DURATION = 5000; // ms que se queda en pantalla
 
 function alreadyShown() {
   try {
@@ -55,7 +55,12 @@ export default function NotificationToast({ title, detail }) {
         <strong>{title}</strong>
         <span>{detail}</span>
       </span>
-      <button className="notification-toast__close" type="button" onClick={() => setVisible(false)} aria-label="Cerrar aviso">
+      <button
+        className="notification-toast__close"
+        type="button"
+        onClick={() => setVisible(false)}
+        aria-label="Cerrar aviso"
+      >
         <span style={{ '--icon': `url("${closeIcon}")` }} aria-hidden="true" />
       </button>
     </div>

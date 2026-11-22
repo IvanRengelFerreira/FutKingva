@@ -26,7 +26,11 @@ const STATUS_FILTER = [
 // Acciones de una fila: la cuenta propia no se puede bloquear ni eliminar («—»)
 function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete, compact }) {
   if (user.isCurrentUser) {
-    return compact ? null : <span className="admin-users__none" aria-label="Sin acciones para tu propia cuenta">—</span>;
+    return compact ? null : (
+      <span className="admin-users__none" aria-label="Sin acciones para tu propia cuenta">
+        —
+      </span>
+    );
   }
   const blocked = user.status === 'blocked';
   const blockLabel = blocked ? 'Desbloquear' : 'Bloquear';
@@ -44,7 +48,12 @@ function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete
           <AdminIcon name="trash" />
           <span className="admin-action__text">¿Eliminar?</span>
         </button>
-        <button type="button" className="admin-action admin-action--gold" onClick={onCancelDelete} aria-label={`No eliminar a ${user.name}`}>
+        <button
+          type="button"
+          className="admin-action admin-action--gold"
+          onClick={onCancelDelete}
+          aria-label={`No eliminar a ${user.name}`}
+        >
           <span className="admin-action__text">Cancelar</span>
         </button>
       </div>
@@ -93,7 +102,12 @@ function RoleSelect({ user, onChangeRole }) {
 function UserName({ user }) {
   return (
     <span className="admin-user">
-      <Avatar initials={user.initials} name={user.name} size={34} className={`admin-avatar admin-avatar--${user.role}`} />
+      <Avatar
+        initials={user.initials}
+        name={user.name}
+        size={34}
+        className={`admin-avatar admin-avatar--${user.role}`}
+      />
       <span className="admin-user__name">
         {user.name}
         {user.isCurrentUser && <span className="admin-user__you"> (tú)</span>}
@@ -103,8 +117,18 @@ function UserName({ user }) {
 }
 
 export default function UsersPanel({
-  users, filters, onFilters, page, totalPages, onPage, onChangeRole, onToggleBlock, onDelete,
-  confirmDelete, onCancelDelete, message,
+  users,
+  filters,
+  onFilters,
+  page,
+  totalPages,
+  onPage,
+  onChangeRole,
+  onToggleBlock,
+  onDelete,
+  confirmDelete,
+  onCancelDelete,
+  message,
 }) {
   const filtering = isFiltering(filters);
 
@@ -139,7 +163,9 @@ export default function UsersPanel({
         />
       </div>
 
-      <p className="admin-reports__message" role="status">{message}</p>
+      <p className="admin-reports__message" role="status">
+        {message}
+      </p>
 
       {users.length === 0 ? (
         <p className="admin-empty">
@@ -157,19 +183,33 @@ export default function UsersPanel({
                   <th scope="col">Rol</th>
                   <th scope="col">Estado</th>
                   <th scope="col">Registro</th>
-                  <th scope="col" className="admin-table__end">Acciones</th>
+                  <th scope="col" className="admin-table__end">
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user.id} className={user.status === 'blocked' ? 'admin-row--blocked' : undefined}>
-                    <td><UserName user={user} /></td>
+                    <td>
+                      <UserName user={user} />
+                    </td>
                     <td className="admin-table__muted">{user.email ?? '—'}</td>
-                    <td><RoleSelect user={user} onChangeRole={onChangeRole} /></td>
-                    <td><StatusBadge status={user.status} /></td>
+                    <td>
+                      <RoleSelect user={user} onChangeRole={onChangeRole} />
+                    </td>
+                    <td>
+                      <StatusBadge status={user.status} />
+                    </td>
                     <td className="admin-table__muted">{user.registered ?? '—'}</td>
                     <td className="admin-table__end">
-                      <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} confirming={confirmDelete === user.id} onCancelDelete={onCancelDelete} />
+                      <UserActions
+                        user={user}
+                        onToggleBlock={onToggleBlock}
+                        onDelete={onDelete}
+                        confirming={confirmDelete === user.id}
+                        onCancelDelete={onCancelDelete}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -182,7 +222,12 @@ export default function UsersPanel({
             {users.map((user) => (
               <li key={user.id} className={`admin-card${user.status === 'blocked' ? ' admin-card--blocked' : ''}`}>
                 <div className="admin-card__top">
-                  <Avatar initials={user.initials} name={user.name} size={38} className={`admin-avatar admin-avatar--${user.role}`} />
+                  <Avatar
+                    initials={user.initials}
+                    name={user.name}
+                    size={38}
+                    className={`admin-avatar admin-avatar--${user.role}`}
+                  />
                   <div className="admin-card__who">
                     <span className="admin-user__name">
                       {user.name}
@@ -194,7 +239,14 @@ export default function UsersPanel({
                 </div>
                 <div className="admin-card__bottom">
                   <RoleSelect user={user} onChangeRole={onChangeRole} />
-                  <UserActions user={user} onToggleBlock={onToggleBlock} onDelete={onDelete} confirming={confirmDelete === user.id} onCancelDelete={onCancelDelete} compact />
+                  <UserActions
+                    user={user}
+                    onToggleBlock={onToggleBlock}
+                    onDelete={onDelete}
+                    confirming={confirmDelete === user.id}
+                    onCancelDelete={onCancelDelete}
+                    compact
+                  />
                 </div>
               </li>
             ))}
@@ -203,7 +255,9 @@ export default function UsersPanel({
       )}
 
       {/* Sin filtros se pagina la lista completa (1.284 usuarios, solo 8 cargados); con filtros, solo lo que coincide */}
-      {!filtering && <Pagination page={page} totalPages={totalPages} onChange={onPage} label="Paginación de usuarios" />}
+      {!filtering && (
+        <Pagination page={page} totalPages={totalPages} onChange={onPage} label="Paginación de usuarios" />
+      )}
     </div>
   );
 }

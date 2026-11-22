@@ -27,9 +27,7 @@ function openFromFile() {
     transformIndexHtml: {
       order: 'post',
       handler: (html) =>
-        html
-          .replace(/<script type="module" crossorigin/g, '<script defer')
-          .replace(/ crossorigin(?=[ >])/g, ''),
+        html.replace(/<script type="module" crossorigin/g, '<script defer').replace(/ crossorigin(?=[ >])/g, ''),
     },
   };
 }

@@ -40,7 +40,12 @@ export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite
                     <img src={favorite ? starFilledIcon : starOutlineIcon} alt="" width="18" height="18" />
                   </button>
                 ) : (
-                  <Link className="team-card__star" to="/acceso" state={{ from: '/equipos' }} aria-label={`Inicia sesión para seguir a ${team.name}`}>
+                  <Link
+                    className="team-card__star"
+                    to="/acceso"
+                    state={{ from: '/equipos' }}
+                    aria-label={`Inicia sesión para seguir a ${team.name}`}
+                  >
                     <img src={starOutlineIcon} alt="" width="18" height="18" />
                   </Link>
                 )}
@@ -50,15 +55,26 @@ export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite
               <div className="team-card__stats">
                 <span className="team-card__stat">
                   <span className="team-card__value">{team.row.position}º</span>
-                  <span className="team-card__stat-label"><abbr title="Posición">Pos.</abbr></span>
+                  <span className="team-card__stat-label">
+                    <abbr title="Posición">Pos.</abbr>
+                  </span>
                 </span>
                 <span className="team-card__stat">
-                  <span className={`team-card__value${leader ? ' team-card__value--gold' : ''}`}>{team.row.points}</span>
-                  <span className="team-card__stat-label"><abbr title="Puntos">Pts</abbr></span>
+                  <span className={`team-card__value${leader ? ' team-card__value--gold' : ''}`}>
+                    {team.row.points}
+                  </span>
+                  <span className="team-card__stat-label">
+                    <abbr title="Puntos">Pts</abbr>
+                  </span>
                 </span>
               </div>
               <FormGuide form={team.row.form} size={20} />
-              <Button variant="tertiary" to={`/equipos/${team.id}`} className="team-card__button" aria-label={`Ver ficha de ${team.name}`}>
+              <Button
+                variant="tertiary"
+                to={`/equipos/${team.id}`}
+                className="team-card__button"
+                aria-label={`Ver ficha de ${team.name}`}
+              >
                 Ver ficha
               </Button>
             </li>

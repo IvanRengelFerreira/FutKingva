@@ -31,7 +31,10 @@ export default function AdminDashboard() {
   const stats = {
     users: ADMIN_STATS.users - (USERS.length - users.length),
     editors: ADMIN_STATS.editors + count(users, (u) => u.role === 'editor') - count(USERS, (u) => u.role === 'editor'),
-    blocked: ADMIN_STATS.blockedAccounts + count(users, (u) => u.status === 'blocked') - count(USERS, (u) => u.status === 'blocked'),
+    blocked:
+      ADMIN_STATS.blockedAccounts +
+      count(users, (u) => u.status === 'blocked') -
+      count(USERS, (u) => u.status === 'blocked'),
     reports: reports.length,
   };
 
@@ -44,7 +47,9 @@ export default function AdminDashboard() {
 
   function toggleBlock(id) {
     setUsers((list) =>
-      list.map((u) => (u.id === id && !u.isCurrentUser ? { ...u, status: u.status === 'blocked' ? 'active' : 'blocked' } : u))
+      list.map((u) =>
+        u.id === id && !u.isCurrentUser ? { ...u, status: u.status === 'blocked' ? 'active' : 'blocked' } : u,
+      ),
     );
   }
 
@@ -68,7 +73,7 @@ export default function AdminDashboard() {
     setMessage(
       action === 'approve'
         ? `Reporte aprobado: «${content}» se mantiene publicado.`
-        : `Contenido eliminado: «${content}».`
+        : `Contenido eliminado: «${content}».`,
     );
   }
 
@@ -85,7 +90,11 @@ export default function AdminDashboard() {
       label: (
         <>
           Moderación
-          {reports.length > 0 && <span className="admin__badge" aria-label={`${reports.length} pendientes`}>{reports.length}</span>}
+          {reports.length > 0 && (
+            <span className="admin__badge" aria-label={`${reports.length} pendientes`}>
+              {reports.length}
+            </span>
+          )}
         </>
       ),
     },
@@ -104,10 +113,33 @@ export default function AdminDashboard() {
       </header>
 
       <div className="admin__stats">
-        <StatCard value={stats.users.toLocaleString('es-ES', { useGrouping: 'always' })} label={<>Usuarios<span className="admin__more"> registrados</span></>} />
+        <StatCard
+          value={stats.users.toLocaleString('es-ES', { useGrouping: 'always' })}
+          label={
+            <>
+              Usuarios<span className="admin__more"> registrados</span>
+            </>
+          }
+        />
         <StatCard value={stats.editors} label="Editores" tone="info" />
-        <StatCard value={stats.blocked} label={<>{/* En móvil, solo «Bloqueadas» */}<span className="admin__more">Cuentas </span>bloqueadas</>} />
-        <StatCard value={stats.reports} label={<>Reportes<span className="admin__more"> pendientes</span></>} tone="loss" />
+        <StatCard
+          value={stats.blocked}
+          label={
+            <>
+              {/* En móvil, solo «Bloqueadas» */}
+              <span className="admin__more">Cuentas </span>bloqueadas
+            </>
+          }
+        />
+        <StatCard
+          value={stats.reports}
+          label={
+            <>
+              Reportes<span className="admin__more"> pendientes</span>
+            </>
+          }
+          tone="loss"
+        />
       </div>
 
       <Tabs label="Secciones del panel" tabs={tabs} active={tab} onChange={changeTab} />
@@ -116,7 +148,10 @@ export default function AdminDashboard() {
         <UsersPanel
           users={visibleUsers}
           filters={filters}
-          onFilters={(next) => { setFilters(next); setPage(1); }}
+          onFilters={(next) => {
+            setFilters(next);
+            setPage(1);
+          }}
           page={page}
           totalPages={TOTAL_PAGES}
           onPage={setPage}

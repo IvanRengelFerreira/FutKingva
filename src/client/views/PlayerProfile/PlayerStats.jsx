@@ -5,10 +5,23 @@ import { MISSING, formatNumber, formatPercent } from './format.js';
 // El mockup móvil usa otros indicadores y otro orden que el de escritorio, de ahí dos listas.
 function desktopStats(player, extras) {
   return [
-    { label: 'Partidos', value: formatNumber(player.matches), detail: player.minutes != null ? `${player.minutes} minutos` : null },
-    { label: 'Goles', value: formatNumber(player.goals), detail: player.xg != null ? `xG ${formatNumber(player.xg, 1)}` : null },
+    {
+      label: 'Partidos',
+      value: formatNumber(player.matches),
+      detail: player.minutes != null ? `${player.minutes} minutos` : null,
+    },
+    {
+      label: 'Goles',
+      value: formatNumber(player.goals),
+      detail: player.xg != null ? `xG ${formatNumber(player.xg, 1)}` : null,
+    },
     { label: 'Asistencias', value: formatNumber(player.assists), tone: 'gold', detail: extras.assistsRank },
-    { label: 'Precisión pase', value: formatPercent(player.passAccuracy), tone: 'win', detail: extras.passAccuracyChange },
+    {
+      label: 'Precisión pase',
+      value: formatPercent(player.passAccuracy),
+      tone: 'win',
+      detail: extras.passAccuracyChange,
+    },
     { label: 'Pases clave', value: formatNumber(extras.keyPasses), detail: extras.keyPassesPer90 },
     { label: 'Tarjetas', value: formatNumber(player.cards), detail: player.cards != null ? 'Amarillas' : null },
   ];

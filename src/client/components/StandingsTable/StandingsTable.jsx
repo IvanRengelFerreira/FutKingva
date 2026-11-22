@@ -43,21 +43,45 @@ export default function StandingsTable({
           <caption className="standings-table__caption">{caption}</caption>
           <thead>
             <tr>
-              <th scope="col" className="standings-table__pos">#</th>
-              <th scope="col" className="standings-table__team">Equipo</th>
-              <th scope="col" className="standings-table__num"><abbr title="Partidos jugados">PJ</abbr></th>
+              <th scope="col" className="standings-table__pos">
+                #
+              </th>
+              <th scope="col" className="standings-table__team">
+                Equipo
+              </th>
+              <th scope="col" className="standings-table__num">
+                <abbr title="Partidos jugados">PJ</abbr>
+              </th>
               {full && (
                 <>
-                  <th scope="col" className="standings-table__num standings-table__extra"><abbr title="Ganados">G</abbr></th>
-                  <th scope="col" className="standings-table__num standings-table__extra"><abbr title="Empatados">E</abbr></th>
-                  <th scope="col" className="standings-table__num standings-table__extra"><abbr title="Perdidos">P</abbr></th>
-                  <th scope="col" className="standings-table__num standings-table__extra"><abbr title="Goles a favor">GF</abbr></th>
-                  <th scope="col" className="standings-table__num standings-table__extra"><abbr title="Goles en contra">GC</abbr></th>
+                  <th scope="col" className="standings-table__num standings-table__extra">
+                    <abbr title="Ganados">G</abbr>
+                  </th>
+                  <th scope="col" className="standings-table__num standings-table__extra">
+                    <abbr title="Empatados">E</abbr>
+                  </th>
+                  <th scope="col" className="standings-table__num standings-table__extra">
+                    <abbr title="Perdidos">P</abbr>
+                  </th>
+                  <th scope="col" className="standings-table__num standings-table__extra">
+                    <abbr title="Goles a favor">GF</abbr>
+                  </th>
+                  <th scope="col" className="standings-table__num standings-table__extra">
+                    <abbr title="Goles en contra">GC</abbr>
+                  </th>
                 </>
               )}
-              <th scope="col" className="standings-table__num standings-table__diff"><abbr title="Diferencia de goles">DG</abbr></th>
-              <th scope="col" className="standings-table__num standings-table__points"><abbr title="Puntos">PTS</abbr></th>
-              {full && <th scope="col" className="standings-table__form standings-table__extra">Últimos 5</th>}
+              <th scope="col" className="standings-table__num standings-table__diff">
+                <abbr title="Diferencia de goles">DG</abbr>
+              </th>
+              <th scope="col" className="standings-table__num standings-table__points">
+                <abbr title="Puntos">PTS</abbr>
+              </th>
+              {full && (
+                <th scope="col" className="standings-table__form standings-table__extra">
+                  Últimos 5
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -70,7 +94,9 @@ export default function StandingsTable({
                 leader && 'standings-table__row--leader',
                 zone && `standings-table__row--${zone.id}`,
                 row.teamId === highlightTeamId && 'standings-table__row--highlight',
-              ].filter(Boolean).join(' ');
+              ]
+                .filter(Boolean)
+                .join(' ');
 
               return (
                 <tr key={row.teamId} className={rowClasses}>
@@ -94,7 +120,9 @@ export default function StandingsTable({
                       <td className="standings-table__num standings-table__extra">{row.goalsAgainst}</td>
                     </>
                   )}
-                  <td className={`standings-table__num standings-table__diff ${full ? diffClass(row.goalDifference) : ''}`.trim()}>
+                  <td
+                    className={`standings-table__num standings-table__diff ${full ? diffClass(row.goalDifference) : ''}`.trim()}
+                  >
                     {formatDiff(row.goalDifference)}
                   </td>
                   <td className="standings-table__num standings-table__points">{row.points}</td>

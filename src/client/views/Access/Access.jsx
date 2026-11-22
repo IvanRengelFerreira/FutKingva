@@ -70,7 +70,9 @@ export default function Access() {
 
   return (
     <div className="access">
-      <Link className="access__back" to="/">← Volver a Inicio</Link>
+      <Link className="access__back" to="/">
+        ← Volver a Inicio
+      </Link>
 
       <section className="access__card" aria-labelledby="access-title">
         <Link to="/" aria-label="FutKingva, ir a Inicio">

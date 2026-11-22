@@ -23,7 +23,12 @@ export default function PlayerProfile() {
   if (!player) {
     return (
       <section className="page player-profile">
-        <Breadcrumbs items={[{ label: 'Equipos y jugadores', shortLabel: 'Equipos', to: '/equipos' }, { label: 'Jugador no encontrado' }]} />
+        <Breadcrumbs
+          items={[
+            { label: 'Equipos y jugadores', shortLabel: 'Equipos', to: '/equipos' },
+            { label: 'Jugador no encontrado' },
+          ]}
+        />
         <div className="player-missing">
           <h1 className="player-missing__title">Jugador no encontrado</h1>
           <p className="player-missing__text">No tenemos ningún jugador con la dirección «{playerId}».</p>

@@ -46,7 +46,11 @@ function onlyErrors(errors) {
 export function validateLogin({ email, password } = {}) {
   return onlyErrors({
     email: emailError(email),
-    password: !text(password) ? 'Escribe tu contraseña' : text(password).length > PASSWORD_MAX ? 'La contraseña no es válida' : null,
+    password: !text(password)
+      ? 'Escribe tu contraseña'
+      : text(password).length > PASSWORD_MAX
+        ? 'La contraseña no es válida'
+        : null,
   });
 }
 

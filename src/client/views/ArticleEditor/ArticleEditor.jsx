@@ -105,10 +105,14 @@ function EditorForm({ initial, isNew }) {
   const errors = {
     title: !form.title.trim() ? 'Escribe el título' : null,
     excerpt: !form.excerpt.trim() ? 'Escribe la entradilla' : null,
-    publishAt: form.status !== 'scheduled' ? null
-      : !form.publishAt.trim() ? 'Indica cuándo se publica'
-        : !DATE_PATTERN.test(form.publishAt.trim()) ? 'Usa el formato dd/mm/aaaa · hh:mm'
-          : null,
+    publishAt:
+      form.status !== 'scheduled'
+        ? null
+        : !form.publishAt.trim()
+          ? 'Indica cuándo se publica'
+          : !DATE_PATTERN.test(form.publishAt.trim())
+            ? 'Usa el formato dd/mm/aaaa · hh:mm'
+            : null,
     body: words === 0 ? 'Escribe el texto del artículo' : null,
   };
   const shown = (field) => (submitted ? errors[field] : null);
@@ -238,7 +242,7 @@ function EditorForm({ initial, isNew }) {
     setNotice(
       form.status === 'scheduled'
         ? { tone: 'win', text: `Programado para el ${form.publishAt}.` }
-        : { tone: 'win', text: 'Artículo publicado.' }
+        : { tone: 'win', text: 'Artículo publicado.' },
     );
     if (form.status === 'draft') setForm((current) => ({ ...current, status: 'published' }));
   }
@@ -260,7 +264,9 @@ function EditorForm({ initial, isNew }) {
   return (
     <section className="page article-editor">
       <RoleNotice role="editor" />
-      <Breadcrumbs items={[{ label: 'Panel de editor', to: '/editor' }, { label: isNew ? 'Nuevo artículo' : 'Editar artículo' }]} />
+      <Breadcrumbs
+        items={[{ label: 'Panel de editor', to: '/editor' }, { label: isNew ? 'Nuevo artículo' : 'Editar artículo' }]}
+      />
 
       <div className="article-editor__layout">
         {/* Columna principal: título, entradilla y texto */}
@@ -283,16 +289,45 @@ function EditorForm({ initial, isNew }) {
 
           <div className="article-editor__editor">
             <div className="article-editor__toolbar" role="toolbar" aria-label="Formato del texto">
-              <ToolButton label="Negrita" active={formats.bold} onClick={() => command('bold')} className="article-editor__tool--bold">B</ToolButton>
-              <ToolButton label="Cursiva" active={formats.italic} onClick={() => command('italic')} className="article-editor__tool--italic">I</ToolButton>
-              <ToolButton label="Título de sección" active={formats.heading} onClick={toggleHeading}>H2</ToolButton>
+              <ToolButton
+                label="Negrita"
+                active={formats.bold}
+                onClick={() => command('bold')}
+                className="article-editor__tool--bold"
+              >
+                B
+              </ToolButton>
+              <ToolButton
+                label="Cursiva"
+                active={formats.italic}
+                onClick={() => command('italic')}
+                className="article-editor__tool--italic"
+              >
+                I
+              </ToolButton>
+              <ToolButton label="Título de sección" active={formats.heading} onClick={toggleHeading}>
+                H2
+              </ToolButton>
               <span className="article-editor__separator" aria-hidden="true" />
               <ToolButton label="Lista" icon={listIcon} onClick={() => command('insertUnorderedList')} />
               <ToolButton label="Cita" icon={quoteIcon} onClick={toggleQuote} />
               <ToolButton label="Enlace" icon={linkIcon} onClick={addLink} />
-              <ToolButton label="Imagen" icon={imageIcon} onClick={() => insertBlock(simpleBlockHtml('image', 'Imagen', 'Ilustración del artículo'))} />
-              <ToolButton label="Gráfico" icon={chartIcon} onClick={() => insertBlock(simpleBlockHtml('chart', 'Gráfico', 'Barras por jornada'))} />
-              <ToolButton label="Jugador" icon={userIcon} active={playerPicker} onClick={() => setPlayerPicker((open) => !open)} />
+              <ToolButton
+                label="Imagen"
+                icon={imageIcon}
+                onClick={() => insertBlock(simpleBlockHtml('image', 'Imagen', 'Ilustración del artículo'))}
+              />
+              <ToolButton
+                label="Gráfico"
+                icon={chartIcon}
+                onClick={() => insertBlock(simpleBlockHtml('chart', 'Gráfico', 'Barras por jornada'))}
+              />
+              <ToolButton
+                label="Jugador"
+                icon={userIcon}
+                active={playerPicker}
+                onClick={() => setPlayerPicker((open) => !open)}
+              />
             </div>
 
             {playerPicker && (
@@ -302,7 +337,10 @@ function EditorForm({ initial, isNew }) {
                   label="Jugador que quieres insertar"
                   hideLabel
                   placeholder="Elige un jugador…"
-                  options={Object.values(PLAYERS).map((player) => ({ value: player.id, label: `${player.name} · ${getTeam(player.teamId)?.name ?? ''}` }))}
+                  options={Object.values(PLAYERS).map((player) => ({
+                    value: player.id,
+                    label: `${player.name} · ${getTeam(player.teamId)?.name ?? ''}`,
+                  }))}
                   value=""
                   onChange={insertPlayer}
                 />
@@ -329,7 +367,9 @@ function EditorForm({ initial, isNew }) {
 
             <div className="article-editor__status">
               <span className={`article-editor__saved${saveState === 'new' ? ' article-editor__saved--new' : ''}`}>
-                {saveState !== 'new' && saveState !== 'saving' && <span className="article-editor__check" aria-hidden="true" />}
+                {saveState !== 'new' && saveState !== 'saving' && (
+                  <span className="article-editor__check" aria-hidden="true" />
+                )}
                 {saveText}
               </span>
               <span className="article-editor__count">
@@ -358,15 +398,26 @@ function EditorForm({ initial, isNew }) {
               error={shown('publishAt')}
             />
             <div className="article-editor__buttons">
-              <Button variant="tertiary" className="article-editor__button article-editor__button--draft" onClick={saveDraft}>
+              <Button
+                variant="tertiary"
+                className="article-editor__button article-editor__button--draft"
+                onClick={saveDraft}
+              >
                 Guardar borrador
               </Button>
-              <Button className="article-editor__button" onClick={publish}>Publicar</Button>
+              <Button className="article-editor__button" onClick={publish}>
+                Publicar
+              </Button>
             </div>
             {notice && (
               <p className={`article-editor__notice article-editor__notice--${notice.tone}`} role="status">
                 {notice.text}
-                {notice.tone === 'win' && <> <Link to="/editor">Volver al panel</Link></>}
+                {notice.tone === 'win' && (
+                  <>
+                    {' '}
+                    <Link to="/editor">Volver al panel</Link>
+                  </>
+                )}
               </p>
             )}
           </div>
@@ -381,7 +432,9 @@ function EditorForm({ initial, isNew }) {
             />
 
             <div className="article-editor__group">
-              <span className="article-editor__label" id="tags-label">Etiquetas</span>
+              <span className="article-editor__label" id="tags-label">
+                Etiquetas
+              </span>
               <ul className="article-editor__chips" aria-labelledby="tags-label">
                 {form.tags.map((tag) => (
                   <li key={tag} className="article-editor__chip">
@@ -390,13 +443,20 @@ function EditorForm({ initial, isNew }) {
                       type="button"
                       className="article-editor__chip-remove"
                       aria-label={`Quitar la etiqueta ${tag}`}
-                      onClick={() => change('tags', form.tags.filter((item) => item !== tag))}
+                      onClick={() =>
+                        change(
+                          'tags',
+                          form.tags.filter((item) => item !== tag),
+                        )
+                      }
                     />
                   </li>
                 ))}
                 <li>
                   {newTag === null ? (
-                    <button type="button" className="article-editor__add" onClick={() => setNewTag('')}>+ Añadir</button>
+                    <button type="button" className="article-editor__add" onClick={() => setNewTag('')}>
+                      + Añadir
+                    </button>
                   ) : (
                     <form className="article-editor__add-form" onSubmit={addTag}>
                       <input
@@ -450,7 +510,12 @@ function EditorForm({ initial, isNew }) {
                         type="button"
                         className="article-editor__chip-remove"
                         aria-label={`Quitar ${relatedName(item)}`}
-                        onClick={() => change('related', form.related.filter((other) => other !== item))}
+                        onClick={() =>
+                          change(
+                            'related',
+                            form.related.filter((other) => other !== item),
+                          )
+                        }
                       />
                     </li>
                   ))}
@@ -471,7 +536,11 @@ function EditorForm({ initial, isNew }) {
                 <img src={uploadIcon} alt="" width="16" height="16" />
                 Subir imagen
               </Button>
-              <Button variant="tertiary" className="article-editor__button article-editor__button--draft" onClick={() => setCoverImage(null)}>
+              <Button
+                variant="tertiary"
+                className="article-editor__button article-editor__button--draft"
+                onClick={() => setCoverImage(null)}
+              >
                 Ilustración auto
               </Button>
             </div>
@@ -500,7 +569,9 @@ function ToolButton({ label, icon, active = false, onClick, className = '', chil
           <img src={icon} alt="" width="16" height="16" />
           <span className="article-editor__tool-text">{label}</span>
         </>
-      ) : children}
+      ) : (
+        children
+      )}
     </button>
   );
 }
@@ -514,7 +585,7 @@ function RelatedBadge({ item }) {
 function relatedName(item, full = false) {
   if (item.type === 'team') return getTeam(item.id)?.name ?? item.id;
   const player = getPlayer(item.id);
-  return full ? player?.name : player?.shortName ?? player?.name;
+  return full ? player?.name : (player?.shortName ?? player?.name);
 }
 
 // Jugadores y equipos que coinciden con lo buscado (máximo 5, sin los ya elegidos)
@@ -547,8 +618,15 @@ function coverProps(form) {
 function getInitialValues(article) {
   if (!article) {
     return {
-      title: '', excerpt: '', status: 'draft', publishAt: '', category: 'Táctica',
-      tags: [], related: [], cover: {}, bodyHtml: '',
+      title: '',
+      excerpt: '',
+      status: 'draft',
+      publishAt: '',
+      category: 'Táctica',
+      tags: [],
+      related: [],
+      cover: {},
+      bodyHtml: '',
     };
   }
   const extras = getArticleExtras(article.id);
@@ -566,7 +644,9 @@ function getInitialValues(article) {
     related: draft.related ?? mentions.map(({ type, id }) => ({ type, id })),
     cover: draft.cover ?? extras.illustration ?? {},
     // Si el artículo no tiene más texto que la entradilla (como en su página pública), el texto empieza con ella
-    bodyHtml: blocksToHtml(draft.body ?? content.body ?? [{ type: 'paragraph', text: content.lead ?? extras.excerpt ?? '' }]),
+    bodyHtml: blocksToHtml(
+      draft.body ?? content.body ?? [{ type: 'paragraph', text: content.lead ?? extras.excerpt ?? '' }],
+    ),
   };
 }
 
@@ -575,17 +655,28 @@ function blocksToHtml(blocks) {
   return blocks
     .map((block) => {
       switch (block.type) {
-        case 'paragraph': return `<p>${escape(block.text)}</p>`;
-        case 'heading': return `<h2>${escape(block.text)}</h2>`;
-        case 'quote': return `<blockquote>${escape(block.text)}</blockquote>`;
-        case 'stats': return simpleBlockHtml('chart', 'Dato destacado', (block.items ?? []).map((item) => `${item.value} ${item.label}`).join(' · '));
+        case 'paragraph':
+          return `<p>${escape(block.text)}</p>`;
+        case 'heading':
+          return `<h2>${escape(block.text)}</h2>`;
+        case 'quote':
+          return `<blockquote>${escape(block.text)}</blockquote>`;
+        case 'stats':
+          return simpleBlockHtml(
+            'chart',
+            'Dato destacado',
+            (block.items ?? []).map((item) => `${item.value} ${item.label}`).join(' · '),
+          );
         case 'player': {
           const player = getPlayer(block.id);
           return player ? playerBlockHtml(player) : '';
         }
-        case 'chart': return simpleBlockHtml('chart', 'Gráfico', block.title ?? block.text ?? '');
-        case 'image': return simpleBlockHtml('image', 'Imagen', block.text ?? '');
-        default: return '';
+        case 'chart':
+          return simpleBlockHtml('chart', 'Gráfico', block.title ?? block.text ?? '');
+        case 'image':
+          return simpleBlockHtml('image', 'Imagen', block.text ?? '');
+        default:
+          return '';
       }
     })
     .join('');
@@ -595,20 +686,29 @@ function blocksToHtml(blocks) {
 function playerBlockHtml(player) {
   const team = getTeam(player.teamId)?.name ?? '';
   const rating = player.rating?.toLocaleString('es-ES', { minimumFractionDigits: 1 }) ?? '—';
-  const initials = player.name.split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase();
-  return `<div class="article-editor__block" data-block="player" contenteditable="false">`
-    + `<span class="article-editor__block-avatar">${escape(initials)}</span>`
-    + `<span class="article-editor__block-text"><strong>${escape(player.name)} · ${escape(team)}</strong>`
-    + `<small>Jugador enlazado · ${player.goals} G · ${player.assists} A · ${rating}</small></span>`
-    + `<button type="button" class="article-editor__block-remove" data-remove-block aria-label="Quitar bloque"></button></div>`;
+  const initials = player.name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+  return (
+    `<div class="article-editor__block" data-block="player" contenteditable="false">` +
+    `<span class="article-editor__block-avatar">${escape(initials)}</span>` +
+    `<span class="article-editor__block-text"><strong>${escape(player.name)} · ${escape(team)}</strong>` +
+    `<small>Jugador enlazado · ${player.goals} G · ${player.assists} A · ${rating}</small></span>` +
+    `<button type="button" class="article-editor__block-remove" data-remove-block aria-label="Quitar bloque"></button></div>`
+  );
 }
 
 // Bloque de ejemplo (imagen o gráfico)
 function simpleBlockHtml(kind, title, detail) {
-  return `<div class="article-editor__block article-editor__block--${kind}" data-block="${kind}" contenteditable="false">`
-    + `<span class="article-editor__block-icon article-editor__block-icon--${kind}"></span>`
-    + `<span class="article-editor__block-text"><strong>${escape(title)}</strong><small>${escape(detail)}</small></span>`
-    + `<button type="button" class="article-editor__block-remove" data-remove-block aria-label="Quitar bloque"></button></div>`;
+  return (
+    `<div class="article-editor__block article-editor__block--${kind}" data-block="${kind}" contenteditable="false">` +
+    `<span class="article-editor__block-icon article-editor__block-icon--${kind}"></span>` +
+    `<span class="article-editor__block-text"><strong>${escape(title)}</strong><small>${escape(detail)}</small></span>` +
+    `<button type="button" class="article-editor__block-remove" data-remove-block aria-label="Quitar bloque"></button></div>`
+  );
 }
 
 function escape(text = '') {

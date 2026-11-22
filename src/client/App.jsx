@@ -43,37 +43,96 @@ export default function App() {
           <HashRouter>
             <Routes>
               {/* Páginas propias, sin navbar ni pie */}
-              <Route path="acceso" element={<Access />} />                        {/* 14 */}
-
+              <Route path="acceso" element={<Access />} /> {/* 14 */}
               <Route element={<Layout />}>
                 {/* Públicas */}
-                <Route index element={<Home />} />                                {/* 01 */}
-                <Route path="equipos" element={<Teams />} />                      {/* 02 */}
-                <Route path="equipos/:teamId" element={<TeamProfile />} />        {/* 03 */}
-                <Route path="jugadores/:playerId" element={<PlayerProfile />} />  {/* 04 */}
-                <Route path="clasificaciones" element={<Standings />} />          {/* 05 */}
-                <Route path="arbitros" element={<Referees />} />                  {/* 06 */}
+                <Route index element={<Home />} /> {/* 01 */}
+                <Route path="equipos" element={<Teams />} /> {/* 02 */}
+                <Route path="equipos/:teamId" element={<TeamProfile />} /> {/* 03 */}
+                <Route path="jugadores/:playerId" element={<PlayerProfile />} /> {/* 04 */}
+                <Route path="clasificaciones" element={<Standings />} /> {/* 05 */}
+                <Route path="arbitros" element={<Referees />} /> {/* 06 */}
                 <Route path="arbitros/:refereeId" element={<RefereeProfile />} /> {/* 07 */}
-                <Route path="analisis" element={<Analysis />} />                  {/* 08 */}
-                <Route path="analisis/:articleId" element={<Article />} />        {/* 09 */}
-                <Route path="buscar" element={<SearchResults />} />               {/* 13 (texto buscado en ?q=) */}
-                <Route path="sobre-nosotros" element={<About />} />               {/* 15 */}
-                <Route path="contacto" element={<Contact />} />                   {/* 16 */}
-
+                <Route path="analisis" element={<Analysis />} /> {/* 08 */}
+                <Route path="analisis/:articleId" element={<Article />} /> {/* 09 */}
+                <Route path="buscar" element={<SearchResults />} /> {/* 13 (texto buscado en ?q=) */}
+                <Route path="sobre-nosotros" element={<About />} /> {/* 15 */}
+                <Route path="contacto" element={<Contact />} /> {/* 16 */}
                 {/* Usuario registrado */}
-                <Route path="comparador" element={<RequireRole><Comparator /></RequireRole>} />    {/* 10 */}
-                <Route path="equipo-ideal" element={<RequireRole><IdealTeam /></RequireRole>} />   {/* 11 */}
-                <Route path="perfil" element={<RequireRole><Profile /></RequireRole>} />          {/* 12 */}
-
+                <Route
+                  path="comparador"
+                  element={
+                    <RequireRole>
+                      <Comparator />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 10 */}
+                <Route
+                  path="equipo-ideal"
+                  element={
+                    <RequireRole>
+                      <IdealTeam />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 11 */}
+                <Route
+                  path="perfil"
+                  element={
+                    <RequireRole>
+                      <Profile />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 12 */}
                 {/* Editor */}
-                <Route path="editor" element={<RequireRole roles={['editor']}><EditorDashboard /></RequireRole>} />  {/* 17 */}
-                <Route path="editor/articulo" element={<RequireRole roles={['editor']}><ArticleEditor /></RequireRole>} />  {/* 18 (nuevo) */}
-                <Route path="editor/articulo/:articleId" element={<RequireRole roles={['editor']}><ArticleEditor /></RequireRole>} />  {/* 18 (editar) */}
-                <Route path="editor/datos" element={<RequireRole roles={['editor']}><PlayerDataEditor /></RequireRole>} />  {/* 19 */}
-
+                <Route
+                  path="editor"
+                  element={
+                    <RequireRole roles={['editor']}>
+                      <EditorDashboard />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 17 */}
+                <Route
+                  path="editor/articulo"
+                  element={
+                    <RequireRole roles={['editor']}>
+                      <ArticleEditor />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 18 (nuevo) */}
+                <Route
+                  path="editor/articulo/:articleId"
+                  element={
+                    <RequireRole roles={['editor']}>
+                      <ArticleEditor />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 18 (editar) */}
+                <Route
+                  path="editor/datos"
+                  element={
+                    <RequireRole roles={['editor']}>
+                      <PlayerDataEditor />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 19 */}
                 {/* Administrador */}
-                <Route path="admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>} />  {/* 20 */}
-
+                <Route
+                  path="admin"
+                  element={
+                    <RequireRole roles={['admin']}>
+                      <AdminDashboard />
+                    </RequireRole>
+                  }
+                />{' '}
+                {/* 20 */}
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

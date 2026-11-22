@@ -36,9 +36,10 @@ export default function RefereeProfile() {
   }
 
   const difference = Math.round((referee.cardsPerMatch / LEAGUE_CARDS_PER_MATCH - 1) * 100);
-  const comparison = difference === 0
-    ? `En la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`
-    : `${difference > 0 ? '+' : '−'}${Math.abs(difference)} % ${difference > 0 ? 'sobre' : 'bajo'} la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`;
+  const comparison =
+    difference === 0
+      ? `En la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`
+      : `${difference > 0 ? '+' : '−'}${Math.abs(difference)} % ${difference > 0 ? 'sobre' : 'bajo'} la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`;
   const seasons = referee.since ? CURRENT_YEAR - referee.since : null;
   const meta = [
     'España',
@@ -51,7 +52,10 @@ export default function RefereeProfile() {
     .sort((a, b) => a.round - b.round)
     .map((match) => ({
       label: `J${match.round}`,
-      segments: [{ value: match.yellow, tone: 'yellow-card' }, { value: match.red, tone: 'red-card' }],
+      segments: [
+        { value: match.yellow, tone: 'yellow-card' },
+        { value: match.red, tone: 'red-card' },
+      ],
     }));
 
   return (
@@ -75,7 +79,9 @@ export default function RefereeProfile() {
           </h1>
           <p className="referee-hero__meta">
             {meta.join('  ·  ')}
-            {referee.since && <span className="referee-profile__desktop">{`  ·  Primera División desde ${referee.since}`}</span>}
+            {referee.since && (
+              <span className="referee-profile__desktop">{`  ·  Primera División desde ${referee.since}`}</span>
+            )}
           </p>
         </div>
         <div className="referee-hero__highlight">
@@ -87,19 +93,27 @@ export default function RefereeProfile() {
 
       <div className="referee-profile__stats">
         <StatCard value={referee.matches ?? '—'} label={<Label long="Partidos dirigidos" short="Partidos" />} />
-        <StatCard value={referee.yellowCards ?? '—'} label={<Label long="Tarjetas amarillas" short="Amarillas" />} tone="yellow" />
+        <StatCard
+          value={referee.yellowCards ?? '—'}
+          label={<Label long="Tarjetas amarillas" short="Amarillas" />}
+          tone="yellow"
+        />
         <StatCard value={referee.redCards ?? '—'} label={<Label long="Tarjetas rojas" short="Rojas" />} tone="loss" />
         <StatCard value={referee.penalties ?? '—'} label={<Label long="Penaltis señalados" short="Penaltis" />} />
-        <StatCard value={formatDecimal(referee.cardsPerMatch)} label={<Label long="Tarjetas / partido" short="Tarj. / partido" />} tone="amber" />
-        {seasons != null && (
-          <StatCard className="referee-profile__mobile-flex" value={seasons} label="Temporadas" />
-        )}
+        <StatCard
+          value={formatDecimal(referee.cardsPerMatch)}
+          label={<Label long="Tarjetas / partido" short="Tarj. / partido" />}
+          tone="amber"
+        />
+        {seasons != null && <StatCard className="referee-profile__mobile-flex" value={seasons} label="Temporadas" />}
       </div>
 
       <div className="referee-profile__columns">
         <section className="referee-profile__section" aria-labelledby="referee-chart-title">
           <div className="referee-profile__section-header">
-            <h2 id="referee-chart-title" className="referee-profile__section-title">Tarjetas por jornada</h2>
+            <h2 id="referee-chart-title" className="referee-profile__section-title">
+              Tarjetas por jornada
+            </h2>
             <Select
               className="referee-profile__season referee-profile__desktop-flex"
               size="sm"
@@ -182,8 +196,12 @@ export default function RefereeProfile() {
                         <th scope="row">
                           <span className="referee-matches__match">
                             <Crest teamId={match.homeId} size={24} className="referee-profile__desktop-flex" />
-                            <span className="referee-profile__desktop">{tableName(home)} {score} {tableName(away)}</span>
-                            <span className="referee-profile__mobile">{home?.shortName} {score} {away?.shortName}</span>
+                            <span className="referee-profile__desktop">
+                              {tableName(home)} {score} {tableName(away)}
+                            </span>
+                            <span className="referee-profile__mobile">
+                              {home?.shortName} {score} {away?.shortName}
+                            </span>
                           </span>
                         </th>
                         <td className="referee-matches__cards">

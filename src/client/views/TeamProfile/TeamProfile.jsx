@@ -56,7 +56,11 @@ function TeamPage({ teamId }) {
       <Breadcrumbs
         items={[
           { label: 'Equipos y jugadores', shortLabel: 'Equipos', to: '/equipos' },
-          { label: team.competition, to: team.competition === 'LaLiga' ? '/clasificaciones' : undefined, hideOnMobile: true },
+          {
+            label: team.competition,
+            to: team.competition === 'LaLiga' ? '/clasificaciones' : undefined,
+            hideOnMobile: true,
+          },
           { label: team.name },
         ]}
       />
@@ -73,7 +77,9 @@ function TeamPage({ teamId }) {
               <SectionHeader id="team-squad-title" title="Plantilla">
                 {squad.length > 0 && (
                   <button type="button" className="team-profile__more" onClick={() => setTab('squad')}>
-                    <span className="team-profile__desktop">{squad.length > 1 ? `Ver los ${squad.length}` : 'Ver plantilla'}</span>
+                    <span className="team-profile__desktop">
+                      {squad.length > 1 ? `Ver los ${squad.length}` : 'Ver plantilla'}
+                    </span>
                     <span className="team-profile__mobile">{squad.length > 1 ? 'Ver todos' : 'Ver'}</span>
                     <span aria-hidden="true"> →</span>
                   </button>
@@ -94,7 +100,10 @@ function TeamPage({ teamId }) {
                 <SectionHeader id="team-upcoming-title" title="Próximos partidos" />
                 <UpcomingMatches matches={upcoming} />
               </section>
-              <section className="team-profile__section team-profile__desktop-block" aria-labelledby="team-results-title">
+              <section
+                className="team-profile__section team-profile__desktop-block"
+                aria-labelledby="team-results-title"
+              >
                 <SectionHeader id="team-results-title" title="Últimos resultados" />
                 <RecentResults results={results} />
               </section>
@@ -130,8 +139,8 @@ function TeamPage({ teamId }) {
         </div>
       )}
 
-      {tab === 'stats' && (
-        row ? (
+      {tab === 'stats' &&
+        (row ? (
           <>
             <TeamStats row={row} />
             <section className="team-profile__section" aria-labelledby="team-table-title">
@@ -145,8 +154,7 @@ function TeamPage({ teamId }) {
           </>
         ) : (
           <p className="team-profile__empty">No tenemos estadísticas de este equipo.</p>
-        )
-      )}
+        ))}
     </section>
   );
 }
@@ -169,7 +177,9 @@ function TeamStats({ row }) {
 function SectionHeader({ id, title, children }) {
   return (
     <div className="team-profile__section-header">
-      <h2 id={id} className="team-profile__section-title">{title}</h2>
+      <h2 id={id} className="team-profile__section-title">
+        {title}
+      </h2>
       {children}
     </div>
   );

@@ -34,6 +34,7 @@ El comando termina cuando la base de datos está lista (`Container futkingva-db 
 > **¿Ya habías arrancado esta base de datos antes?** Para cargar los datos tiene que estar vacía.
 > El siguiente comando **borra todo lo que tenga** (no se puede deshacer). Si nunca has guardado
 > nada tuyo en ella, no pierdes nada:
+>
 > ```powershell
 > docker compose down -v
 > docker compose up -d --wait db
@@ -139,15 +140,15 @@ npx prisma@7.10.1 generate
 
 ## Si algo falla
 
-| Mensaje | Solución |
-|---|---|
-| `Falta el cliente de Prisma` | Paso 6 |
-| `Falta la variable de entorno DATABASE_URL` o `SESSION_SECRET` | Paso 4 |
-| `/api/health` responde `SERVICE_UNAVAILABLE` (503) | Docker Desktop cerrado o la BD parada → paso 2 |
-| `EADDRINUSE` (puerto ocupado) o `/api/health` muestra otra web | Otra aplicación usa ese puerto → cambia `PORT=` en `.env` |
-| `pg_restore: error: ... already exists` | La BD ya tenía tablas → empieza de cero (abajo, borra los datos) y repite el paso 3 |
-| `migrate status` dice que falta alguna migración | `npx prisma@7.10.1 migrate deploy` |
-| «Faltan las cuentas de prueba» al pulsar Usuario / Editor / Admin en Acceso | Paso 8 |
+| Mensaje                                                                     | Solución                                                                            |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `Falta el cliente de Prisma`                                                | Paso 6                                                                              |
+| `Falta la variable de entorno DATABASE_URL` o `SESSION_SECRET`              | Paso 4                                                                              |
+| `/api/health` responde `SERVICE_UNAVAILABLE` (503)                          | Docker Desktop cerrado o la BD parada → paso 2                                      |
+| `EADDRINUSE` (puerto ocupado) o `/api/health` muestra otra web              | Otra aplicación usa ese puerto → cambia `PORT=` en `.env`                           |
+| `pg_restore: error: ... already exists`                                     | La BD ya tenía tablas → empieza de cero (abajo, borra los datos) y repite el paso 3 |
+| `migrate status` dice que falta alguna migración                            | `npx prisma@7.10.1 migrate deploy`                                                  |
+| «Faltan las cuentas de prueba» al pulsar Usuario / Editor / Admin en Acceso | Paso 8                                                                              |
 
 ## Empezar de cero
 

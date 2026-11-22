@@ -29,7 +29,9 @@ const NOTIFICATION_TYPES = {
 export function SectionHeader({ id, title, children }) {
   return (
     <div className="profile__section-header">
-      <h2 id={id} className="profile__section-title">{title}</h2>
+      <h2 id={id} className="profile__section-title">
+        {title}
+      </h2>
       {children}
     </div>
   );
@@ -38,7 +40,11 @@ export function SectionHeader({ id, title, children }) {
 // Equipos favoritos: escudo, nombre, «LaLiga · 1.º · 24 pts» y estrella para quitarlo
 export function FavoriteTeams({ teamIds, onRemove, limit }) {
   if (teamIds.length === 0) {
-    return <p className="profile__empty">No sigues a ningún equipo. Márcalos con la estrella en <Link to="/equipos">Equipos y jugadores</Link>.</p>;
+    return (
+      <p className="profile__empty">
+        No sigues a ningún equipo. Márcalos con la estrella en <Link to="/equipos">Equipos y jugadores</Link>.
+      </p>
+    );
   }
 
   return (
@@ -52,7 +58,9 @@ export function FavoriteTeams({ teamIds, onRemove, limit }) {
             <Link className="profile-card__text" to={`/equipos/${teamId}`}>
               <span className="profile-card__name">{team?.name}</span>
               <span className="profile-card__meta">
-                {[team?.competition, row && `${row.position}.º`, row && `${row.points} pts`].filter(Boolean).join(' · ')}
+                {[team?.competition, row && `${row.position}.º`, row && `${row.points} pts`]
+                  .filter(Boolean)
+                  .join(' · ')}
               </span>
             </Link>
             <FavoriteStar name={team?.name} onClick={() => onRemove(teamId)} />
@@ -113,7 +121,11 @@ function ComparisonPlayers({ playerIds }) {
 // Comparativas guardadas: tabla en escritorio y tarjetas en móvil. «Abrir» lleva al Comparador.
 export function SavedComparisons({ comparisons, onRemove, limit }) {
   if (comparisons.length === 0) {
-    return <p className="profile__empty">No tienes comparativas guardadas. <Link to="/comparador">Crea una</Link>.</p>;
+    return (
+      <p className="profile__empty">
+        No tienes comparativas guardadas. <Link to="/comparador">Crea una</Link>.
+      </p>
+    );
   }
 
   const visible = comparisons.slice(0, limit);
@@ -125,9 +137,15 @@ export function SavedComparisons({ comparisons, onRemove, limit }) {
           <thead>
             <tr>
               <th scope="col">Nombre</th>
-              <th scope="col" className="profile-comparisons__players-col">Jugadores</th>
-              <th scope="col" className="profile-comparisons__date">Fecha</th>
-              <th scope="col" className="profile-comparisons__actions"><span className="profile__sr-only">Acciones</span></th>
+              <th scope="col" className="profile-comparisons__players-col">
+                Jugadores
+              </th>
+              <th scope="col" className="profile-comparisons__date">
+                Fecha
+              </th>
+              <th scope="col" className="profile-comparisons__actions">
+                <span className="profile__sr-only">Acciones</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -140,7 +158,11 @@ export function SavedComparisons({ comparisons, onRemove, limit }) {
                 <td className="profile-comparisons__date">{comparison.date}</td>
                 <td className="profile-comparisons__actions">
                   <OpenComparison comparison={comparison} />
-                  <button type="button" className="profile__action profile__action--danger" onClick={() => onRemove(comparison.id)}>
+                  <button
+                    type="button"
+                    className="profile__action profile__action--danger"
+                    onClick={() => onRemove(comparison.id)}
+                  >
                     Eliminar
                   </button>
                 </td>
@@ -160,7 +182,11 @@ export function SavedComparisons({ comparisons, onRemove, limit }) {
             </span>
             <span className="profile-card__buttons">
               <OpenComparison comparison={comparison} />
-              <button type="button" className="profile__action profile__action--danger" onClick={() => onRemove(comparison.id)}>
+              <button
+                type="button"
+                className="profile__action profile__action--danger"
+                onClick={() => onRemove(comparison.id)}
+              >
                 Eliminar
               </button>
             </span>
@@ -213,9 +239,7 @@ export function NotificationList({ notifications, limit }) {
               </span>
               <span className="profile-notifications__time">{notification.time}</span>
             </span>
-            {notification.unread && (
-              <span className="profile-notifications__dot" role="img" aria-label="Sin leer" />
-            )}
+            {notification.unread && <span className="profile-notifications__dot" role="img" aria-label="Sin leer" />}
           </li>
         );
       })}
@@ -247,13 +271,16 @@ export function IdealTeamCard({ team }) {
       <div className="profile-ideal__summary">
         <span className="profile-ideal__text">
           <span className="profile-ideal__name">
-            {team.name}<span className="profile__mobile"> · {team.formation}</span>
+            {team.name}
+            <span className="profile__mobile"> · {team.formation}</span>
           </span>
           <span className="profile-ideal__meta profile__desktop">
             {team.formation} · {filled}/{team.players.length} jugadores · {totals.goals ?? 0} goles
           </span>
         </span>
-        {totals.averageRating != null && <Rating value={totals.averageRating} size="md" className="profile__desktop-flex" />}
+        {totals.averageRating != null && (
+          <Rating value={totals.averageRating} size="md" className="profile__desktop-flex" />
+        )}
       </div>
       <Link className="profile__outline-button" to="/equipo-ideal">
         <img src={editIcon} alt="" width="16" height="16" />

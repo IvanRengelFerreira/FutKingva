@@ -45,7 +45,8 @@ export default function EditorDashboard() {
 
   const search = normalize(query);
   const results = articles.filter(
-    (article) => (status === 'all' || article.status === status) && (!search || normalize(article.title).includes(search))
+    (article) =>
+      (status === 'all' || article.status === status) && (!search || normalize(article.title).includes(search)),
   );
   const totalPages = Math.max(1, Math.ceil(results.length / PER_PAGE));
   const currentPage = Math.min(page, totalPages); // Si se borra el último de una página, se vuelve a la anterior
@@ -79,7 +80,11 @@ export default function EditorDashboard() {
           </p>
         </div>
         <div className="page-header__actions editor-dashboard__buttons">
-          <Button variant="tertiary" to="/editor/datos" className="editor-dashboard__button editor-dashboard__button--data">
+          <Button
+            variant="tertiary"
+            to="/editor/datos"
+            className="editor-dashboard__button editor-dashboard__button--data"
+          >
             <img src={syncIcon} alt="" width="16" height="16" />
             Actualizar datos de jugadores
           </Button>
@@ -91,7 +96,15 @@ export default function EditorDashboard() {
       </header>
 
       <div className="editor-dashboard__stats">
-        <StatCard value={stats.published} label={<><span className="editor-dashboard__more">Artículos </span>publicados</>} tone="gold" />
+        <StatCard
+          value={stats.published}
+          label={
+            <>
+              <span className="editor-dashboard__more">Artículos </span>publicados
+            </>
+          }
+          tone="gold"
+        />
         <StatCard value={stats.drafts} label="Borradores" />
         <StatCard
           value={formatNumber(EDITOR_STATS.monthlyVisits)}
@@ -131,7 +144,9 @@ export default function EditorDashboard() {
           />
         </div>
 
-        <p className="editor-dashboard__message" role="status">{message}</p>
+        <p className="editor-dashboard__message" role="status">
+          {message}
+        </p>
 
         {visible.length === 0 ? (
           <p className="editor-dashboard__empty">Ningún artículo coincide con la búsqueda.</p>
@@ -146,16 +161,24 @@ export default function EditorDashboard() {
                     <th scope="col">Categoría</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col" className="editor-dashboard__end">Visitas</th>
-                    <th scope="col" className="editor-dashboard__end">Acciones</th>
+                    <th scope="col" className="editor-dashboard__end">
+                      Visitas
+                    </th>
+                    <th scope="col" className="editor-dashboard__end">
+                      Acciones
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {visible.map((article) => (
                     <tr key={article.id}>
                       <td className="editor-dashboard__article-title">{article.title}</td>
-                      <td><Tag category={article.category} /></td>
-                      <td><StatusBadge status={article.status} /></td>
+                      <td>
+                        <Tag category={article.category} />
+                      </td>
+                      <td>
+                        <StatusBadge status={article.status} />
+                      </td>
                       <td className="editor-dashboard__date">{article.date ?? '—'}</td>
                       <td className="editor-dashboard__end editor-dashboard__visits">{formatNumber(article.visits)}</td>
                       <td className="editor-dashboard__end">

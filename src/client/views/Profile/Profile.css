@@ -478,9 +478,15 @@ a.profile-card__text:hover .profile-card__name {
   mask: var(--icon) center / contain no-repeat;
 }
 
-.profile-notifications__icon--gold { color: var(--accent-gold); }
-.profile-notifications__icon--win { color: var(--status-win); }
-.profile-notifications__icon--loss { color: var(--status-loss); }
+.profile-notifications__icon--gold {
+  color: var(--accent-gold);
+}
+.profile-notifications__icon--win {
+  color: var(--status-win);
+}
+.profile-notifications__icon--loss {
+  color: var(--status-loss);
+}
 
 .profile-notifications__text {
   display: flex;

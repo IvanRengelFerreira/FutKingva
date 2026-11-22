@@ -7,17 +7,19 @@ export default function StatsTable({ players, mode }) {
   return (
     <div className="comparator-table">
       <table>
-        <caption className="comparator-table__caption">
-          Estadísticas de {players.map(compactName).join(', ')}
-        </caption>
+        <caption className="comparator-table__caption">Estadísticas de {players.map(compactName).join(', ')}</caption>
         <thead>
           <tr>
-            <th scope="col" className="comparator-table__label">Estadística</th>
+            <th scope="col" className="comparator-table__label">
+              Estadística
+            </th>
             {players.map((player, i) => (
               <th key={player.id} scope="col" className={`comparator-table__player comparator-series--${i + 1}`}>
                 <span className="comparator-table__dot" aria-hidden="true" />
                 <span className="comparator-table__name-long">{compactName(player)}</span>
-                <span className="comparator-table__name-short" aria-hidden="true">{initials(player.name)}</span>
+                <span className="comparator-table__name-short" aria-hidden="true">
+                  {initials(player.name)}
+                </span>
               </th>
             ))}
           </tr>
@@ -30,7 +32,9 @@ export default function StatsTable({ players, mode }) {
 
             return (
               <tr key={stat.id}>
-                <th scope="row" className="comparator-table__label">{stat.label}</th>
+                <th scope="row" className="comparator-table__label">
+                  {stat.label}
+                </th>
                 {values.map((value, i) => {
                   const isBest = winners.includes(i);
                   return (
