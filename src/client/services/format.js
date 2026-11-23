@@ -1,5 +1,8 @@
 // Ayudas para enseñar datos de la API en español. Responsable: Angel.
 
+// Las fechas y horas de los partidos se enseñan siempre en hora de Madrid
+const TIME_ZONE = 'Europe/Madrid';
+
 /** «hace 5 min», «hace 3 h», «hace 2 días» a partir de una fecha ISO */
 export function timeAgo(iso, now = Date.now()) {
   if (!iso) return '';
@@ -19,12 +22,12 @@ export function shortDate(iso) {
       weekday: 'short',
       day: '2-digit',
       month: '2-digit',
-      timeZone: 'Europe/Madrid',
+      timeZone: TIME_ZONE,
     })
     .replace(',', '');
 }
 
 /** Hora en Madrid: «21:00» */
 export function shortTime(iso) {
-  return new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });
+  return new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE });
 }

@@ -11,11 +11,12 @@ import {
   FORMATION_NAMES,
   MAX_NAME_LENGTH,
   lineupOf,
-  slotsOf,
   toAssigned,
   assignPlayer,
   removePlayer,
   changeFormation,
+  firstEmpty,
+  describeChange,
 } from './team.js';
 import { SEASON, getPlayer } from '../../data/mockData.js';
 import saveIcon from '../../assets/icon-save.svg';
@@ -47,6 +48,7 @@ export default function IdealTeam() {
   const activePlayer = activeSlot ? getPlayer(assigned[activeSlot]) : undefined;
   const activePosition = activeSlot ? slotPosition(activeSlot) : null;
 
+  // Aplica un cambio en el once: lo deja como borrador y borra el aviso anterior
   function edit(nextAssigned, nextActive) {
     setAssigned(nextAssigned);
     setActiveSlot(nextActive);
@@ -67,9 +69,7 @@ export default function IdealTeam() {
     if (value === formation) return;
     const result = changeFormation(assigned, formation, value);
     setFormation(value);
-    setAssigned(result.assigned);
-    setActiveSlot(firstEmpty(value, result.assigned));
-    setSaved(false);
+    edit(result.assigned, firstEmpty(value, result.assigned));
     setNotice(describeChange(value, result));
   }
 
@@ -197,27 +197,4 @@ export default function IdealTeam() {
       <div className="ideal-team__save-mobile ideal-team__mobile-block">{saveButton}</div>
     </section>
   );
-}
-
-// Primera posición libre de la formación (empezando después de la actual, si se indica); null si está completa
-function firstEmpty(formation, assigned, after) {
-  const slots = slotsOf(formation);
-  const start = after ? slots.indexOf(after) + 1 : 0;
-  const ordered = [...slots.slice(start), ...slots.slice(0, start)];
-  return ordered.find((slot) => !assigned[slot]) ?? null;
-}
-
-// Aviso tras cambiar de formación: qué jugadores se han movido y cuáles han salido del once
-function describeChange(to, { moved, dropped }) {
-  const label = (id) => getPlayer(id)?.shortName ?? getPlayer(id)?.name ?? id;
-  const parts = [`Formación ${to}.`];
-  moved
-    .filter(({ from, to: slot }) => slotPosition(from) !== slotPosition(slot))
-    .forEach(({ playerId, from, to: slot }) =>
-      parts.push(`${label(playerId)} pasa de ${slotPosition(from)} a ${slotPosition(slot)}.`),
-    );
-  dropped.forEach(({ playerId, from }) =>
-    parts.push(`${label(playerId)} (${slotPosition(from)}) sale del once: no hay hueco para su posición.`),
-  );
-  return parts.join(' ');
 }

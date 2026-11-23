@@ -2,6 +2,7 @@
 // cómo se reubica el once al cambiar de formación y los totales del resumen.
 import { FORMATIONS, slotPosition } from '../../components/Pitch/formations.js';
 import { PLAYERS, PLAYER_AGES_ESTIMATED, getPlayer } from '../../data/mockData.js';
+import { toSearchText } from '../../utils/text.js';
 
 export const FORMATION_NAMES = Object.keys(FORMATIONS);
 export const TEAM_SIZE = 11;
@@ -30,6 +31,14 @@ export function fitsSlot(player, slot) {
 // Posiciones de la formación en el orden en que se rellenan (delantera arriba → portero)
 export function slotsOf(formation) {
   return Object.keys(FORMATIONS[formation] ?? FORMATIONS['4-3-3']);
+}
+
+// Primera posición libre de la formación (empezando después de la actual, si se indica); null si está completa
+export function firstEmpty(formation, assigned, after) {
+  const slots = slotsOf(formation);
+  const start = after ? slots.indexOf(after) + 1 : 0;
+  const ordered = [...slots.slice(start), ...slots.slice(0, start)];
+  return ordered.find((slot) => !assigned[slot]) ?? null;
 }
 
 // [{ slot, playerId }] de toda la formación (los huecos con playerId null)
@@ -92,6 +101,21 @@ export function changeFormation(assigned, from, to) {
   return { assigned: next, moved, dropped };
 }
 
+// Aviso tras cambiar de formación: qué jugadores se han movido y cuáles han salido del once
+export function describeChange(to, { moved, dropped }) {
+  const label = (id) => getPlayer(id)?.shortName ?? getPlayer(id)?.name ?? id;
+  const parts = [`Formación ${to}.`];
+  moved
+    .filter(({ from, to: slot }) => slotPosition(from) !== slotPosition(slot))
+    .forEach(({ playerId, from, to: slot }) =>
+      parts.push(`${label(playerId)} pasa de ${slotPosition(from)} a ${slotPosition(slot)}.`),
+    );
+  dropped.forEach(({ playerId, from }) =>
+    parts.push(`${label(playerId)} (${slotPosition(from)}) sale del once: no hay hueco para su posición.`),
+  );
+  return parts.join(' ');
+}
+
 export function ageOf(player) {
   return player?.age ?? PLAYER_AGES_ESTIMATED[player?.id] ?? null;
 }
@@ -119,23 +143,19 @@ export function summarize(assigned) {
   };
 }
 
-// Candidatos para una posición: jugadores que encajan, que no están ya en el once y que coinciden con el texto
-function normalize(text) {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-}
-
 export const SORTS = [
   { value: 'goals', label: 'Ordenar por goles' },
   { value: 'assists', label: 'Ordenar por asistencias' },
   { value: 'rating', label: 'Ordenar por valoración' },
 ];
 
+// Candidatos para una posición: jugadores que encajan, que no están ya en el once y que coinciden con el texto
 export function candidatesFor({ slot, assigned, query, onlySlotPosition, sort }) {
   const used = new Set(Object.values(assigned));
-  const search = normalize(query);
+  const search = toSearchText(query);
   return Object.values(PLAYERS)
     .filter((p) => !used.has(p.id))
     .filter((p) => !onlySlotPosition || !slot || fitsSlot(p, slot))
-    .filter((p) => !search || normalize(p.name).includes(search))
+    .filter((p) => !search || toSearchText(p.name).includes(search))
     .sort((a, b) => (Number(b[sort]) || 0) - (Number(a[sort]) || 0) || a.name.localeCompare(b.name));
 }

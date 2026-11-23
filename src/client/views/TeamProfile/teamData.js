@@ -54,23 +54,27 @@ export function getUpcomingMatches(teamId) {
 }
 
 // Últimos resultados del equipo: { date, opponentId, venue: 'C' | 'F', score: [a favor, en contra], result: 'V' | 'E' | 'D' }
-// Si el equipo no tiene los suyos en TEAM_RECENT_RESULTS, se sacan de LATEST_RESULTS y, si ahí no hay ninguno,
-// de los últimos partidos de algún jugador suyo (p. ej. los de Pedri para el Barcelona; la fecha va como jornada).
+// Fuentes, por orden de prioridad (se usa la primera que tenga datos):
+//   1. TEAM_RECENT_RESULTS: los resultados propios del equipo (aunque sea una lista vacía).
+//   2. LATEST_RESULTS: los últimos resultados de la jornada en la que juega el equipo.
+//   3. Los últimos partidos de algún jugador suyo (p. ej. los de Pedri para el Barcelona; la fecha va como jornada).
 export function getRecentResults(teamId) {
-  const fromLatest = LATEST_RESULTS.filter((match) => match.homeId === teamId || match.awayId === teamId).map(
-    (match) => {
-      const home = match.homeId === teamId;
-      return {
-        date: match.date,
-        opponentId: home ? match.awayId : match.homeId,
-        venue: home ? 'C' : 'F',
-        score: home ? match.score : [match.score[1], match.score[0]],
-      };
-    },
-  );
-  const results = TEAM_RECENT_RESULTS[teamId] ?? (fromLatest.length > 0 ? fromLatest : resultsFromPlayers(teamId));
-
+  const results = TEAM_RECENT_RESULTS[teamId] ?? resultsFromLatest(teamId) ?? resultsFromPlayers(teamId);
   return results.map((match) => ({ ...match, result: getResult(match.score) }));
+}
+
+// Resultados de LATEST_RESULTS vistos desde el equipo, o null si no ha jugado ninguno
+function resultsFromLatest(teamId) {
+  const results = LATEST_RESULTS.filter((match) => match.homeId === teamId || match.awayId === teamId).map((match) => {
+    const home = match.homeId === teamId;
+    return {
+      date: match.date,
+      opponentId: home ? match.awayId : match.homeId,
+      venue: home ? 'C' : 'F',
+      score: home ? match.score : [match.score[1], match.score[0]],
+    };
+  });
+  return results.length > 0 ? results : null;
 }
 
 // Últimos partidos del primer jugador del equipo que los tenga (score «3-0» con los goles del equipo primero)

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { ROLE_PANELS, useLogout } from '../../context/SessionContext.jsx';
+import { MAIN_LINKS, MY_ZONE_LINKS, navLinkClass } from '../navigation.js';
 import { useNotifications } from '../../context/NotificationsContext.jsx';
 import './MobileMenu.css';
 import logo from '../../assets/logo-mobile.svg'; // Mismo logo que la navbar móvil
@@ -18,19 +19,18 @@ import logoutIcon from '../../assets/icon-logout.svg';
 import editIcon from '../../assets/icon-edit.svg';
 import shieldIcon from '../../assets/icon-shield.svg';
 
-// Opciones del menú (mismo orden que en Figma). «also»: igual que en la Navbar.
-const MAIN_LINKS = [
-  { label: 'Inicio', path: '/', icon: homeIcon },
-  { label: 'Equipos y jugadores', path: '/equipos', also: '/jugadores', icon: usersIcon },
-  { label: 'Clasificaciones', path: '/clasificaciones', icon: tableIcon },
-  { label: 'Árbitros', path: '/arbitros', icon: whistleIcon },
-  { label: 'Análisis', path: '/analisis', icon: docIcon },
-];
+// Iconos de cada opción del menú, por ruta (las opciones están en navigation.js, mismo orden que en Figma).
+const LINK_ICONS = {
+  '/': homeIcon,
+  '/equipos': usersIcon,
+  '/clasificaciones': tableIcon,
+  '/arbitros': whistleIcon,
+  '/analisis': docIcon,
+  '/comparador': compareIcon,
+  '/equipo-ideal': pitchIcon,
+};
 
-const MY_ZONE_LINKS = [
-  { label: 'Comparador', path: '/comparador', icon: compareIcon },
-  { label: 'Mi equipo ideal', path: '/equipo-ideal', icon: pitchIcon },
-];
+const withIcon = (link) => ({ ...link, icon: LINK_ICONS[link.path] });
 
 // Icono del panel de cada rol (el panel en sí está en ROLE_PANELS; no está en Figma).
 const PANEL_ICONS = { editor: editIcon, admin: shieldIcon };
@@ -79,11 +79,7 @@ export default function MobileMenu({ open, onClose, user = null }) {
         to={link.path}
         end={link.path === '/'}
         onClick={onClose}
-        className={({ isActive }) =>
-          isActive || (link.also && pathname.startsWith(link.also))
-            ? 'mobile-menu__link mobile-menu__link--active'
-            : 'mobile-menu__link'
-        }
+        className={navLinkClass('mobile-menu__link', link, pathname)}
       >
         <span className="mobile-menu__icon" style={{ '--icon': `url("${link.icon}")` }} aria-hidden="true" />
         <span className="mobile-menu__label">{link.label}</span>
@@ -131,11 +127,11 @@ export default function MobileMenu({ open, onClose, user = null }) {
         )}
 
         <nav className="mobile-menu__nav" aria-label="Menú principal">
-          <div className="mobile-menu__group">{MAIN_LINKS.map((link) => renderLink(link))}</div>
+          <div className="mobile-menu__group">{MAIN_LINKS.map((link) => renderLink(withIcon(link)))}</div>
 
           <p className="mobile-menu__heading">MI ZONA</p>
           <div className="mobile-menu__group mobile-menu__group--my-zone">
-            {MY_ZONE_LINKS.map((link) => renderLink(link))}
+            {MY_ZONE_LINKS.map((link) => renderLink(withIcon(link)))}
             {user && renderLink({ label: 'Mi perfil', path: '/perfil', icon: userIcon }, unreadCount)}
             {user && ROLE_PANELS[user.role] && renderLink({ ...ROLE_PANELS[user.role], icon: PANEL_ICONS[user.role] })}
           </div>

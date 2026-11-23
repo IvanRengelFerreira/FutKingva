@@ -80,16 +80,7 @@ export default function RegisterForm({ onSubmit, onSwitch }) {
           onChange={update('password')}
           error={shown('password')}
         />
-        {form.password && (
-          <div className={`access__strength access__strength--${strength}`}>
-            <div className="access__strength-bars" aria-hidden="true">
-              {[1, 2, 3, 4].map((level) => (
-                <span key={level} className={level <= strength ? 'access__strength-bar--on' : undefined} />
-              ))}
-            </div>
-            <p aria-live="polite">Seguridad: {STRENGTH_LABELS[strength].toLowerCase()}</p>
-          </div>
-        )}
+        {form.password && <PasswordStrength strength={strength} />}
       </div>
 
       <TextField
@@ -119,5 +110,18 @@ export default function RegisterForm({ onSubmit, onSwitch }) {
         </button>
       </p>
     </form>
+  );
+}
+
+function PasswordStrength({ strength }) {
+  return (
+    <div className={`access__strength access__strength--${strength}`}>
+      <div className="access__strength-bars" aria-hidden="true">
+        {[1, 2, 3, 4].map((level) => (
+          <span key={level} className={level <= strength ? 'access__strength-bar--on' : undefined} />
+        ))}
+      </div>
+      <p aria-live="polite">Seguridad: {STRENGTH_LABELS[strength].toLowerCase()}</p>
+    </div>
   );
 }

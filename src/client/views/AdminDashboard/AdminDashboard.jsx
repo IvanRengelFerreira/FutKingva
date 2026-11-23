@@ -19,6 +19,17 @@ const NO_FILTERS = { query: '', role: 'all', status: 'all' };
 
 const count = (list, test) => list.filter(test).length;
 
+// Indicadores: parten de ADMIN_STATS y suman la diferencia entre los usuarios actuales y los iniciales
+function computeStats(users, reports) {
+  const delta = (test) => count(users, test) - count(USERS, test);
+  return {
+    users: ADMIN_STATS.users - (USERS.length - users.length),
+    editors: ADMIN_STATS.editors + delta((u) => u.role === 'editor'),
+    blocked: ADMIN_STATS.blockedAccounts + delta((u) => u.status === 'blocked'),
+    reports: reports.length,
+  };
+}
+
 export default function AdminDashboard() {
   const [tab, setTab] = useState('users');
   const [users, setUsers] = useState(USERS);
@@ -28,15 +39,7 @@ export default function AdminDashboard() {
   const [message, setMessage] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null); // Usuario que espera confirmación para eliminarse
 
-  const stats = {
-    users: ADMIN_STATS.users - (USERS.length - users.length),
-    editors: ADMIN_STATS.editors + count(users, (u) => u.role === 'editor') - count(USERS, (u) => u.role === 'editor'),
-    blocked:
-      ADMIN_STATS.blockedAccounts +
-      count(users, (u) => u.status === 'blocked') -
-      count(USERS, (u) => u.status === 'blocked'),
-    reports: reports.length,
-  };
+  const stats = computeStats(users, reports);
 
   // Solo la primera página tiene usuarios cargados; con filtros se busca en todos los cargados
   const visibleUsers = isFiltering(filters) || page === 1 ? filterUsers(users, filters) : [];

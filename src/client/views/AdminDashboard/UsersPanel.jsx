@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
 import Select from '../../components/Select/Select.jsx';
@@ -23,42 +24,43 @@ const STATUS_FILTER = [
   { value: 'blocked', label: 'Bloqueado' },
 ];
 
-// Acciones de una fila: la cuenta propia no se puede bloquear ni eliminar («—»)
-function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete, compact }) {
-  if (user.isCurrentUser) {
-    return compact ? null : (
-      <span className="admin-users__none" aria-label="Sin acciones para tu propia cuenta">
-        —
-      </span>
-    );
-  }
+// Confirmación de «Eliminar» en la propia fila. Al aparecer, el foco va a «¿Eliminar?»
+function ConfirmDeleteActions({ user, onDelete, onCancel }) {
+  return (
+    <div className="admin-actions">
+      <button
+        type="button"
+        className="admin-action admin-action--loss"
+        onClick={() => onDelete(user.id)}
+        aria-label={`Confirmar: eliminar a ${user.name}`}
+        autoFocus
+      >
+        <AdminIcon name="trash" />
+        <span className="admin-action__text">¿Eliminar?</span>
+      </button>
+      <button
+        type="button"
+        className="admin-action admin-action--gold"
+        onClick={onCancel}
+        aria-label={`No eliminar a ${user.name}`}
+      >
+        <span className="admin-action__text">Cancelar</span>
+      </button>
+    </div>
+  );
+}
+
+// «Bloquear / Desbloquear» y «Eliminar». Si se vuelve de «Cancelar», el foco regresa a «Eliminar»
+function BlockDeleteActions({ user, onToggleBlock, onDelete, focusDelete, onFocused }) {
+  const deleteButton = useRef(null);
   const blocked = user.status === 'blocked';
   const blockLabel = blocked ? 'Desbloquear' : 'Bloquear';
 
-  if (confirming) {
-    return (
-      <div className="admin-actions">
-        <button
-          type="button"
-          className="admin-action admin-action--loss"
-          onClick={() => onDelete(user.id)}
-          aria-label={`Confirmar: eliminar a ${user.name}`}
-          autoFocus
-        >
-          <AdminIcon name="trash" />
-          <span className="admin-action__text">¿Eliminar?</span>
-        </button>
-        <button
-          type="button"
-          className="admin-action admin-action--gold"
-          onClick={onCancelDelete}
-          aria-label={`No eliminar a ${user.name}`}
-        >
-          <span className="admin-action__text">Cancelar</span>
-        </button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!focusDelete) return;
+    deleteButton.current?.focus();
+    onFocused();
+  }, [focusDelete, onFocused]);
 
   return (
     <div className="admin-actions">
@@ -72,6 +74,7 @@ function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete
         <span className="admin-action__text">{blockLabel}</span>
       </button>
       <button
+        ref={deleteButton}
         type="button"
         className="admin-action admin-action--loss"
         onClick={() => onDelete(user.id)}
@@ -81,6 +84,38 @@ function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete
         <span className="admin-action__text">Eliminar</span>
       </button>
     </div>
+  );
+}
+
+// Acciones de una fila: la cuenta propia no se puede bloquear ni eliminar («—»)
+function UserActions({ user, onToggleBlock, onDelete, confirming, onCancelDelete, compact }) {
+  // Al cancelar, «Eliminar» recupera el foco (si no, se iría al principio de la página)
+  const [returnFocus, setReturnFocus] = useState(false);
+
+  if (user.isCurrentUser) {
+    return compact ? null : (
+      <span className="admin-users__none" aria-label="Sin acciones para tu propia cuenta">
+        —
+      </span>
+    );
+  }
+
+  if (confirming) {
+    const cancel = () => {
+      setReturnFocus(true);
+      onCancelDelete();
+    };
+    return <ConfirmDeleteActions user={user} onDelete={onDelete} onCancel={cancel} />;
+  }
+
+  return (
+    <BlockDeleteActions
+      user={user}
+      onToggleBlock={onToggleBlock}
+      onDelete={onDelete}
+      focusDelete={returnFocus}
+      onFocused={() => setReturnFocus(false)}
+    />
   );
 }
 
@@ -99,6 +134,15 @@ function RoleSelect({ user, onChangeRole }) {
   );
 }
 
+function DisplayName({ user }) {
+  return (
+    <span className="admin-user__name">
+      {user.name}
+      {user.isCurrentUser && <span className="admin-user__you"> (tú)</span>}
+    </span>
+  );
+}
+
 function UserName({ user }) {
   return (
     <span className="admin-user">
@@ -108,10 +152,7 @@ function UserName({ user }) {
         size={34}
         className={`admin-avatar admin-avatar--${user.role}`}
       />
-      <span className="admin-user__name">
-        {user.name}
-        {user.isCurrentUser && <span className="admin-user__you"> (tú)</span>}
-      </span>
+      <DisplayName user={user} />
     </span>
   );
 }
@@ -229,10 +270,7 @@ export default function UsersPanel({
                     className={`admin-avatar admin-avatar--${user.role}`}
                   />
                   <div className="admin-card__who">
-                    <span className="admin-user__name">
-                      {user.name}
-                      {user.isCurrentUser && <span className="admin-user__you"> (tú)</span>}
-                    </span>
+                    <DisplayName user={user} />
                     <span className="admin-card__email">{user.email ?? '—'}</span>
                   </div>
                   <StatusBadge status={user.status} />

@@ -55,7 +55,7 @@ export async function detail(req, res) {
 - Errores esperados con `AppError`; para el resto (BD caída, fallos de Prisma) basta con no capturarlos.
 - Las consultas, con **Prisma** (`prisma.<tabla>`). SQL a mano solo si Prisma no puede (`prisma.$queryRaw`).
 - Comprueba siempre los datos que llegan (`req.params`, `req.query`, `req.body`): **el servidor nunca se fía del cliente**.
-- Una consulta que necesitan **varios archivos** va en `db.js` junto a `prisma` (p. ej. `findUserByEmail`), no copiada en cada uno. _Provisional: si se aprueba una capa de servicios, se moverá allí._
+- Una consulta que necesitan **varios archivos** va en `db.js` junto a `prisma` (p. ej. `findUserByEmail`), no copiada en cada uno. Sin capa de servicios: se sigue con MVC ligero (decisión del 23/11/2026). Las funciones que dan forma a las respuestas van en `utils/` (`teamSummary`, `standingRow`, `publicUser`…).
 
 ### Validar el cuerpo de un formulario
 
@@ -81,7 +81,7 @@ Si algo falla, `validate` responde **400** con esos `fields` y el controlador no
 | Listados                      | `{ items, total, limit, offset }`. `?limit=` por defecto 20 y máximo 100; `?offset=` por defecto 0         |
 | Crear                         | **201** con lo creado                                                                                      |
 | Borrar o acción sin respuesta | **204** sin cuerpo (`res.status(204).end()`)                                                               |
-| Usuarios                      | Siempre con `publicUser(user)` (`middleware/auth.js`): nunca se envía `password_hash`                      |
+| Usuarios                      | Siempre con `publicUser(user)` (`utils/users.js`): nunca se envía `password_hash`                          |
 
 ## 4. Errores
 

@@ -4,6 +4,7 @@ import StandingsTable from '../../components/StandingsTable/StandingsTable.jsx';
 import SectionHeader from './SectionHeader.jsx';
 import MatchList from './MatchList.jsx';
 import Featured from './Featured.jsx';
+import { hasKnownTeams, toResultRow, toUpcomingRow } from './matchRows.js';
 import { COMPETITION_FILTERS, matchesFilter, shortDateLabel } from './filters.js';
 import { TODAY, LIVE_MATCHES, LATEST_RESULTS, UPCOMING_MATCHES, getTeam } from '../../data/mockData.js';
 import './Home.css';
@@ -23,36 +24,11 @@ export default function Home() {
   const [filterId, setFilterId] = useState('all');
   const filter = COMPETITION_FILTERS.find((item) => item.id === filterId);
 
-  // Un partido con un equipo que no esté en los datos se descarta para no romper la página
-  const known = (match) => getTeam(match.homeId) && getTeam(match.awayId);
-  const live = LIVE_MATCHES.filter((match) => known(match) && matchesFilter(match, filter));
+  const visible = (matches) => matches.filter((match) => hasKnownTeams(match, getTeam) && matchesFilter(match, filter));
 
-  const results = LATEST_RESULTS.filter((match) => known(match) && matchesFilter(match, filter))
-    .slice(0, RESULTS_SHOWN)
-    .map((match, index) => {
-      const [homeGoals, awayGoals] = match.score ?? [];
-      const hasScore = homeGoals != null && awayGoals != null;
-      return {
-        key: `${match.date}-${match.homeId}-${match.awayId}-${index}`,
-        date: match.date,
-        homeId: match.homeId,
-        awayId: match.awayId,
-        center: hasScore ? `${homeGoals} – ${awayGoals}` : '—',
-        competition: match.competition,
-        winner: hasScore && homeGoals !== awayGoals ? (homeGoals > awayGoals ? 'home' : 'away') : undefined,
-      };
-    });
-
-  const upcoming = UPCOMING_MATCHES.filter((match) => known(match) && matchesFilter(match, filter))
-    .slice(0, UPCOMING_SHOWN)
-    .map((match, index) => ({
-      key: `${match.date}-${match.homeId}-${match.awayId}-${index}`,
-      date: match.date,
-      homeId: match.homeId,
-      awayId: match.awayId,
-      center: match.time,
-      competition: match.competition ?? 'LaLiga',
-    }));
+  const live = visible(LIVE_MATCHES);
+  const results = visible(LATEST_RESULTS).slice(0, RESULTS_SHOWN).map(toResultRow);
+  const upcoming = visible(UPCOMING_MATCHES).slice(0, UPCOMING_SHOWN).map(toUpcomingRow);
 
   return (
     <section className="page home">

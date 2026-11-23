@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { PROFILE_EXAMPLE, IDEAL_TEAM_EXAMPLE, getPlayer } from '../data/mockData.js';
-import { CHANGE_HISTORY } from '../views/PlayerDataEditor/changeHistory.js';
+import { CHANGE_HISTORY } from '../data/changeHistory.js';
 
 // Lo que el usuario guarda en la web: favoritos, comparativas, equipo ideal y, para los editores,
 // las correcciones de datos de jugadores. No hay servidor, así que se guarda en el navegador
@@ -72,6 +72,26 @@ function storeData(data) {
   }
 }
 
+/** Añade el id a la lista, o lo quita si ya estaba */
+function toggleId(list, id) {
+  return list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
+}
+
+/** Misma clave para los mismos jugadores, en cualquier orden: detecta comparativas repetidas */
+function comparisonKey(playerIds) {
+  return [...playerIds].sort().join(',');
+}
+
+/** «Pedri vs Bellingham»: nombre corto de cada jugador (o su id, si ya no existe) */
+function comparisonName(playerIds) {
+  return playerIds
+    .map((id) => {
+      const player = getPlayer(id);
+      return player?.shortName ?? player?.name ?? id;
+    })
+    .join(' vs ');
+}
+
 const UserDataContext = createContext(null);
 
 export function UserDataProvider({ children }) {
@@ -85,32 +105,23 @@ export function UserDataProvider({ children }) {
     storeData(data);
   }, [data]);
 
-  function update(changes) {
-    setData((current) => ({ ...current, ...changes }));
-  }
-
-  function toggle(list, id) {
-    return list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
-  }
-
   function toggleFavoriteTeam(teamId) {
-    setData((current) => ({ ...current, favoriteTeams: toggle(current.favoriteTeams, teamId) }));
+    setData((current) => ({ ...current, favoriteTeams: toggleId(current.favoriteTeams, teamId) }));
   }
 
   function toggleFavoritePlayer(playerId) {
-    setData((current) => ({ ...current, favoritePlayers: toggle(current.favoritePlayers, playerId) }));
+    setData((current) => ({ ...current, favoritePlayers: toggleId(current.favoritePlayers, playerId) }));
   }
 
   // Guarda la comparativa (si ya había una con los mismos jugadores, la sustituye) y la pone la primera
   function saveComparison(playerIds) {
-    const name = playerIds.map((id) => getPlayer(id)?.shortName ?? getPlayer(id)?.name ?? id).join(' vs ');
-    const key = [...playerIds].sort().join(',');
-    const comparison = { id: Date.now(), name, playerIds, date: TODAY_DATE };
+    const key = comparisonKey(playerIds);
+    const comparison = { id: Date.now(), name: comparisonName(playerIds), playerIds, date: TODAY_DATE };
     setData((current) => ({
       ...current,
       savedComparisons: [
         comparison,
-        ...current.savedComparisons.filter((item) => [...item.playerIds].sort().join(',') !== key),
+        ...current.savedComparisons.filter((item) => comparisonKey(item.playerIds) !== key),
       ],
     }));
     return comparison;
@@ -121,7 +132,7 @@ export function UserDataProvider({ children }) {
   }
 
   function saveIdealTeam(team) {
-    update({ idealTeam: team });
+    setData((current) => ({ ...current, idealTeam: team }));
   }
 
   // changes: { campo: valor escrito } · entries: filas nuevas del historial (las más recientes, primero)

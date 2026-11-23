@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import './Notifications.css';
 import { useNotifications } from '../../context/NotificationsContext.jsx';
+import useDismiss from '../useDismiss.js';
 import NotificationToast from './NotificationToast.jsx';
 import bellIcon from '../../assets/icon-bell.svg';
 import bellReadIcon from '../../assets/icon-bell-read.svg';
@@ -36,23 +37,8 @@ export default function Notifications() {
   }
 
   // Mientras está abierto, se cierra al pulsar fuera o con Esc
-  useEffect(() => {
-    if (!open) return;
-
-    function handleClickOutside(e) {
-      if (!wrapperRef.current.contains(e.target)) setOpen(false);
-    }
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') setOpen(false);
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [open]);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(wrapperRef, open, close);
 
   // Aviso emergente: el aviso más reciente sin leer que tenga texto para ello
   const toast = notifications.find((n) => n.toast && n.unread);
@@ -95,27 +81,9 @@ export default function Notifications() {
           </p>
 
           <ul className="notifications__list">
-            {notifications.map((notification) => {
-              const type = TYPES[notification.type] ?? TYPES.goal;
-              return (
-                <li
-                  key={notification.id}
-                  className={`notifications__item${notification.unread ? ' notifications__item--unread' : ''}`}
-                >
-                  <span className={`notifications__icon notifications__icon--${type.tone}`} aria-hidden="true">
-                    <span style={{ '--icon': `url("${type.icon}")` }} />
-                  </span>
-                  <span className="notifications__text">
-                    <strong>{notification.title}</strong>
-                    <span>{notification.detail}</span>
-                  </span>
-                  <span className="notifications__meta">
-                    <span>{notification.time}</span>
-                    {notification.unread && <span className="notifications__unread-dot" aria-label="Sin leer" />}
-                  </span>
-                </li>
-              );
-            })}
+            {notifications.map((notification) => (
+              <NotificationItem key={notification.id} notification={notification} />
+            ))}
           </ul>
 
           <footer className="notifications__footer">
@@ -132,5 +100,25 @@ export default function Notifications() {
 
       {toast && <NotificationToast key={toast.id} {...toast.toast} />}
     </div>
+  );
+}
+
+// Un aviso de la lista: icono según su tipo, texto, hora y punto si está sin leer.
+function NotificationItem({ notification }) {
+  const type = TYPES[notification.type] ?? TYPES.goal;
+  return (
+    <li className={`notifications__item${notification.unread ? ' notifications__item--unread' : ''}`}>
+      <span className={`notifications__icon notifications__icon--${type.tone}`} aria-hidden="true">
+        <span style={{ '--icon': `url("${type.icon}")` }} />
+      </span>
+      <span className="notifications__text">
+        <strong>{notification.title}</strong>
+        <span>{notification.detail}</span>
+      </span>
+      <span className="notifications__meta">
+        <span>{notification.time}</span>
+        {notification.unread && <span className="notifications__unread-dot" aria-label="Sin leer" />}
+      </span>
+    </li>
   );
 }

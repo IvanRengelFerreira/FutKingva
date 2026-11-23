@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
 import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
 import Button from '../../components/Button/Button.jsx';
 import StatCard from '../../components/StatCard/StatCard.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import Select from '../../components/Select/Select.jsx';
-import Tag from '../../components/Tag/Tag.jsx';
-import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
 import { ARTICLES, EDITOR_STATS } from '../../data/mockData.js';
 import syncIcon from '../../assets/icon-sync.svg';
 import plusIcon from '../../assets/icon-plus-dark.svg';
 import searchIcon from '../../assets/icon-search-small.svg';
 import './EditorDashboard.css';
+import { toSearchText } from '../../utils/text.js';
+import ArticleRow from './ArticleRow.jsx';
+import ArticleCard from './ArticleCard.jsx';
+import { formatNumber } from './formatNumber.js';
 
 // 17 · Panel de editor (RF7): indicadores y tabla «Mis artículos» con buscador, filtro de estado,
 // acciones (editar, ver, eliminar) y paginación. Solo para el rol editor (RequireRole en App.jsx).
@@ -43,10 +44,10 @@ export default function EditorDashboard() {
     drafts: articles.filter((a) => a.status === 'draft').length,
   };
 
-  const search = normalize(query);
+  const search = toSearchText(query);
   const results = articles.filter(
     (article) =>
-      (status === 'all' || article.status === status) && (!search || normalize(article.title).includes(search)),
+      (status === 'all' || article.status === status) && (!search || toSearchText(article.title).includes(search)),
   );
   const totalPages = Math.max(1, Math.ceil(results.length / PER_PAGE));
   const currentPage = Math.min(page, totalPages); // Si se borra el último de una página, se vuelve a la anterior
@@ -171,20 +172,7 @@ export default function EditorDashboard() {
                 </thead>
                 <tbody>
                   {visible.map((article) => (
-                    <tr key={article.id}>
-                      <td className="editor-dashboard__article-title">{article.title}</td>
-                      <td>
-                        <Tag category={article.category} />
-                      </td>
-                      <td>
-                        <StatusBadge status={article.status} />
-                      </td>
-                      <td className="editor-dashboard__date">{article.date ?? '—'}</td>
-                      <td className="editor-dashboard__end editor-dashboard__visits">{formatNumber(article.visits)}</td>
-                      <td className="editor-dashboard__end">
-                        <Actions article={article} onRemove={remove} />
-                      </td>
-                    </tr>
+                    <ArticleRow key={article.id} article={article} onRemove={remove} />
                   ))}
                 </tbody>
               </table>
@@ -193,28 +181,7 @@ export default function EditorDashboard() {
             {/* Móvil: una tarjeta por artículo */}
             <ul className="editor-dashboard__cards">
               {visible.map((article) => (
-                <li key={article.id} className="editor-dashboard__card">
-                  <div className="editor-dashboard__card-top">
-                    <Tag category={article.category} />
-                    <StatusBadge status={article.status} />
-                    <Link
-                      className="editor-dashboard__action editor-dashboard__action--edit editor-dashboard__card-edit"
-                      to={`/editor/articulo/${article.id}`}
-                      aria-label={`Editar «${article.title}»`}
-                    />
-                    <button
-                      type="button"
-                      className="editor-dashboard__action editor-dashboard__action--delete"
-                      onClick={() => remove(article)}
-                      aria-label={`Eliminar «${article.title}»`}
-                      title="Eliminar"
-                    />
-                  </div>
-                  <p className="editor-dashboard__article-title">{article.title}</p>
-                  <p className="editor-dashboard__card-meta">
-                    {article.date ?? '—'} · {formatNumber(article.visits)} visitas
-                  </p>
-                </li>
+                <ArticleCard key={article.id} article={article} onRemove={remove} />
               ))}
             </ul>
           </>
@@ -224,52 +191,4 @@ export default function EditorDashboard() {
       </div>
     </section>
   );
-}
-
-// Editar, ver (solo los publicados se pueden leer) y eliminar
-function Actions({ article, onRemove }) {
-  const published = article.status === 'published';
-  return (
-    <div className="editor-dashboard__actions">
-      <Link
-        className="editor-dashboard__action editor-dashboard__action--edit"
-        to={`/editor/articulo/${article.id}`}
-        aria-label={`Editar «${article.title}»`}
-        title="Editar"
-      />
-      {published ? (
-        <Link
-          className="editor-dashboard__action editor-dashboard__action--view"
-          to={`/analisis/${article.id}`}
-          aria-label={`Ver «${article.title}»`}
-          title="Ver"
-        />
-      ) : (
-        <button
-          type="button"
-          className="editor-dashboard__action editor-dashboard__action--view"
-          disabled
-          aria-label={`Ver «${article.title}» (todavía no está publicado)`}
-          title="Todavía no está publicado"
-        />
-      )}
-      <button
-        type="button"
-        className="editor-dashboard__action editor-dashboard__action--delete"
-        onClick={() => onRemove(article)}
-        aria-label={`Eliminar «${article.title}»`}
-        title="Eliminar"
-      />
-    </div>
-  );
-}
-
-// 4812 → «4.812» · null → «—»
-function formatNumber(value) {
-  return value == null ? '—' : value.toLocaleString('es-ES', { useGrouping: 'always' });
-}
-
-// Quita tildes y mayúsculas para buscar
-function normalize(text) {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 }

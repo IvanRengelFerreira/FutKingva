@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { ROLE_PANELS, useLogout } from '../../context/SessionContext.jsx';
 import { DESKTOP_QUERY } from './breakpoints.js';
+import useDismiss from '../useDismiss.js';
 import chevronDownIcon from '../../assets/icon-chevron-down.svg';
 
 // Usuario de la navbar de escritorio (avatar + nombre + ▾) con su desplegable.
@@ -13,7 +14,12 @@ export default function UserMenu({ user }) {
   const menuRef = useRef(null);
   const panel = ROLE_PANELS[user.role];
 
-  // Mientras está abierto, se cierra al pulsar fuera, con Esc o al pasar a móvil
+  const close = useCallback(() => setOpen(false), []);
+
+  // Se cierra al pulsar fuera o con Esc.
+  useDismiss(menuRef, open, close);
+
+  // Mientras está abierto, se cierra también al pasar a móvil
   // (si no, al volver a escritorio aparecería abierto sin haberlo pulsado).
   useEffect(() => {
     if (!open) return;
@@ -23,21 +29,8 @@ export default function UserMenu({ user }) {
       if (!e.matches) setOpen(false);
     }
 
-    function handleClickOutside(e) {
-      if (!menuRef.current.contains(e.target)) setOpen(false);
-    }
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') setOpen(false);
-    }
-
     desktop.addEventListener('change', handleBreakpoint);
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      desktop.removeEventListener('change', handleBreakpoint);
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => desktop.removeEventListener('change', handleBreakpoint);
   }, [open]);
 
   function handleLogout() {

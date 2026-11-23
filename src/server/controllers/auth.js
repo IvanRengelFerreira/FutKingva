@@ -3,7 +3,7 @@
 
 import { prisma, findUserByEmail } from '../db.js';
 import { AppError } from '../errors/AppError.js';
-import { publicUser } from '../middleware/auth.js';
+import { publicUser } from '../utils/users.js';
 import { regenerateSession, destroySession } from '../middleware/session.js';
 import { hashPassword, verifyPassword, verifyAgainstDummy } from '../utils/password.js';
 

@@ -1,4 +1,5 @@
 import './Tag.css';
+import { toKey } from '../../utils/text.js';
 
 // Etiqueta de categoría de un artículo: Táctica (oro), Crónica (rojo), Previa (violeta) y Datos (azul).
 // También la etiqueta «Destacado» (degradado oro) del artículo principal de Análisis.
@@ -11,9 +12,4 @@ import './Tag.css';
 export default function Tag({ category, featured = false, children, className = '' }) {
   const variant = featured ? 'featured' : toKey(category);
   return <span className={`tag tag--${variant} ${className}`.trim()}>{children ?? category}</span>;
-}
-
-// «Crónica» → «cronica» (sin tildes ni mayúsculas) para elegir el color
-function toKey(text = '') {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }

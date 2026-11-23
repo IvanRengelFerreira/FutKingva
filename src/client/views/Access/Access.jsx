@@ -94,26 +94,30 @@ export default function Access() {
           )}
         </div>
 
-        {tab === 'login' && (
-          <div className="access__quick">
-            <p className="access__quick-title">Acceso rápido de prueba</p>
-            <div className="access__quick-buttons">
-              {DEMO_ACCOUNTS.map(({ role, label, email }) => (
-                <button
-                  key={role}
-                  className={`access__quick-button access__quick-button--${role}`}
-                  type="button"
-                  disabled={quick.sending}
-                  onClick={() => quickAccess(email)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <FieldError>{quick.message}</FieldError>
-          </div>
-        )}
+        {tab === 'login' && <QuickAccess onAccess={quickAccess} sending={quick.sending} message={quick.message} />}
       </section>
+    </div>
+  );
+}
+
+function QuickAccess({ onAccess, sending, message }) {
+  return (
+    <div className="access__quick">
+      <p className="access__quick-title">Acceso rápido de prueba</p>
+      <div className="access__quick-buttons">
+        {DEMO_ACCOUNTS.map(({ role, label, email }) => (
+          <button
+            key={role}
+            className={`access__quick-button access__quick-button--${role}`}
+            type="button"
+            disabled={sending}
+            onClick={() => onAccess(email)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <FieldError>{message}</FieldError>
     </div>
   );
 }

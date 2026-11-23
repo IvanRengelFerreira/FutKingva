@@ -8,6 +8,11 @@ import { useUserData } from '../../context/UserDataContext.jsx';
 import { MISSING } from './format.js';
 import { ageOf } from '../IdealTeam/team.js';
 
+function followButtonLabel(following, isMobile) {
+  if (following) return isMobile ? 'Siguiendo' : 'En favoritos';
+  return isMobile ? 'Seguir' : 'Añadir a favoritos';
+}
+
 // Cabecera de la ficha: avatar con el escudo del club, nombre, valoración media y botones.
 // «Seguir» (favorito): con sesión lo añade o lo quita de Mi perfil; sin sesión lleva a Acceso y al entrar vuelve aquí.
 // «Comparar jugador» abre el Comparador con este jugador.
@@ -32,13 +37,7 @@ export default function PlayerHero({ player, team, extras, isMobile }) {
       : [extras.fullName, age != null && `${age} años`, player.country, extras.height, extras.foot]
   ).filter(Boolean);
 
-  const followLabel = following
-    ? isMobile
-      ? 'Siguiendo'
-      : 'En favoritos'
-    : isMobile
-      ? 'Seguir'
-      : 'Añadir a favoritos';
+  const followLabel = followButtonLabel(following, isMobile);
   const star = (
     <span className="player-hero__star" aria-hidden="true">
       {following ? '★' : '☆'}

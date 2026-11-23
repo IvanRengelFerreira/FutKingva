@@ -6,17 +6,20 @@ import { useLogout, useSession } from '../../context/SessionContext.jsx';
 import { useNotifications } from '../../context/NotificationsContext.jsx';
 import { useUserData } from '../../context/UserDataContext.jsx';
 import { PROFILE_EXAMPLE } from '../../data/mockData.js';
-import {
-  SectionHeader,
-  FavoriteTeams,
-  FavoritePlayers,
-  SavedComparisons,
-  NotificationList,
-  IdealTeamCard,
-} from './ProfileSections.jsx';
+import SectionHeader from './SectionHeader.jsx';
+import { FavoriteTeams, FavoritePlayers } from './FavoriteCards.jsx';
+import SavedComparisons from './SavedComparisons.jsx';
+import NotificationList from './NotificationList.jsx';
+import IdealTeamCard from './IdealTeamCard.jsx';
 import editIcon from '../../assets/icon-edit-gold.svg';
 import logoutIcon from '../../assets/icon-logout-light.svg';
 import './Profile.css';
+
+const ROLE_LABELS = {
+  user: 'Usuario registrado',
+  editor: 'Editor',
+  admin: 'Administrador',
+};
 
 // 12 · Mi perfil (RF3): datos del usuario, favoritos, comparativas guardadas, equipo ideal y notificaciones.
 // Solo con sesión (RequireRole en App.jsx). El nombre, las iniciales y el correo salen de la sesión (useSession);
@@ -60,8 +63,6 @@ export default function Profile() {
     },
   ];
 
-  const removeTeam = toggleFavoriteTeam;
-  const removePlayer = toggleFavoritePlayer;
   const hasIdealTeam = idealTeam.players.some((slot) => slot.playerId);
 
   return (
@@ -125,14 +126,14 @@ export default function Profile() {
             <SectionHeader id="profile-teams-title" title="Equipos favoritos">
               <ManageLink to="/equipos" />
             </SectionHeader>
-            <FavoriteTeams teamIds={favoriteTeams} onRemove={removeTeam} />
+            <FavoriteTeams teamIds={favoriteTeams} onRemove={toggleFavoriteTeam} />
           </section>
 
           <section className="profile__section" aria-labelledby="profile-players-title">
             <SectionHeader id="profile-players-title" title="Jugadores favoritos">
               <ManageLink to="/equipos" />
             </SectionHeader>
-            <FavoritePlayers playerIds={favoritePlayers} onRemove={removePlayer} />
+            <FavoritePlayers playerIds={favoritePlayers} onRemove={toggleFavoritePlayer} />
           </section>
 
           <div className="profile__columns">
@@ -199,12 +200,6 @@ export default function Profile() {
     </section>
   );
 }
-
-const ROLE_LABELS = {
-  user: 'Usuario registrado',
-  editor: 'Editor',
-  admin: 'Administrador',
-};
 
 // Texto largo en escritorio y corto en móvil
 function Short({ long, short }) {

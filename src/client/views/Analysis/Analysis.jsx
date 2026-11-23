@@ -6,9 +6,12 @@ import Illustration from '../../components/Illustration/Illustration.jsx';
 import ArticleCard from '../../components/ArticleCard/ArticleCard.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
+import usePagedList from '../../hooks/usePagedList.js';
 import { ARTICLES, getArticle } from '../../data/mockData.js';
 import { FEATURED_ARTICLE_ID, getArticleExtras } from './articleExtras.js';
 import searchIcon from '../../assets/icon-search-small.svg';
+import { toKey, toSearchText } from '../../utils/text.js';
+import { toTime } from './dates.js';
 import './Analysis.css';
 
 // 08 · Análisis: artículos publicados por los editores.
@@ -33,8 +36,6 @@ const MOBILE_STEP = 5; // En móvil se enseñan 5 y «Cargar más» añade otros
 export default function Analysis() {
   const [category, setCategory] = useState(null);
   const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [mobileCount, setMobileCount] = useState(MOBILE_STEP);
 
   const featured = getArticle(FEATURED_ARTICLE_ID);
   const featuredExtras = getArticleExtras(FEATURED_ARTICLE_ID);
@@ -47,20 +48,26 @@ export default function Analysis() {
   ).sort((a, b) => toTime(b.date) - toTime(a.date));
 
   const results = latest.filter((article) => (!category || article.category === category) && matches(article, query));
-  const totalPages = Math.ceil(results.length / PER_PAGE);
-  const visible = results.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const {
+    page,
+    setPage,
+    totalPages,
+    pageItems: visible,
+    mobileItems,
+    hasMore,
+    loadMore,
+    resetPaging,
+  } = usePagedList(results, { perPage: PER_PAGE, mobileStep: MOBILE_STEP });
 
   // Al cambiar el filtro o la búsqueda se vuelve a la primera página
   function changeCategory(value) {
     setCategory(value);
-    setPage(1);
-    setMobileCount(MOBILE_STEP);
+    resetPaging();
   }
 
   function changeQuery(event) {
     setQuery(event.target.value);
-    setPage(1);
-    setMobileCount(MOBILE_STEP);
+    resetPaging();
   }
 
   return (
@@ -157,7 +164,7 @@ export default function Analysis() {
 
             {/* Móvil: lista compacta con «Cargar más» */}
             <div className="analysis__list">
-              {results.slice(0, mobileCount).map((article) => (
+              {mobileItems.map((article) => (
                 <ArticleCard
                   key={article.id}
                   article={article}
@@ -165,12 +172,8 @@ export default function Analysis() {
                   layout="compact"
                 />
               ))}
-              {results.length > mobileCount && (
-                <Button
-                  variant="tertiary"
-                  className="analysis__more"
-                  onClick={() => setMobileCount((n) => n + MOBILE_STEP)}
-                >
+              {hasMore && (
+                <Button variant="tertiary" className="analysis__more" onClick={loadMore}>
                   Cargar más
                 </Button>
               )}
@@ -188,19 +191,10 @@ export default function Analysis() {
   );
 }
 
-// «15/10/2026» → número para poder ordenar por fecha
-function toTime(date) {
-  const [day, month, year] = date.split('/').map(Number);
-  return new Date(year, month - 1, day).getTime();
-}
-
 // Busca en el titular y la entradilla, sin distinguir mayúsculas ni tildes
 function matches(article, query) {
-  const text = normalize(query.trim());
+  // La consulta se recorta (toSearchText); el texto del artículo no hace falta (toKey)
+  const text = toSearchText(query);
   if (!text) return true;
-  return normalize(`${article.title} ${getArticleExtras(article.id).excerpt ?? ''}`).includes(text);
-}
-
-function normalize(text) {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  return toKey(`${article.title} ${getArticleExtras(article.id).excerpt ?? ''}`).includes(text);
 }

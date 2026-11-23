@@ -41,99 +41,11 @@ export default function StandingsTable({
       <div className="standings-table__wrapper">
         <table className="standings-table__table">
           <caption className="standings-table__caption">{caption}</caption>
-          <thead>
-            <tr>
-              <th scope="col" className="standings-table__pos">
-                #
-              </th>
-              <th scope="col" className="standings-table__team">
-                Equipo
-              </th>
-              <th scope="col" className="standings-table__num">
-                <abbr title="Partidos jugados">PJ</abbr>
-              </th>
-              {full && (
-                <>
-                  <th scope="col" className="standings-table__num standings-table__extra">
-                    <abbr title="Ganados">G</abbr>
-                  </th>
-                  <th scope="col" className="standings-table__num standings-table__extra">
-                    <abbr title="Empatados">E</abbr>
-                  </th>
-                  <th scope="col" className="standings-table__num standings-table__extra">
-                    <abbr title="Perdidos">P</abbr>
-                  </th>
-                  <th scope="col" className="standings-table__num standings-table__extra">
-                    <abbr title="Goles a favor">GF</abbr>
-                  </th>
-                  <th scope="col" className="standings-table__num standings-table__extra">
-                    <abbr title="Goles en contra">GC</abbr>
-                  </th>
-                </>
-              )}
-              <th scope="col" className="standings-table__num standings-table__diff">
-                <abbr title="Diferencia de goles">DG</abbr>
-              </th>
-              <th scope="col" className="standings-table__num standings-table__points">
-                <abbr title="Puntos">PTS</abbr>
-              </th>
-              {full && (
-                <th scope="col" className="standings-table__form standings-table__extra">
-                  Últimos 5
-                </th>
-              )}
-            </tr>
-          </thead>
+          <StandingsHead full={full} />
           <tbody>
-            {rows.map((row) => {
-              const team = row.team ?? getTeam(row.teamId);
-              const leader = row.position === 1;
-              const zone = full ? getStandingsZone(row.position) : undefined;
-              const rowClasses = [
-                'standings-table__row',
-                leader && 'standings-table__row--leader',
-                zone && `standings-table__row--${zone.id}`,
-                row.teamId === highlightTeamId && 'standings-table__row--highlight',
-              ]
-                .filter(Boolean)
-                .join(' ');
-
-              return (
-                <tr key={row.teamId} className={rowClasses}>
-                  <td className="standings-table__pos">{row.position}</td>
-                  <th scope="row" className="standings-table__team">
-                    <span className="standings-table__team-cell">
-                      <Crest team={team} size={full ? 28 : 24} />
-                      <Link className="standings-table__team-name" to={`/equipos/${row.teamId}`}>
-                        {team?.name ?? row.teamId}
-                      </Link>
-                      {leader && full && <span className="standings-table__leader">Líder</span>}
-                    </span>
-                  </th>
-                  <td className="standings-table__num">{row.played}</td>
-                  {full && (
-                    <>
-                      <td className="standings-table__num standings-table__extra">{row.won}</td>
-                      <td className="standings-table__num standings-table__extra">{row.drawn}</td>
-                      <td className="standings-table__num standings-table__extra">{row.lost}</td>
-                      <td className="standings-table__num standings-table__extra">{row.goalsFor}</td>
-                      <td className="standings-table__num standings-table__extra">{row.goalsAgainst}</td>
-                    </>
-                  )}
-                  <td
-                    className={`standings-table__num standings-table__diff ${full ? diffClass(row.goalDifference) : ''}`.trim()}
-                  >
-                    {formatDiff(row.goalDifference)}
-                  </td>
-                  <td className="standings-table__num standings-table__points">{row.points}</td>
-                  {full && (
-                    <td className="standings-table__form standings-table__extra">
-                      <FormGuide form={row.form} size={22} />
-                    </td>
-                  )}
-                </tr>
-              );
-            })}
+            {rows.map((row) => (
+              <StandingsRow key={row.teamId} row={row} full={full} highlighted={row.teamId === highlightTeamId} />
+            ))}
           </tbody>
         </table>
       </div>
@@ -163,4 +75,102 @@ function diffClass(value) {
   if (value > 0) return 'standings-table__diff--positive';
   if (value < 0) return 'standings-table__diff--negative';
   return '';
+}
+
+// Cabecera de la tabla; en la forma completa añade G/E/P/GF/GC y «Últimos 5».
+function StandingsHead({ full }) {
+  return (
+    <thead>
+      <tr>
+        <th scope="col" className="standings-table__pos">
+          #
+        </th>
+        <th scope="col" className="standings-table__team">
+          Equipo
+        </th>
+        <th scope="col" className="standings-table__num">
+          <abbr title="Partidos jugados">PJ</abbr>
+        </th>
+        {full && (
+          <>
+            <th scope="col" className="standings-table__num standings-table__extra">
+              <abbr title="Ganados">G</abbr>
+            </th>
+            <th scope="col" className="standings-table__num standings-table__extra">
+              <abbr title="Empatados">E</abbr>
+            </th>
+            <th scope="col" className="standings-table__num standings-table__extra">
+              <abbr title="Perdidos">P</abbr>
+            </th>
+            <th scope="col" className="standings-table__num standings-table__extra">
+              <abbr title="Goles a favor">GF</abbr>
+            </th>
+            <th scope="col" className="standings-table__num standings-table__extra">
+              <abbr title="Goles en contra">GC</abbr>
+            </th>
+          </>
+        )}
+        <th scope="col" className="standings-table__num standings-table__diff">
+          <abbr title="Diferencia de goles">DG</abbr>
+        </th>
+        <th scope="col" className="standings-table__num standings-table__points">
+          <abbr title="Puntos">PTS</abbr>
+        </th>
+        {full && (
+          <th scope="col" className="standings-table__form standings-table__extra">
+            Últimos 5
+          </th>
+        )}
+      </tr>
+    </thead>
+  );
+}
+
+// Fila de un equipo; `highlighted` la resalta (p. ej. el equipo de la ficha que se está viendo).
+function StandingsRow({ row, full, highlighted }) {
+  const team = row.team ?? getTeam(row.teamId);
+  const leader = row.position === 1;
+  const zone = full ? getStandingsZone(row.position) : undefined;
+  const rowClasses = [
+    'standings-table__row',
+    leader && 'standings-table__row--leader',
+    zone && `standings-table__row--${zone.id}`,
+    highlighted && 'standings-table__row--highlight',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <tr className={rowClasses}>
+      <td className="standings-table__pos">{row.position}</td>
+      <th scope="row" className="standings-table__team">
+        <span className="standings-table__team-cell">
+          <Crest team={team} size={full ? 28 : 24} />
+          <Link className="standings-table__team-name" to={`/equipos/${row.teamId}`}>
+            {team?.name ?? row.teamId}
+          </Link>
+          {leader && full && <span className="standings-table__leader">Líder</span>}
+        </span>
+      </th>
+      <td className="standings-table__num">{row.played}</td>
+      {full && (
+        <>
+          <td className="standings-table__num standings-table__extra">{row.won}</td>
+          <td className="standings-table__num standings-table__extra">{row.drawn}</td>
+          <td className="standings-table__num standings-table__extra">{row.lost}</td>
+          <td className="standings-table__num standings-table__extra">{row.goalsFor}</td>
+          <td className="standings-table__num standings-table__extra">{row.goalsAgainst}</td>
+        </>
+      )}
+      <td className={`standings-table__num standings-table__diff ${full ? diffClass(row.goalDifference) : ''}`.trim()}>
+        {formatDiff(row.goalDifference)}
+      </td>
+      <td className="standings-table__num standings-table__points">{row.points}</td>
+      {full && (
+        <td className="standings-table__form standings-table__extra">
+          <FormGuide form={row.form} size={22} />
+        </td>
+      )}
+    </tr>
+  );
 }

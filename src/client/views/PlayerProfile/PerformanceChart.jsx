@@ -3,6 +3,12 @@ import Select from '../../components/Select/Select.jsx';
 import { SEASON } from '../../data/mockData.js';
 import { formatNumber } from './format.js';
 
+// Color de la barra: la última jornada en oro fuerte, las notas ≥ 8 en oro suave y el resto en verde
+function barTone(value, isLast) {
+  if (isLast) return 'gold';
+  return value >= 8 ? 'gold-soft' : 'win';
+}
+
 // Rendimiento por jornada: valoración del jugador en cada partido (oro ≥ 8, verde por debajo,
 // la última jornada en oro fuerte) y línea de media. Si no hay valoraciones por jornada, lo dice.
 export default function PerformanceChart({ player, isMobile }) {
@@ -13,7 +19,7 @@ export default function PerformanceChart({ player, isMobile }) {
   const data = ratings.map((value, i) => ({
     label: `J${i + 1}`,
     value,
-    tone: i + 1 === lastRound ? 'gold' : value >= 8 ? 'gold-soft' : 'win',
+    tone: barTone(value, i + 1 === lastRound),
   }));
 
   // Escala del mockup (6–9); se amplía solo si alguna nota se sale

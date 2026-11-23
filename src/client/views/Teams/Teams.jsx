@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { useUserData } from '../../context/UserDataContext.jsx';
 import Tabs from '../../components/Tabs/Tabs.jsx';
-import TextField from '../../components/TextField/TextField.jsx';
-import Select from '../../components/Select/Select.jsx';
+import LeagueSeasonFilters from '../../components/LeagueSeasonFilters/LeagueSeasonFilters.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
+import usePagedList from '../../hooks/usePagedList.js';
 import { SEASON } from '../../data/mockData.js';
 import { TEAM_SORTS, PLAYER_SORTS, getTeamRows, getPlayerRows } from './teamsData.js';
 import TeamGrid from './TeamGrid.jsx';
 import PlayerList from './PlayerList.jsx';
-import searchIcon from '../../assets/icon-search-small.svg';
 import './Teams.css';
 
 // 02 · Equipos y jugadores: buscador y fichas de equipos y jugadores (RF2).
@@ -33,21 +32,21 @@ export default function Teams() {
   const [tab, setTab] = useState('teams');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState({ teams: TEAM_SORTS[0].value, players: PLAYER_SORTS[0].value });
-  const [page, setPage] = useState(1);
-  const [mobileCount, setMobileCount] = useState(MOBILE_STEP);
   const { favoriteTeams: favorites, toggleFavoriteTeam } = useUserData();
 
   const rows = tab === 'teams' ? getTeamRows(query, sort.teams) : getPlayerRows(query, sort.players);
-  const totalPages = Math.ceil(rows.length / PER_PAGE[tab]);
-  const pageRows = rows.slice((page - 1) * PER_PAGE[tab], page * PER_PAGE[tab]);
-  const mobileRows = rows.slice(0, mobileCount);
+  const {
+    page,
+    setPage,
+    totalPages,
+    pageItems: pageRows,
+    mobileItems: mobileRows,
+    hasMore,
+    loadMore,
+    resetPaging,
+  } = usePagedList(rows, { perPage: PER_PAGE[tab], mobileStep: MOBILE_STEP });
 
-  // Al cambiar de pestaña, de búsqueda o de orden se vuelve al principio
-  function resetPaging() {
-    setPage(1);
-    setMobileCount(MOBILE_STEP);
-  }
-
+  // Al cambiar de pestaña, de búsqueda o de orden se vuelve al principio (resetPaging)
   function changeTab(value) {
     setTab(value);
     setQuery('');
@@ -64,10 +63,23 @@ export default function Teams() {
     resetPaging();
   }
 
-  const toggleFavorite = toggleFavoriteTeam;
+  const nouns = tab === 'teams' ? ['equipo', 'equipos'] : ['jugador', 'jugadores'];
+  const noun = rows.length === 1 ? nouns[0] : nouns[1];
 
-  const noun =
-    tab === 'teams' ? (rows.length === 1 ? 'equipo' : 'equipos') : rows.length === 1 ? 'jugador' : 'jugadores';
+  let results;
+  if (rows.length === 0) {
+    results = (
+      <p className="teams__empty">
+        No hay {tab === 'teams' ? 'equipos' : 'jugadores'} que coincidan con «{query}».
+      </p>
+    );
+  } else if (tab === 'teams') {
+    results = (
+      <TeamGrid rows={pageRows} mobileRows={mobileRows} favorites={favorites} onToggleFavorite={toggleFavoriteTeam} />
+    );
+  } else {
+    results = <PlayerList rows={pageRows} mobileRows={mobileRows} />;
+  }
 
   return (
     <section className="page teams">
@@ -87,62 +99,18 @@ export default function Teams() {
 
       <Tabs label="Equipos o jugadores" tabs={TABS} active={tab} onChange={changeTab} />
 
-      <form className="teams__filters" role="search" onSubmit={(event) => event.preventDefault()}>
-        <TextField
-          className="teams__search"
-          size="sm"
-          label="Buscar por nombre"
-          hideLabel
-          icon={searchIcon}
-          placeholder="Buscar por nombre…"
-          value={query}
-          onChange={(event) => changeQuery(event.target.value)}
-        />
-        {/* Escritorio «Liga: LaLiga» / «Temporada 2026/27»; móvil, textos cortos como en el mockup */}
-        <Select
-          className="teams__filter teams__desktop-block"
-          size="sm"
-          label="Liga"
-          hideLabel
-          options={[{ value: 'laliga', label: 'Liga: LaLiga' }]}
-        />
-        <Select
-          className="teams__filter teams__desktop-block"
-          size="sm"
-          label="Temporada"
-          hideLabel
-          options={[{ value: SEASON, label: `Temporada ${SEASON}` }]}
-        />
-        <Select
-          className="teams__filter teams__mobile-flex"
-          size="sm"
-          label="Liga"
-          hideLabel
-          options={[{ value: 'laliga', label: 'LaLiga' }]}
-        />
-        <Select
-          className="teams__filter teams__mobile-flex"
-          size="sm"
-          label="Temporada"
-          hideLabel
-          options={[{ value: SEASON, label: SEASON }]}
-        />
-        <Select
-          className="teams__filter teams__filter--sort"
-          size="sm"
-          label="Ordenar"
-          hideLabel
-          options={(tab === 'teams' ? TEAM_SORTS : PLAYER_SORTS).map((item) => ({
-            value: item.value,
-            label: `Ordenar: ${item.label}`,
-          }))}
-          value={sort[tab]}
-          onChange={changeSort}
-        />
-        <Button type="submit" className="teams__submit">
-          Buscar
-        </Button>
-      </form>
+      <LeagueSeasonFilters
+        classPrefix="teams"
+        searchLabel="Buscar por nombre"
+        query={query}
+        onQueryChange={changeQuery}
+        sortOptions={(tab === 'teams' ? TEAM_SORTS : PLAYER_SORTS).map((item) => ({
+          value: item.value,
+          label: `Ordenar: ${item.label}`,
+        }))}
+        sortValue={sort[tab]}
+        onSortChange={changeSort}
+      />
 
       <div className="teams__summary">
         <p className="teams__count" aria-live="polite">
@@ -160,24 +128,12 @@ export default function Teams() {
         )}
       </div>
 
-      {rows.length === 0 ? (
-        <p className="teams__empty">
-          No hay {tab === 'teams' ? 'equipos' : 'jugadores'} que coincidan con «{query}».
-        </p>
-      ) : tab === 'teams' ? (
-        <TeamGrid rows={pageRows} mobileRows={mobileRows} favorites={favorites} onToggleFavorite={toggleFavorite} />
-      ) : (
-        <PlayerList rows={pageRows} mobileRows={mobileRows} />
-      )}
+      {results}
 
       <Pagination className="teams__desktop-flex" page={page} totalPages={totalPages} onChange={setPage} />
 
-      {mobileCount < rows.length && (
-        <Button
-          variant="tertiary"
-          className="teams__more teams__mobile-flex"
-          onClick={() => setMobileCount(mobileCount + MOBILE_STEP)}
-        >
+      {hasMore && (
+        <Button variant="tertiary" className="teams__more teams__mobile-flex" onClick={loadMore}>
           Cargar más
         </Button>
       )}

@@ -25,8 +25,11 @@ const LEAGUES = [
   { id: 'ligue-1', label: 'Ligue 1', short: 'Ligue 1' },
 ];
 
+// Solo esta liga tiene datos
+const DEFAULT_LEAGUE = 'laliga';
+
 export default function Standings() {
-  const [league, setLeague] = useState('laliga');
+  const [league, setLeague] = useState(DEFAULT_LEAGUE);
   const current = LEAGUES.find((item) => item.id === league);
   // undefined = la temporada actual (la elige el servidor)
   const [season, setSeason] = useState();
@@ -69,20 +72,7 @@ export default function Standings() {
       </header>
 
       <div className="standings__toolbar">
-        <div className="standings__chips" role="group" aria-label="Elegir liga">
-          {LEAGUES.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`standings__chip${item.id === league ? ' standings__chip--active' : ''}`}
-              aria-pressed={item.id === league}
-              onClick={() => setLeague(item.id)}
-            >
-              <span className="standings__desktop">{item.label}</span>
-              <span className="standings__mobile">{item.short}</span>
-            </button>
-          ))}
-        </div>
+        <LeagueChips activeId={league} onChange={setLeague} />
 
         <div className="standings__filters">
           <Select
@@ -109,21 +99,48 @@ export default function Standings() {
         </div>
       </div>
 
-      {league === 'laliga' ? (
+      {league === DEFAULT_LEAGUE ? (
         <LaLigaTable data={data} error={error} loading={loading} reload={reload} />
       ) : (
-        <div className="standings__empty">
-          <p className="standings__empty-title">Próximamente</p>
-          <p className="standings__empty-text">
-            Todavía no tenemos la clasificación de la {current.label}: en esta primera versión, FutKingva solo tiene los
-            datos de LaLiga.
-          </p>
-          <button type="button" className="standings__empty-link" onClick={() => setLeague('laliga')}>
-            Ver la clasificación de LaLiga →
-          </button>
-        </div>
+        <ComingSoon leagueName={current.label} onBack={() => setLeague(DEFAULT_LEAGUE)} />
       )}
     </section>
+  );
+}
+
+// Chips para cambiar de liga
+function LeagueChips({ activeId, onChange }) {
+  return (
+    <div className="standings__chips" role="group" aria-label="Elegir liga">
+      {LEAGUES.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          className={`standings__chip${item.id === activeId ? ' standings__chip--active' : ''}`}
+          aria-pressed={item.id === activeId}
+          onClick={() => onChange(item.id)}
+        >
+          <span className="standings__desktop">{item.label}</span>
+          <span className="standings__mobile">{item.short}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Aviso de las ligas de las que todavía no hay datos
+function ComingSoon({ leagueName, onBack }) {
+  return (
+    <div className="standings__empty">
+      <p className="standings__empty-title">Próximamente</p>
+      <p className="standings__empty-text">
+        Todavía no tenemos la clasificación de la {leagueName}: en esta primera versión, FutKingva solo tiene los datos
+        de LaLiga.
+      </p>
+      <button type="button" className="standings__empty-link" onClick={onBack}>
+        Ver la clasificación de LaLiga →
+      </button>
+    </div>
   );
 }
 

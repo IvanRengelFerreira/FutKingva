@@ -2,23 +2,20 @@ import { useState } from 'react';
 import TextField from '../../components/TextField/TextField.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import { PLAYERS, getTeam } from '../../data/mockData.js';
+import { toSearchText } from '../../utils/text.js';
 import searchIcon from '../../assets/icon-search-small.svg';
 
 // Buscador «Buscar jugador…» del comparador: al escribir salen hasta 5 jugadores que coinciden
 // (sin tildes ni mayúsculas) y que todavía no están en la comparativa. Al elegir uno se añade.
 const MAX_RESULTS = 5;
 
-function normalize(text) {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-}
-
 export default function PlayerSearch({ selectedIds, onSelect, autoFocus = false, className = '' }) {
   const [query, setQuery] = useState('');
 
-  const search = normalize(query);
+  const search = toSearchText(query);
   const results = search
     ? Object.values(PLAYERS)
-        .filter((player) => !selectedIds.includes(player.id) && normalize(player.name).includes(search))
+        .filter((player) => !selectedIds.includes(player.id) && toSearchText(player.name).includes(search))
         .slice(0, MAX_RESULTS)
     : [];
 

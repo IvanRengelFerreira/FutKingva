@@ -14,6 +14,10 @@ function opponentName(match, venues) {
   return venue ? `${name} (${venue})` : name;
 }
 
+function formatMinutes(minutes) {
+  return minutes != null ? `${minutes}'` : MISSING;
+}
+
 function Result({ match }) {
   return (
     <span className="player-match__result">
@@ -54,8 +58,7 @@ export default function LastMatches({ player, extras, isMobile }) {
               <div className="player-match-item__info">
                 <p className="player-match-item__name">{opponentName(match, extras.venues)}</p>
                 <p className="player-match-item__stats">
-                  {formatNumber(match.goals)} G · {formatNumber(match.assists)} A ·{' '}
-                  {match.minutes != null ? `${match.minutes}'` : MISSING}
+                  {formatNumber(match.goals)} G · {formatNumber(match.assists)} A · {formatMinutes(match.minutes)}
                 </p>
               </div>
               <Result match={match} />
@@ -106,7 +109,7 @@ export default function LastMatches({ player, extras, isMobile }) {
                   >
                     {formatNumber(match.assists)}
                   </td>
-                  <td className="player-matches__min">{match.minutes != null ? `${match.minutes}'` : MISSING}</td>
+                  <td className="player-matches__min">{formatMinutes(match.minutes)}</td>
                   <td className="player-matches__rating">
                     <Value rating={match.rating} size="sm" />
                   </td>

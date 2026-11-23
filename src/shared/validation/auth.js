@@ -42,27 +42,35 @@ function onlyErrors(errors) {
   return Object.fromEntries(Object.entries(errors).filter(([, message]) => message));
 }
 
+function nameError(name) {
+  const value = text(name).trim();
+  if (!value) return 'Elige un nombre de usuario';
+  if (value.length < NAME_MIN || value.length > NAME_MAX) {
+    return `El nombre tiene que tener entre ${NAME_MIN} y ${NAME_MAX} caracteres`;
+  }
+  return null;
+}
+
+// Al iniciar sesión no se repiten las reglas de una contraseña nueva: solo que no esté vacía ni sea enorme
+function loginPasswordError(password) {
+  const value = text(password);
+  if (!value) return 'Escribe tu contraseña';
+  if (value.length > PASSWORD_MAX) return 'La contraseña no es válida';
+  return null;
+}
+
 /** Iniciar sesión: { email, password } */
 export function validateLogin({ email, password } = {}) {
   return onlyErrors({
     email: emailError(email),
-    password: !text(password)
-      ? 'Escribe tu contraseña'
-      : text(password).length > PASSWORD_MAX
-        ? 'La contraseña no es válida'
-        : null,
+    password: loginPasswordError(password),
   });
 }
 
 /** Registrarse: { name, email, password, repeat, accepted } */
 export function validateRegister({ name, email, password, repeat, accepted } = {}) {
-  const trimmedName = text(name).trim();
   return onlyErrors({
-    name: !trimmedName
-      ? 'Elige un nombre de usuario'
-      : trimmedName.length < NAME_MIN || trimmedName.length > NAME_MAX
-        ? `El nombre tiene que tener entre ${NAME_MIN} y ${NAME_MAX} caracteres`
-        : null,
+    name: nameError(name),
     email: emailError(email),
     password: passwordError(password),
     repeat: text(repeat) !== text(password) ? 'Las contraseñas no coinciden' : null,

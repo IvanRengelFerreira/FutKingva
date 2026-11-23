@@ -73,69 +73,54 @@ function TeamPage({ teamId }) {
         <>
           {row && <TeamStats row={row} />}
           <div className="team-profile__columns">
-            <section className="team-profile__section" aria-labelledby="team-squad-title">
-              <SectionHeader id="team-squad-title" title="Plantilla">
-                {squad.length > 0 && (
-                  <button type="button" className="team-profile__more" onClick={() => setTab('squad')}>
-                    <span className="team-profile__desktop">
-                      {squad.length > 1 ? `Ver los ${squad.length}` : 'Ver plantilla'}
-                    </span>
-                    <span className="team-profile__mobile">{squad.length > 1 ? 'Ver todos' : 'Ver'}</span>
-                    <span aria-hidden="true"> →</span>
-                  </button>
-                )}
-              </SectionHeader>
+            <TeamSection
+              id="team-squad-title"
+              title="Plantilla"
+              action={squad.length > 0 && <SeeSquadButton count={squad.length} onClick={() => setTab('squad')} />}
+            >
               {squad.length > 0 ? (
                 <>
                   <TeamSquadTable players={squad} className="team-profile__desktop-block" />
                   <TeamSquadList players={getTopScorers(team.id, 4)} className="team-profile__mobile-block" />
                 </>
               ) : (
-                <p className="team-profile__empty">Todavía no tenemos la plantilla de este equipo.</p>
+                <EmptySquad />
               )}
-            </section>
+            </TeamSection>
 
             <div className="team-profile__side">
-              <section className="team-profile__section" aria-labelledby="team-upcoming-title">
-                <SectionHeader id="team-upcoming-title" title="Próximos partidos" />
+              <TeamSection id="team-upcoming-title" title="Próximos partidos">
                 <UpcomingMatches matches={upcoming} />
-              </section>
-              <section
-                className="team-profile__section team-profile__desktop-block"
-                aria-labelledby="team-results-title"
-              >
-                <SectionHeader id="team-results-title" title="Últimos resultados" />
+              </TeamSection>
+              <TeamSection id="team-results-title" title="Últimos resultados" className="team-profile__desktop-block">
                 <RecentResults results={results} />
-              </section>
+              </TeamSection>
             </div>
           </div>
         </>
       )}
 
       {tab === 'squad' && (
-        <section className="team-profile__section" aria-labelledby="team-squad-full-title">
-          <SectionHeader id="team-squad-full-title" title="Plantilla" />
+        <TeamSection id="team-squad-full-title" title="Plantilla">
           {squad.length > 0 ? (
             <>
               <TeamSquadTable players={squad} className="team-profile__desktop-block" />
               <TeamSquadList players={squad} className="team-profile__mobile-block" />
             </>
           ) : (
-            <p className="team-profile__empty">Todavía no tenemos la plantilla de este equipo.</p>
+            <EmptySquad />
           )}
-        </section>
+        </TeamSection>
       )}
 
       {tab === 'matches' && (
         <div className="team-profile__columns team-profile__columns--even">
-          <section className="team-profile__section" aria-labelledby="team-upcoming-tab-title">
-            <SectionHeader id="team-upcoming-tab-title" title="Próximos partidos" />
+          <TeamSection id="team-upcoming-tab-title" title="Próximos partidos">
             <UpcomingMatches matches={upcoming} />
-          </section>
-          <section className="team-profile__section" aria-labelledby="team-results-tab-title">
-            <SectionHeader id="team-results-tab-title" title="Últimos resultados" />
+          </TeamSection>
+          <TeamSection id="team-results-tab-title" title="Últimos resultados">
             <RecentResults results={results} />
-          </section>
+          </TeamSection>
         </div>
       )}
 
@@ -143,14 +128,17 @@ function TeamPage({ teamId }) {
         (row ? (
           <>
             <TeamStats row={row} />
-            <section className="team-profile__section" aria-labelledby="team-table-title">
-              <SectionHeader id="team-table-title" title="Clasificación">
+            <TeamSection
+              id="team-table-title"
+              title="Clasificación"
+              action={
                 <Link className="team-profile__more" to="/clasificaciones">
                   Ver completa <span aria-hidden="true">→</span>
                 </Link>
-              </SectionHeader>
+              }
+            >
               <StandingsTable variant="compact" highlightTeamId={team.id} />
-            </section>
+            </TeamSection>
           </>
         ) : (
           <p className="team-profile__empty">No tenemos estadísticas de este equipo.</p>
@@ -173,14 +161,32 @@ function TeamStats({ row }) {
   );
 }
 
-// Título de cada bloque, con un enlace o botón opcional a la derecha
-function SectionHeader({ id, title, children }) {
+// Bloque de la ficha: título (con un enlace o botón opcional a la derecha) y contenido
+function TeamSection({ id, title, action, className = '', children }) {
   return (
-    <div className="team-profile__section-header">
-      <h2 id={id} className="team-profile__section-title">
-        {title}
-      </h2>
+    <section className={['team-profile__section', className].filter(Boolean).join(' ')} aria-labelledby={id}>
+      <div className="team-profile__section-header">
+        <h2 id={id} className="team-profile__section-title">
+          {title}
+        </h2>
+        {action}
+      </div>
       {children}
-    </div>
+    </section>
   );
+}
+
+// Botón del Resumen que lleva a la pestaña Plantilla
+function SeeSquadButton({ count, onClick }) {
+  return (
+    <button type="button" className="team-profile__more" onClick={onClick}>
+      <span className="team-profile__desktop">{count > 1 ? `Ver los ${count}` : 'Ver plantilla'}</span>
+      <span className="team-profile__mobile">{count > 1 ? 'Ver todos' : 'Ver'}</span>
+      <span aria-hidden="true"> →</span>
+    </button>
+  );
+}
+
+function EmptySquad() {
+  return <p className="team-profile__empty">Todavía no tenemos la plantilla de este equipo.</p>;
 }

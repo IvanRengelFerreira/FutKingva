@@ -65,23 +65,31 @@ const SOCIALS = [
 
 const EMPTY_FORM = { name: '', email: '', subject: '', message: '', accepted: false };
 
+// Mensaje de error del correo (null = está bien)
+function emailError(email) {
+  if (!email.trim()) return 'Escribe tu correo electrónico';
+  if (!isValidEmail(email)) return 'El correo no es válido';
+  return null;
+}
+
+// Errores de cada campo del formulario (null = está bien)
+function validateForm(form) {
+  return {
+    name: form.name.trim() ? null : 'Escribe tu nombre',
+    email: emailError(form.email),
+    subject: form.subject ? null : 'Elige un asunto',
+    message: form.message.trim() ? null : 'Escribe tu mensaje',
+    accepted: form.accepted ? null : 'Tienes que aceptar la política de privacidad',
+  };
+}
+
 export default function Contact() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitted, setSubmitted] = useState(false); // Ya ha pulsado «Enviar»: se enseñan los errores
   const [sent, setSent] = useState(false);
 
   // Errores de cada campo (null = está bien); se calculan siempre y se enseñan tras pulsar «Enviar»
-  const errors = {
-    name: !form.name.trim() ? 'Escribe tu nombre' : null,
-    email: !form.email.trim()
-      ? 'Escribe tu correo electrónico'
-      : !isValidEmail(form.email)
-        ? 'El correo no es válido'
-        : null,
-    subject: !form.subject ? 'Elige un asunto' : null,
-    message: !form.message.trim() ? 'Escribe tu mensaje' : null,
-    accepted: !form.accepted ? 'Tienes que aceptar la política de privacidad' : null,
-  };
+  const errors = validateForm(form);
   const shown = (field) => (submitted ? errors[field] : null);
 
   function change(field, value) {

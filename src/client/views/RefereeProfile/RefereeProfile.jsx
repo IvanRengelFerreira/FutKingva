@@ -8,6 +8,7 @@ import Crest from '../../components/Crest/Crest.jsx';
 import CardCount from '../Referees/CardCount.jsx';
 import { formatDecimal } from '../Referees/format.js';
 import { getReferee, getTeam, LEAGUE_CARDS_PER_MATCH, SEASON } from '../../data/mockData.js';
+import { describeLeagueComparison, countSeasons, buildMeta, toChartData, tableName } from './refereeData.js';
 import './RefereeProfile.css';
 
 // 07 · Ficha de árbitro: cabecera con sus tarjetas por partido frente a la media de LaLiga, indicadores,
@@ -17,8 +18,6 @@ import './RefereeProfile.css';
 // enseñan un aviso en vez de inventar partidos.
 // Diseño: Figma › Mockups › 07 · Ficha de árbitro
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=51-743
-
-const CURRENT_YEAR = 2026;
 
 export default function RefereeProfile() {
   const { refereeId } = useParams();
@@ -35,28 +34,11 @@ export default function RefereeProfile() {
     );
   }
 
-  const difference = Math.round((referee.cardsPerMatch / LEAGUE_CARDS_PER_MATCH - 1) * 100);
-  const comparison =
-    difference === 0
-      ? `En la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`
-      : `${difference > 0 ? '+' : '−'}${Math.abs(difference)} % ${difference > 0 ? 'sobre' : 'bajo'} la media de LaLiga (${formatDecimal(LEAGUE_CARDS_PER_MATCH)})`;
-  const seasons = referee.since ? CURRENT_YEAR - referee.since : null;
-  const meta = [
-    'España',
-    referee.age && `${referee.age} años`,
-    referee.committeeAdjective && `Comité ${referee.committeeAdjective}`,
-  ].filter(Boolean);
+  const comparison = describeLeagueComparison(referee.cardsPerMatch, LEAGUE_CARDS_PER_MATCH);
+  const seasons = countSeasons(referee.since);
+  const meta = buildMeta(referee);
   const matches = referee.cardsByMatch ?? [];
-  // El gráfico va de la jornada más antigua a la más reciente; la tabla, al revés
-  const chartData = [...matches]
-    .sort((a, b) => a.round - b.round)
-    .map((match) => ({
-      label: `J${match.round}`,
-      segments: [
-        { value: match.yellow, tone: 'yellow-card' },
-        { value: match.red, tone: 'red-card' },
-      ],
-    }));
+  const chartData = toChartData(matches);
 
   return (
     <section className="page referee-profile">
@@ -125,28 +107,10 @@ export default function RefereeProfile() {
           {chartData.length > 0 ? (
             <div className="referee-profile__chart">
               <div className="referee-profile__desktop-block">
-                <BarChart
-                  label={`Tarjetas por jornada de ${referee.name}`}
-                  data={chartData}
-                  max={8}
-                  gridSteps={4}
-                  average={LEAGUE_CARDS_PER_MATCH}
-                  averageTone="neutral"
-                  height={230}
-                  barWidth={72}
-                />
+                <CardsChart name={referee.name} data={chartData} height={230} barWidth={72} />
               </div>
               <div className="referee-profile__mobile-block">
-                <BarChart
-                  label={`Tarjetas por jornada de ${referee.name}`}
-                  data={chartData}
-                  max={8}
-                  gridSteps={4}
-                  average={LEAGUE_CARDS_PER_MATCH}
-                  averageTone="neutral"
-                  height={150}
-                  barWidth={36}
-                />
+                <CardsChart name={referee.name} data={chartData} height={150} barWidth={36} />
               </div>
               <ul className="referee-profile__legend">
                 <li className="referee-profile__legend-item referee-profile__legend-item--yellow">Amarillas</li>
@@ -225,12 +189,6 @@ export default function RefereeProfile() {
   );
 }
 
-// Nombre del equipo en la tabla de escritorio: el completo, salvo los muy largos («Atlético de Madrid» → «Atlético»)
-function tableName(team) {
-  if (!team) return '';
-  return team.name.length > 14 ? team.shortName : team.name;
-}
-
 // Etiqueta de indicador larga en escritorio y corta en móvil («Partidos dirigidos» / «Partidos»)
 function Label({ long, short }) {
   return (
@@ -238,5 +196,21 @@ function Label({ long, short }) {
       <span className="referee-profile__desktop">{long}</span>
       <span className="referee-profile__mobile">{short}</span>
     </>
+  );
+}
+
+// Gráfico de tarjetas por jornada; escritorio y móvil solo cambian de tamaño
+function CardsChart({ name, data, height, barWidth }) {
+  return (
+    <BarChart
+      label={`Tarjetas por jornada de ${name}`}
+      data={data}
+      max={8}
+      gridSteps={4}
+      average={LEAGUE_CARDS_PER_MATCH}
+      averageTone="neutral"
+      height={height}
+      barWidth={barWidth}
+    />
   );
 }

@@ -1,3 +1,4 @@
+import { removeAccents } from '../../utils/text.js';
 import { STATS, statValue, formatStat, bestIndexes, compactName } from './stats.js';
 
 // Tabla «Estadísticas lado a lado»: una columna por jugador con su color (serie 1–4).
@@ -63,6 +64,6 @@ export default function StatsTable({ players, mode }) {
 
 // «Jude Bellingham» → «JB» (sin tildes, como en el mockup)
 function initials(name) {
-  const words = name.normalize('NFD').replace(/[̀-ͯ]/g, '').split(' ');
+  const words = removeAccents(name).split(' ');
   return (words.length === 1 ? words[0].slice(0, 2) : words[0][0] + words[1][0]).toUpperCase();
 }

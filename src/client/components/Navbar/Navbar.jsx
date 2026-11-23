@@ -5,6 +5,7 @@ import MobileMenu from '../MobileMenu/MobileMenu.jsx';
 import UserMenu from './UserMenu.jsx';
 import Notifications from '../Notifications/Notifications.jsx';
 import { DESKTOP_QUERY } from './breakpoints.js';
+import { MAIN_LINKS, MY_ZONE_LINKS, navLinkClass } from '../navigation.js';
 import { useSession } from '../../context/SessionContext.jsx';
 import logo from '../../assets/logo.svg';
 import logoMobile from '../../assets/logo-mobile.svg';
@@ -12,18 +13,8 @@ import searchIcon from '../../assets/icon-search.svg';
 import searchIconLight from '../../assets/icon-search-light.svg';
 import menuIcon from '../../assets/icon-menu.svg';
 
-// Enlaces del menú principal (mismo orden que en Figma).
-// Las rutas están definidas en App.jsx.
-// «also»: otras rutas que también marcan el enlace como activo (la ficha de jugador es de esa sección).
-const LINKS = [
-  { label: 'Inicio', path: '/' },
-  { label: 'Equipos y jugadores', path: '/equipos', also: '/jugadores' },
-  { label: 'Clasificaciones', path: '/clasificaciones' },
-  { label: 'Árbitros', path: '/arbitros' },
-  { label: 'Análisis', path: '/analisis' },
-  { label: 'Comparador', path: '/comparador' },
-  { label: 'Mi equipo ideal', path: '/equipo-ideal' },
-];
+// Enlaces del menú principal: los mismos que en el MobileMenu (ver navigation.js).
+const LINKS = [...MAIN_LINKS, ...MY_ZONE_LINKS];
 
 // Navbar: versión de escritorio y, por debajo de 1440 px, versión móvil con ☰.
 // Sin sesión: «Iniciar sesión» y «Registrarse». Con sesión: campana y usuario (ver SessionContext).
@@ -94,11 +85,7 @@ export default function Navbar() {
             key={link.path}
             to={link.path}
             end={link.path === '/'}
-            className={({ isActive }) =>
-              isActive || (link.also && pathname.startsWith(link.also))
-                ? 'navbar__link navbar__link--active'
-                : 'navbar__link'
-            }
+            className={navLinkClass('navbar__link', link, pathname)}
           >
             {link.label}
           </NavLink>

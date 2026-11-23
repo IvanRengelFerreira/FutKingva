@@ -1,5 +1,6 @@
 import './Illustration.css';
 import { getTeam } from '../../data/mockData.js';
+import { toKey } from '../../utils/text.js';
 
 // Imagen «dibujada» para los artículos (la web no usa fotos). Hay una por categoría:
 //   Táctica → medio campo con una jugada en oro (y, si se quiere, una cifra en un hexágono)
@@ -186,9 +187,4 @@ function label(key, { score, home, away }) {
     return `Ilustración: ${getTeam(home ?? 'real-madrid')?.name} contra ${getTeam(away ?? 'barcelona')?.name}`;
   if (key === 'datos') return 'Ilustración: gráfico de barras';
   return 'Ilustración: jugada dibujada sobre el campo';
-}
-
-// «Crónica» → «cronica»
-function toKey(text = '') {
-  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }

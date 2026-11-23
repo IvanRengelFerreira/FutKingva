@@ -77,41 +77,17 @@ export default function CandidateList({ slot, assigned, onAdd }) {
           </li>
         )}
         {visible.map((player, i) => {
-          const team = getTeam(player.teamId);
           const fits = slot ? fitsSlot(player, slot) : false;
-          const goals = player.goals ?? '—';
-          const classes = [
-            'ideal-team-candidate',
-            i === 0 && fits && 'ideal-team-candidate--first',
-            !fits && 'ideal-team-candidate--disabled',
-            !showAll && i >= PAGE_SIZE_MOBILE && 'ideal-team-candidate--extra',
-          ]
-            .filter(Boolean)
-            .join(' ');
           return (
-            <li key={player.id} className={classes}>
-              <Avatar name={player.name} size={44} className="ideal-team-candidate__avatar" />
-              <div className="ideal-team-candidate__text">
-                <p className="ideal-team-candidate__name">{player.name}</p>
-                <p className="ideal-team-candidate__meta">
-                  <span className="ideal-team__desktop">{team?.name ?? '—'}</span>
-                  <span className="ideal-team__mobile">{team?.code ?? '—'}</span>
-                  {' · '}
-                  {fits ? position : player.position} · {goals} {goals === 1 ? 'gol' : 'goles'}
-                </p>
-              </div>
-              <Rating value={player.rating} />
-              <button
-                type="button"
-                className="ideal-team-candidate__add"
-                onClick={() => onAdd(player.id)}
-                disabled={!fits}
-                aria-label={fits ? `Añadir a ${player.name}` : `${player.name} no encaja en esta posición`}
-              >
-                <span className="ideal-team-candidate__plus ideal-team__desktop" aria-hidden="true" />
-                <span className="ideal-team__mobile">+ Añadir</span>
-              </button>
-            </li>
+            <Candidate
+              key={player.id}
+              player={player}
+              fits={fits}
+              position={position}
+              highlighted={i === 0 && fits}
+              mobileExtra={!showAll && i >= PAGE_SIZE_MOBILE}
+              onAdd={onAdd}
+            />
           );
         })}
       </ul>
@@ -126,5 +102,45 @@ export default function CandidateList({ slot, assigned, onAdd }) {
         </button>
       )}
     </>
+  );
+}
+
+// Fila de un candidato: «fits» indica si encaja en la posición activa; si no, sale deshabilitado
+function Candidate({ player, fits, position, highlighted, mobileExtra, onAdd }) {
+  const team = getTeam(player.teamId);
+  const goals = player.goals ?? '—';
+  const classes = [
+    'ideal-team-candidate',
+    highlighted && 'ideal-team-candidate--first',
+    !fits && 'ideal-team-candidate--disabled',
+    mobileExtra && 'ideal-team-candidate--extra',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <li className={classes}>
+      <Avatar name={player.name} size={44} className="ideal-team-candidate__avatar" />
+      <div className="ideal-team-candidate__text">
+        <p className="ideal-team-candidate__name">{player.name}</p>
+        <p className="ideal-team-candidate__meta">
+          <span className="ideal-team__desktop">{team?.name ?? '—'}</span>
+          <span className="ideal-team__mobile">{team?.code ?? '—'}</span>
+          {' · '}
+          {fits ? position : player.position} · {goals} {goals === 1 ? 'gol' : 'goles'}
+        </p>
+      </div>
+      <Rating value={player.rating} />
+      <button
+        type="button"
+        className="ideal-team-candidate__add"
+        onClick={() => onAdd(player.id)}
+        disabled={!fits}
+        aria-label={fits ? `Añadir a ${player.name}` : `${player.name} no encaja en esta posición`}
+      >
+        <span className="ideal-team-candidate__plus ideal-team__desktop" aria-hidden="true" />
+        <span className="ideal-team__mobile">+ Añadir</span>
+      </button>
+    </li>
   );
 }
