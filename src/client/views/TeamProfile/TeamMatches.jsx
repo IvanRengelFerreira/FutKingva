@@ -1,9 +1,9 @@
 import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import FormGuide from '../../components/FormGuide/FormGuide.jsx';
-import { getTeam } from '../../data/mockData.js';
+import { matchDateParts } from './teamData.js';
 
-// Partidos del equipo en su ficha.
+// Partidos del equipo en su ficha (los de la API: cada partido trae sus equipos, el rival y, si se ha jugado, el marcador).
 //   UpcomingMatches → tarjetas de «Próximos partidos»: fecha en un cuadradito, «Local – Visitante»,
 //                     «Dom · 21:00 · LaLiga · J9» y el escudo del rival
 //   RecentResults   → tabla de «Últimos resultados»: rival (C casa / F fuera), V/E/D + marcador y fecha
@@ -17,30 +17,27 @@ export function UpcomingMatches({ matches }) {
   return (
     <ul className="team-upcoming">
       {matches.map((match) => {
-        const home = getTeam(match.homeId);
-        const away = getTeam(match.awayId);
+        const date = matchDateParts(match.date);
         return (
-          <li key={`${match.date}-${match.homeId}`} className="team-upcoming__item">
+          <li key={match.id} className="team-upcoming__item">
             <span className="team-upcoming__date">
-              <span className="team-upcoming__day">{match.day}</span>
-              <span className="team-upcoming__month">{match.month}</span>
+              <span className="team-upcoming__day">{date.day}</span>
+              <span className="team-upcoming__month">{date.month}</span>
             </span>
             <span className="team-upcoming__text">
               <span className="team-upcoming__teams">
-                {home?.name} – {away?.name}
+                {match.homeTeam.name} – {match.awayTeam.name}
               </span>
               <span className="team-upcoming__meta">
-                {[match.weekday, match.time, match.competition, match.round && `J${match.round}`]
-                  .filter(Boolean)
-                  .join(' · ')}
+                {[date.weekday, date.time, 'LaLiga', match.round && `J${match.round}`].filter(Boolean).join(' · ')}
               </span>
             </span>
             <Link
               className="team-upcoming__opponent"
-              to={`/equipos/${match.opponentId}`}
-              aria-label={`Ficha de ${getTeam(match.opponentId)?.name}`}
+              to={`/equipos/${match.opponent.id}`}
+              aria-label={`Ficha de ${match.opponent.name}`}
             >
-              <Crest teamId={match.opponentId} size={36} />
+              <Crest team={match.opponent} size={36} />
             </Link>
           </li>
         );
@@ -51,12 +48,7 @@ export function UpcomingMatches({ matches }) {
 
 export function RecentResults({ results }) {
   if (results.length === 0) {
-    // Solo hay marcadores de algunos partidos (mockData.js): la forma de arriba resume sus últimos resultados
-    return (
-      <p className="team-profile__empty">
-        Todavía no tenemos el detalle de sus partidos. Su racha está en «Forma», arriba.
-      </p>
-    );
+    return <p className="team-profile__empty">Todavía no ha jugado ningún partido esta temporada.</p>;
   }
 
   return (
@@ -76,14 +68,14 @@ export function RecentResults({ results }) {
         </thead>
         <tbody>
           {results.map((match) => {
-            const opponent = getTeam(match.opponentId);
+            const { opponent } = match;
             return (
-              <tr key={`${match.date}-${match.opponentId}`}>
+              <tr key={match.id}>
                 <th scope="row">
-                  <Link className="team-results__rival" to={`/equipos/${match.opponentId}`}>
-                    <Crest teamId={match.opponentId} size={26} />
+                  <Link className="team-results__rival" to={`/equipos/${opponent.id}`}>
+                    <Crest team={opponent} size={26} />
                     <span>
-                      {opponent?.shortName ?? opponent?.name}{' '}
+                      {opponent.shortName}{' '}
                       <abbr title={match.venue === 'C' ? 'En casa' : 'Fuera'}>({match.venue})</abbr>
                     </span>
                   </Link>
@@ -96,7 +88,7 @@ export function RecentResults({ results }) {
                     </span>
                   </span>
                 </td>
-                <td className="team-results__date">{match.date}</td>
+                <td className="team-results__date">{matchDateParts(match.date).dayMonth}</td>
               </tr>
             );
           })}

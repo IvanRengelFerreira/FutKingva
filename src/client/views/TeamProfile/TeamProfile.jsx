@@ -4,19 +4,24 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import StatCard from '../../components/StatCard/StatCard.jsx';
 import StandingsTable from '../../components/StandingsTable/StandingsTable.jsx';
-import { getTeam, TEAM_PROFILE_EXTRAS } from '../../data/mockData.js';
+import LoadingState from '../../components/LoadingState/LoadingState.jsx';
+import ErrorState from '../../components/ErrorState/ErrorState.jsx';
+import { useApi } from '../../services/useApi.js';
+import { getTeam } from '../../services/teams.js';
 import TeamHero from './TeamHero.jsx';
 import { TeamSquadTable, TeamSquadList } from './TeamSquad.jsx';
 import { UpcomingMatches, RecentResults } from './TeamMatches.jsx';
-import { getStandingsRow, getSquad, getTopScorers, getUpcomingMatches, getRecentResults } from './teamData.js';
+import { getTopScorers } from './teamData.js';
 import './TeamProfile.css';
 
 // 03 · Ficha de equipo: cabecera del equipo, indicadores, plantilla, próximos partidos y últimos resultados.
-// El equipo sale de la dirección: /equipos/real-madrid → TEAMS['real-madrid'] (sirve para cualquier equipo).
+// El equipo sale de la dirección (/equipos/16) y sus datos, de la API (GET /api/teams/16), de la temporada actual.
 // Pestañas: Resumen (lo del mockup) · Plantilla (toda) · Partidos · Estadísticas (indicadores y clasificación).
 // En móvil, el Resumen enseña la plantilla como lista corta (los 4 máximos goleadores) y no los últimos resultados.
 // Diseño: Figma › Mockups › 03 · Ficha de equipo
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=44-154
+
+const MOBILE_SQUAD_COUNT = 4; // Lista corta del Resumen en móvil
 
 const TABS = [
   { id: 'summary', label: 'Resumen' },
@@ -32,24 +37,18 @@ export default function TeamProfile() {
 }
 
 function TeamPage({ teamId }) {
+  const { data, error, loading, reload } = useApi((signal) => getTeam(teamId, { signal }), [teamId]);
+
+  if (loading) return <LoadingState label="Cargando equipo…" />;
+  // 400 (dirección sin número) o 404 (no existe): la página de «no encontrado», no el aviso de error
+  if ([400, 404].includes(error?.status)) return <TeamNotFound />;
+  if (error) return <ErrorState error={error} title="No se ha podido cargar el equipo" onRetry={reload} />;
+  return <TeamContent data={data} />;
+}
+
+function TeamContent({ data }) {
   const [tab, setTab] = useState('summary');
-  const team = getTeam(teamId);
-
-  if (!team) {
-    return (
-      <section className="placeholder">
-        <h1>Equipo no encontrado</h1>
-        <p>
-          No tenemos ningún equipo con esa dirección. <Link to="/equipos">Ver todos los equipos</Link>
-        </p>
-      </section>
-    );
-  }
-
-  const row = getStandingsRow(team.id);
-  const squad = getSquad(team.id);
-  const upcoming = getUpcomingMatches(team.id);
-  const results = getRecentResults(team.id);
+  const { team, standing: row, table, squad, upcoming, results } = data;
 
   return (
     <section className="page team-profile">
@@ -65,7 +64,7 @@ function TeamPage({ teamId }) {
         ]}
       />
 
-      <TeamHero team={team} extras={TEAM_PROFILE_EXTRAS[team.id]} row={row} />
+      <TeamHero team={team} row={row} />
 
       <Tabs label={`Secciones de ${team.name}`} tabs={TABS} active={tab} onChange={setTab} />
 
@@ -81,7 +80,10 @@ function TeamPage({ teamId }) {
               {squad.length > 0 ? (
                 <>
                   <TeamSquadTable players={squad} className="team-profile__desktop-block" />
-                  <TeamSquadList players={getTopScorers(team.id, 4)} className="team-profile__mobile-block" />
+                  <TeamSquadList
+                    players={getTopScorers(squad, MOBILE_SQUAD_COUNT)}
+                    className="team-profile__mobile-block"
+                  />
                 </>
               ) : (
                 <EmptySquad />
@@ -137,7 +139,7 @@ function TeamPage({ teamId }) {
                 </Link>
               }
             >
-              <StandingsTable variant="compact" highlightTeamId={team.id} />
+              <StandingsTable standings={table} variant="compact" highlightTeamId={team.id} />
             </TeamSection>
           </>
         ) : (
@@ -184,6 +186,17 @@ function SeeSquadButton({ count, onClick }) {
       <span className="team-profile__mobile">{count > 1 ? 'Ver todos' : 'Ver'}</span>
       <span aria-hidden="true"> →</span>
     </button>
+  );
+}
+
+function TeamNotFound() {
+  return (
+    <section className="placeholder">
+      <h1>Equipo no encontrado</h1>
+      <p>
+        No tenemos ningún equipo con esa dirección. <Link to="/equipos">Ver todos los equipos</Link>
+      </p>
+    </section>
   );
 }
 

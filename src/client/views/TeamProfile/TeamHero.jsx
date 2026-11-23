@@ -12,7 +12,7 @@ import starIcon from '../../assets/icon-star.svg';
 // «Seguir equipo» sin sesión lleva a Acceso (y al entrar vuelve aquí); con sesión lo añade a los favoritos de Mi perfil.
 // Diseño: Figma › Mockups › 03 · Ficha de equipo › Cabecera de ficha
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=44-193
-export default function TeamHero({ team, extras, row }) {
+export default function TeamHero({ team, row }) {
   const { user } = useSession();
   const { pathname } = useLocation();
   const { favoriteTeams, toggleFavoriteTeam } = useUserData();
@@ -21,11 +21,11 @@ export default function TeamHero({ team, extras, row }) {
   const eyebrow = row ? `${team.competition} · ${row.position}.º` : team.competition;
   const coachSurname = team.coach?.split(' ').at(-1);
   const meta = [
-    extras?.stadium,
+    team.venue,
     team.coach && `Entrenador: ${team.coach}`,
-    extras?.founded && `Fundado en ${extras.founded}`,
+    team.founded && `Fundado en ${team.founded}`,
   ].filter(Boolean);
-  const metaShort = [extras?.stadiumShort, coachSurname].filter(Boolean);
+  const metaShort = [team.venue, coachSurname].filter(Boolean);
 
   const followProps = user
     ? { onClick: () => toggleFavoriteTeam(team.id), 'aria-pressed': following }
@@ -33,8 +33,8 @@ export default function TeamHero({ team, extras, row }) {
 
   return (
     <header className="team-hero">
-      <Crest teamId={team.id} size={128} className="team-hero__crest team-hero__crest--desktop" />
-      <Crest teamId={team.id} size={92} className="team-hero__crest team-hero__crest--mobile" />
+      <Crest team={team} size={128} className="team-hero__crest team-hero__crest--desktop" />
+      <Crest team={team} size={92} className="team-hero__crest team-hero__crest--mobile" />
 
       <div className="team-hero__text">
         <p className="team-hero__eyebrow">{eyebrow}</p>
