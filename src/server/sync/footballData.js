@@ -9,21 +9,69 @@ export const SYNC_TX_TIMEOUT_MS = 20000;
 
 const BASE_URL = 'https://api.football-data.org/v4';
 // Plan gratuito: 10 peticiones/minuto → 6,5 s entre peticiones para no chocar con el límite
+const REQUESTS_PER_MINUTE_LIMIT = 10;
 const MIN_REQUEST_GAP_MS = 6500;
 const MAX_RETRIES = 2;
 const DEFAULT_RETRY_AFTER_S = 60;
 const RETRY_BUFFER_S = 1;
 const REQUEST_TIMEOUT_MS = 15000;
+const MS_PER_SECOND = 1000;
+const HEADER_AVAILABLE_MINUTE = 'x-requests-available-minute';
+const HEADER_RESET_SECONDS = 'x-requestcounter-reset';
 
 // Compartido entre peticiones del servidor para respetar el límite aunque se pulsen dos botones seguidos
 let lastRequestAt = 0;
+// Última cuota conocida en memoria a partir de las cabeceras de football-data.org (null hasta la primera petición)
+let lastQuota = null;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function parseHeaderInt(headers, name) {
+  const raw = headers.get(name);
+  if (raw == null || raw.trim() === '') return null;
+  const value = Number(raw);
+  return Number.isInteger(value) && value >= 0 ? value : null;
+}
+
+function recordQuota(response, now = Date.now()) {
+  const available = parseHeaderInt(response.headers, HEADER_AVAILABLE_MINUTE);
+  if (available === null) return;
+
+  const resetSeconds = parseHeaderInt(response.headers, HEADER_RESET_SECONDS);
+  const resetAt = resetSeconds !== null ? new Date(now + resetSeconds * MS_PER_SECOND).toISOString() : null;
+  lastQuota = {
+    available,
+    limit: REQUESTS_PER_MINUTE_LIMIT,
+    resetAt,
+    updatedAt: new Date(now).toISOString(),
+  };
+}
+
+/**
+ * Devuelve la última cuota conocida de football-data.org sin gastar peticiones.
+ * Si ya pasó `resetAt`, el contador del minuto se habrá reiniciado al límite completo.
+ */
+export function currentQuota(now = Date.now()) {
+  if (!lastQuota) {
+    return { available: null, limit: REQUESTS_PER_MINUTE_LIMIT, resetAt: null, updatedAt: null };
+  }
+
+  if (lastQuota.resetAt && Date.parse(lastQuota.resetAt) <= now) {
+    return {
+      available: lastQuota.limit,
+      limit: lastQuota.limit,
+      resetAt: null,
+      updatedAt: lastQuota.updatedAt,
+    };
+  }
+
+  return { ...lastQuota };
+}
+
 function retryWaitMs(response) {
-  const header = Number(response.headers.get('x-requestcounter-reset'));
-  const seconds = Number.isFinite(header) && header > 0 ? header : DEFAULT_RETRY_AFTER_S;
-  return (seconds + RETRY_BUFFER_S) * 1000;
+  const header = parseHeaderInt(response.headers, HEADER_RESET_SECONDS);
+  const seconds = header !== null && header > 0 ? header : DEFAULT_RETRY_AFTER_S;
+  return (seconds + RETRY_BUFFER_S) * MS_PER_SECOND;
 }
 
 function httpErrorMessage(status) {
@@ -74,6 +122,7 @@ export function createFootballDataClient(token = process.env.FOOTBALL_ORG_API) {
       requests++;
 
       const response = await fetchOnce(path, token);
+      recordQuota(response);
 
       if (response.status === 429 && attempt < MAX_RETRIES) {
         console.warn(`[sync] Límite de football-data.org alcanzado; esperando para reintentar (${path})`);

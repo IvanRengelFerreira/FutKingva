@@ -4,7 +4,7 @@
 import { prisma } from '../db.js';
 import { AppError } from '../errors/AppError.js';
 import { resolveSeason } from '../utils/seasons.js';
-import { FOOTBALL_DATA_SOURCE } from '../sync/footballData.js';
+import { FOOTBALL_DATA_SOURCE, currentQuota } from '../sync/footballData.js';
 import { SYNC_RESOURCES, executeSync } from '../sync/runs.js';
 
 const SYNC_RUN_FIELDS = {
@@ -30,7 +30,7 @@ function formatSyncRun(run, extra = {}) {
   };
 }
 
-/** GET /api/admin/sync → últimas ejecuciones por recurso */
+/** GET /api/admin/sync → últimas ejecuciones por recurso y última cuota conocida */
 export async function list(req, res) {
   const runs = await Promise.all(
     SYNC_RESOURCES.map((resource) =>
@@ -42,10 +42,10 @@ export async function list(req, res) {
     ),
   );
 
-  res.json({ items: runs.filter(Boolean).map((run) => formatSyncRun(run)) });
+  res.json({ items: runs.filter(Boolean).map((run) => formatSyncRun(run)), quota: currentQuota() });
 }
 
-/** POST /api/admin/sync/:resource → ejecuta 'matches' o 'scorers' y devuelve el resultado */
+/** POST /api/admin/sync/:resource → ejecuta 'matches' o 'scorers' y devuelve el resultado y la cuota */
 export async function run(req, res) {
   const { resource } = req.params;
   if (!SYNC_RESOURCES.includes(resource)) {
@@ -56,5 +56,5 @@ export async function run(req, res) {
 
   const { season } = await resolveSeason();
   const { run: finished, skipped } = await executeSync(resource, season);
-  res.json(formatSyncRun(finished, skipped !== undefined ? { skipped } : {}));
+  res.json(formatSyncRun(finished, { ...(skipped !== undefined && { skipped }), quota: currentQuota() }));
 }

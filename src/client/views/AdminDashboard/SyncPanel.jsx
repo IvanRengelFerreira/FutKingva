@@ -11,6 +11,7 @@ import { shortTime, timeAgo } from '../../services/format.js';
 import { getSyncRuns, runSyncResource } from '../../services/sync.js';
 import { useApi } from '../../services/useApi.js';
 import { useFormSubmit } from '../../services/useFormSubmit.js';
+import QuotaBar from './QuotaBar.jsx';
 import './SyncPanel.css';
 
 const RESOURCES = [
@@ -78,13 +79,23 @@ function SyncRunRow({ item, run }) {
   );
 }
 
+function pickNewestQuota(fromFetch, fromAction) {
+  if (!fromAction) return fromFetch ?? null;
+  if (!fromFetch) return fromAction;
+  if (!fromAction.updatedAt) return fromFetch;
+  if (!fromFetch.updatedAt) return fromAction;
+  return Date.parse(fromAction.updatedAt) > Date.parse(fromFetch.updatedAt) ? fromAction : fromFetch;
+}
+
 export default function SyncPanel() {
   const { data, error, loading, reload } = useApi((signal) => getSyncRuns({ signal }), []);
   const { sending, message, submit } = useFormSubmit();
   const [runningResource, setRunningResource] = useState(null);
   const [feedback, setFeedback] = useState('');
+  const [actionQuota, setActionQuota] = useState(null);
 
   const runsByResource = new Map((data?.items ?? []).map((run) => [run.resource, run]));
+  const quota = pickNewestQuota(data?.quota, actionQuota);
 
   function triggerSync(resource) {
     setFeedback('');
@@ -93,6 +104,7 @@ export default function SyncPanel() {
     submit(async () => {
       try {
         const result = await runSyncResource(resource);
+        if (result?.quota) setActionQuota(result.quota);
         setFeedback(buildResultMessage(resource, result));
         reload();
       } catch (err) {
@@ -120,6 +132,8 @@ export default function SyncPanel() {
           Actualiza manualmente los datos de LaLiga desde football-data.org para comprobar la web con resultados al día.
         </p>
       </div>
+
+      {quota && <QuotaBar quota={quota} />}
 
       <div className="admin-sync__actions">
         {RESOURCES.map((item) => (
