@@ -1,48 +1,49 @@
 import BarChart from '../../components/BarChart/BarChart.jsx';
 import Select from '../../components/Select/Select.jsx';
-import { SEASON } from '../../data/mockData.js';
 import { formatNumber } from './format.js';
 
-// Color de la barra: la última jornada en oro fuerte, las notas ≥ 8 en oro suave y el resto en verde
-function barTone(value, isLast) {
+const FULL_MATCH_MINUTES = 85; // Partido completo o casi completo (barra en oro suave)
+const BASE_MAX_MINUTES = 90;
+const GRID_STEPS = 3; // Líneas de guía cada 30 minutos
+
+function barTone(minutes, isLast) {
   if (isLast) return 'gold';
-  return value >= 8 ? 'gold-soft' : 'win';
+  return minutes >= FULL_MATCH_MINUTES ? 'gold-soft' : 'win';
 }
 
-// Rendimiento por jornada: valoración del jugador en cada partido (oro ≥ 8, verde por debajo,
-// la última jornada en oro fuerte) y línea de media. Si no hay valoraciones por jornada, lo dice.
-export default function PerformanceChart({ player, isMobile }) {
-  const ratings = player.ratingsByRound ?? [];
-  const hasData = ratings.length > 0;
-  const lastRound = ratings.length;
+// Minutos jugados en los últimos partidos de la temporada elegida (sustituye al gráfico de valoración por jornada,
+// que no existe en la BD). Orden cronológico de izquierda a derecha, con línea de media.
+export default function PerformanceChart({ player, season, seasons, lastMatches, onSeasonChange, isMobile }) {
+  const ordered = [...lastMatches].reverse();
+  const hasData = ordered.length > 0;
 
-  const data = ratings.map((value, i) => ({
-    label: `J${i + 1}`,
-    value,
-    tone: barTone(value, i + 1 === lastRound),
+  const data = ordered.map((match, index) => ({
+    label: match.round != null ? `J${match.round}` : (match.opponent?.code ?? `P${index + 1}`),
+    value: match.minutes,
+    tone: barTone(match.minutes, index === ordered.length - 1),
   }));
 
-  // Escala del mockup (6–9); se amplía solo si alguna nota se sale
-  const min = hasData ? Math.min(6, Math.floor(Math.min(...ratings))) : 6;
-  const max = hasData ? Math.max(9, Math.ceil(Math.max(...ratings))) : 9;
-  const average = player.rating ?? (hasData ? ratings.reduce((sum, v) => sum + v, 0) / ratings.length : null);
-  const season = isMobile ? SEASON : `Temporada ${SEASON}`;
+  const maxMinutes = hasData ? Math.max(BASE_MAX_MINUTES, ...ordered.map((match) => match.minutes)) : BASE_MAX_MINUTES;
+  const average = hasData ? ordered.reduce((sum, match) => sum + match.minutes, 0) / ordered.length : null;
+  const seasonOptions = seasons.map((item) => ({
+    value: item.year,
+    label: isMobile ? item.label : `Temporada ${item.label}`,
+  }));
 
   return (
     <section className="player-performance" aria-labelledby="player-performance-title">
       <div className="player-section-head">
         <h2 id="player-performance-title" className="player-section-head__title">
-          {isMobile ? 'Rendimiento' : 'Rendimiento por jornada'}
+          {isMobile ? 'Minutos' : 'Minutos por partido'}
         </h2>
         <span className="player-section-head__line" aria-hidden="true" />
-        {/* Solo hay una temporada */}
         <Select
           size="sm"
           label="Temporada"
           hideLabel
-          options={[season]}
-          value={season}
-          onChange={() => {}}
+          options={seasonOptions}
+          value={season.year}
+          onChange={(e) => onSeasonChange(Number(e.target.value))}
           className="player-performance__season"
         />
       </div>
@@ -51,31 +52,32 @@ export default function PerformanceChart({ player, isMobile }) {
         {hasData ? (
           <>
             <BarChart
-              label={`Valoración de ${player.name} por jornada`}
+              label={`Minutos de ${player.name} en los últimos partidos`}
               data={data}
-              min={min}
-              max={max}
-              gridSteps={max - min}
+              min={0}
+              max={maxMinutes}
+              gridSteps={GRID_STEPS}
               average={average}
-              decimals={1}
+              decimals={0}
               height={isMobile ? 150 : 240}
               barWidth={isMobile ? 24 : 56}
             />
             <ul className="player-legend">
               <li className="player-legend__item">
-                <span className="player-legend__swatch player-legend__swatch--gold" />≥ 8
+                <span className="player-legend__swatch player-legend__swatch--gold" />≥ {FULL_MATCH_MINUTES} min
               </li>
               <li className="player-legend__item">
-                <span className="player-legend__swatch player-legend__swatch--win" />7 – 8
+                <span className="player-legend__swatch player-legend__swatch--win" />
+                &lt; {FULL_MATCH_MINUTES} min
               </li>
               <li className="player-legend__item">
                 <span className="player-legend__dash" />
-                Media {formatNumber(average, 1)}
+                Media {formatNumber(average, 0)} min
               </li>
             </ul>
           </>
         ) : (
-          <p className="player-card__empty">Todavía no hay valoraciones por jornada de este jugador.</p>
+          <p className="player-card__empty">Todavía no hay partidos de este jugador en la temporada {season.label}.</p>
         )}
       </div>
     </section>
