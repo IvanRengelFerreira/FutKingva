@@ -3,14 +3,18 @@ import { useUserData } from '../../context/UserDataContext.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Select from '../../components/Select/Select.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
+import FieldError from '../../components/FieldError/FieldError.jsx';
+import LoadingState from '../../components/LoadingState/LoadingState.jsx';
+import ErrorState from '../../components/ErrorState/ErrorState.jsx';
 import Pitch from '../../components/Pitch/Pitch.jsx';
-import { POSITION_NAMES, slotPosition } from '../../components/Pitch/formations.js';
+import { FORMATION_NAMES, POSITION_NAMES, slotPosition } from '../../../shared/formations.js';
+import { IDEAL_TEAM_NAME_MAX, validateIdealTeam } from '../../../shared/validation/idealTeam.js';
+import { useFormSubmit } from '../../services/useFormSubmit.js';
 import CandidateList from './CandidateList.jsx';
 import TeamSummary from './TeamSummary.jsx';
 import {
-  FORMATION_NAMES,
-  MAX_NAME_LENGTH,
   lineupOf,
+  filledPlayersOf,
   toAssigned,
   assignPlayer,
   removePlayer,
@@ -18,34 +22,48 @@ import {
   firstEmpty,
   describeChange,
 } from './team.js';
-import { SEASON, getPlayer } from '../../data/mockData.js';
 import saveIcon from '../../assets/icon-save.svg';
 import removeIcon from '../../assets/icon-remove.svg';
 import './IdealTeam.css';
 
 // 11 · Mi equipo ideal (RF5): el usuario arma su once sobre el campo con jugadores de cualquier club.
-// Empieza con el equipo guardado (al principio, el de ejemplo: Los Coronados, 4-3-3, con el extremo izquierdo libre).
+// Carga el equipo guardado del servidor (GET /api/me/ideal-team) y lo guarda con PUT /api/me/ideal-team.
 // Reglas de negocio: cada posición del campo lleva un solo jugador (no se repite posición), un jugador no puede
-// estar dos veces y solo vale en las posiciones donde encaja (ver fitsSlot en team.js).
+// estar dos veces y solo vale en las posiciones donde encaja (ver fitsSlot en shared/positions.js).
 // Cambio de formación: los jugadores cuyas posiciones desaparecen se reubican en un hueco libre donde encajen
 // y, si no lo hay, salen del once (se avisa de qué ha pasado con cada uno).
-// «Guardar equipo» lo guarda (useUserData, en el navegador): sale en Mi perfil y al volver a esta página.
-// El nombre es obligatorio para guardar.
 // Diseño: Figma › Mockups › 11 · Mi equipo ideal
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=55-702
 export default function IdealTeam() {
-  const { idealTeam, saveIdealTeam } = useUserData();
+  const { idealTeam, idealTeamLoading, idealTeamError, reloadIdealTeam, saveIdealTeam } = useUserData();
+
+  if (idealTeamLoading) return <LoadingState label="Cargando equipo ideal…" />;
+  if (idealTeamError) {
+    return (
+      <ErrorState error={idealTeamError} title="No se ha podido cargar tu equipo ideal" onRetry={reloadIdealTeam} />
+    );
+  }
+
+  return <IdealTeamEditor idealTeam={idealTeam} onSave={saveIdealTeam} />;
+}
+
+function IdealTeamEditor({ idealTeam, onSave }) {
   const [name, setName] = useState(idealTeam.name);
   const [formation, setFormation] = useState(idealTeam.formation);
   const [assigned, setAssigned] = useState(() => toAssigned(idealTeam.players));
   const [activeSlot, setActiveSlot] = useState(() => firstEmpty(idealTeam.formation, toAssigned(idealTeam.players)));
   const [notice, setNotice] = useState(null);
-  const [saved, setSaved] = useState(false);
-  const [nameError, setNameError] = useState(null);
+  const [saved, setSaved] = useState(Boolean(idealTeam.updatedAt));
+  const { submitted, sending, serverFields, message, clearServerError, submit } = useFormSubmit();
 
   const lineup = lineupOf(formation, assigned);
-  const count = lineup.filter((l) => l.playerId).length;
-  const activePlayer = activeSlot ? getPlayer(assigned[activeSlot]) : undefined;
+  const filledPlayers = filledPlayersOf(formation, assigned);
+  const errors = validateIdealTeam({ name, formation, players: filledPlayers });
+  const shown = (field) => (submitted ? errors[field] : null) ?? serverFields[field];
+  const saveError = shown('players') ?? message;
+
+  const count = filledPlayers.length;
+  const activePlayer = activeSlot ? assigned[activeSlot] : undefined;
   const activePosition = activeSlot ? slotPosition(activeSlot) : null;
 
   // Aplica un cambio en el once: lo deja como borrador y borra el aviso anterior
@@ -54,10 +72,11 @@ export default function IdealTeam() {
     setActiveSlot(nextActive);
     setSaved(false);
     setNotice(null);
+    clearServerError('players');
   }
 
-  function add(playerId) {
-    const next = assignPlayer(assigned, formation, activeSlot, playerId);
+  function add(player) {
+    const next = assignPlayer(assigned, formation, activeSlot, player);
     if (next) edit(next, firstEmpty(formation, next, activeSlot));
   }
 
@@ -69,24 +88,25 @@ export default function IdealTeam() {
     if (value === formation) return;
     const result = changeFormation(assigned, formation, value);
     setFormation(value);
+    clearServerError('formation');
     edit(result.assigned, firstEmpty(value, result.assigned));
     setNotice(describeChange(value, result));
   }
 
   function save() {
-    if (!name.trim()) {
-      setNameError('Ponle un nombre al equipo');
-      return;
-    }
-    saveIdealTeam({ name: name.trim(), formation, players: lineup });
-    setName(name.trim());
-    setSaved(true);
+    submit(async () => {
+      const updated = await onSave({ name: name.trim(), formation, players: filledPlayers });
+      setName(updated.name);
+      setAssigned(toAssigned(updated.players));
+      setSaved(true);
+    }, errors);
   }
 
+  const saveLabel = sending ? 'Guardando…' : saved ? 'Equipo guardado' : 'Guardar equipo';
   const saveButton = (
-    <Button onClick={save} disabled={count === 0 || saved}>
+    <Button onClick={save} disabled={sending || count === 0 || saved}>
       <img src={saveIcon} alt="" width="16" height="16" />
-      {saved ? 'Equipo guardado' : 'Guardar equipo'}
+      {saveLabel}
     </Button>
   );
 
@@ -95,7 +115,7 @@ export default function IdealTeam() {
       <header className="page-header">
         <div className="page-header__text">
           <p className="page-header__eyebrow" aria-live="polite">
-            <span className="ideal-team__desktop">Temporada {SEASON} · </span>
+            {idealTeam.season && <span className="ideal-team__desktop">Temporada {idealTeam.season} · </span>}
             {saved ? 'Guardado' : 'Borrador'}
           </p>
           <h1 className="page-header__title">Mi equipo ideal</h1>
@@ -113,22 +133,23 @@ export default function IdealTeam() {
             label="Nombre del equipo"
             hideLabel
             value={name}
-            maxLength={MAX_NAME_LENGTH}
+            maxLength={IDEAL_TEAM_NAME_MAX}
             onChange={(e) => {
               setName(e.target.value);
               setSaved(false);
-              setNameError(null);
+              clearServerError('name');
             }}
-            error={nameError}
+            error={shown('name')}
             className="ideal-team__name"
           />
           <Select
             size="sm"
             label="Formación"
             hideLabel
-            options={FORMATION_NAMES.map((f) => ({ value: f, label: `Formación ${f}` }))}
+            options={FORMATION_NAMES.map((item) => ({ value: item, label: `Formación ${item}` }))}
             value={formation}
             onChange={(e) => selectFormation(e.target.value)}
+            error={shown('formation')}
             className="ideal-team__formation ideal-team__desktop-block"
           />
           <Select
@@ -138,11 +159,14 @@ export default function IdealTeam() {
             options={FORMATION_NAMES}
             value={formation}
             onChange={(e) => selectFormation(e.target.value)}
+            error={shown('formation')}
             className="ideal-team__formation ideal-team__mobile-block"
           />
           <div className="ideal-team__save ideal-team__desktop-block">{saveButton}</div>
         </div>
       </header>
+
+      <FieldError>{saveError}</FieldError>
 
       {notice && (
         <p className="ideal-team__notice" role="status">
@@ -169,7 +193,7 @@ export default function IdealTeam() {
               <>
                 <span>
                   Eligiendo para: {POSITION_NAMES[activePosition]} ({activePosition})
-                  {activePlayer && <> · ahora: {activePlayer.shortName ?? activePlayer.name}</>}
+                  {activePlayer && <> · ahora: {activePlayer.name}</>}
                 </span>
                 {activePlayer && (
                   <button

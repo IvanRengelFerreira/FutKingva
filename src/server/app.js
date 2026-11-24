@@ -11,6 +11,7 @@ import { authRouter } from './routes/auth.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
 import { playersRouter } from './routes/players.js';
+import { idealTeamRouter } from './routes/idealTeam.js';
 
 export function createApp() {
   const app = express();
@@ -36,6 +37,7 @@ export function createApp() {
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
   app.use('/api/players', playersRouter); // Ivan · 04 Ficha de jugador
+  app.use('/api/me/ideal-team', idealTeamRouter); // Ivan · 11 Mi equipo ideal
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común
