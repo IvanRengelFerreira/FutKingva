@@ -8,7 +8,7 @@ import { AppError } from '../errors/AppError.js';
 import { resolveSeason, listSeasons, seasonSummary } from '../utils/seasons.js';
 import { TEAM_SUMMARY_FIELDS, teamSummary } from '../utils/teams.js';
 import { MATCH_TEAMS } from '../utils/matches.js';
-import { readId } from '../utils/params.js';
+import { readId, readPagination } from '../utils/params.js';
 import {
   VALID_POSITIONS,
   aggregateSeasonStats,
@@ -17,8 +17,6 @@ import {
   playerAppearance,
 } from '../utils/players.js';
 
-const DEFAULT_LIMIT = 20;
-const MAX_LIMIT = 100;
 const MAX_IDS = 4; // Límite del Comparador (RF4: de 2 a 4 jugadores)
 const LAST_MATCHES_COUNT = 5;
 const MIN_RANK_MATCHES = 3; // Mínimo de partidos en la temporada para entrar en los rankings
@@ -45,8 +43,7 @@ export async function list(req, res) {
     return;
   }
 
-  const limit = parseBoundedInt(req.query.limit, DEFAULT_LIMIT, 1, MAX_LIMIT, 'limit');
-  const offset = parseBoundedInt(req.query.offset, 0, 0, Number.MAX_SAFE_INTEGER, 'offset');
+  const { limit, offset } = readPagination(req.query);
   const pattern = buildSearchPattern(req.query.search);
 
   const [total, ids] = await Promise.all([
@@ -126,16 +123,6 @@ function parseIds(value) {
     }
   }
   return ids;
-}
-
-function parseBoundedInt(raw, fallback, min, max, field) {
-  if (raw === undefined || raw === '') return fallback;
-  const value = Number(raw);
-  if (!Number.isInteger(value) || value < min || value > max) {
-    const range = max === Number.MAX_SAFE_INTEGER ? `mayor o igual que ${min}` : `entre ${min} y ${max}`;
-    throw AppError.badRequest(`El parámetro ${field} no es válido`, { [field]: `Tiene que ser un entero ${range}` });
-  }
-  return value;
 }
 
 // Solo escapa comodines LIKE; el plegado de mayúsculas y tildes se hace en SQL en los dos lados
