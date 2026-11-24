@@ -187,8 +187,13 @@
   cursor: pointer;
 }
 
-.admin-action:hover {
+.admin-action:hover:not(:disabled) {
   background: color-mix(in srgb, var(--action-color) 26%, transparent);
+}
+
+.admin-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-action:focus-visible {

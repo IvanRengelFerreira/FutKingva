@@ -11,6 +11,7 @@ import { authRouter } from './routes/auth.js';
 import { homeRouter } from './routes/home.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
+import { adminRouter } from './routes/admin.js';
 
 export function createApp() {
   const app = express();
@@ -36,6 +37,7 @@ export function createApp() {
   app.use('/api/home', homeRouter); // Ivan · 01 Inicio
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
+  app.use('/api/admin', adminRouter); // Ivan · 20 Administración
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común
