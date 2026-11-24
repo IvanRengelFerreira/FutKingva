@@ -19,6 +19,9 @@ const NO_FILTERS = { query: '', role: 'all', status: 'all' };
 
 const count = (list, test) => list.filter(test).length;
 
+// Bloqueado ↔ activo
+const toggledStatus = (status) => (status === 'blocked' ? 'active' : 'blocked');
+
 // Indicadores: parten de ADMIN_STATS y suman la diferencia entre los usuarios actuales y los iniciales
 function computeStats(users, reports) {
   const delta = (test) => count(users, test) - count(USERS, test);
@@ -50,9 +53,7 @@ export default function AdminDashboard() {
 
   function toggleBlock(id) {
     setUsers((list) =>
-      list.map((u) =>
-        u.id === id && !u.isCurrentUser ? { ...u, status: u.status === 'blocked' ? 'active' : 'blocked' } : u,
-      ),
+      list.map((u) => (u.id === id && !u.isCurrentUser ? { ...u, status: toggledStatus(u.status) } : u)),
     );
   }
 
