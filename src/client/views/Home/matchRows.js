@@ -1,13 +1,6 @@
-// Convierte los partidos de mockData.js en las filas que pinta MatchList.
-
-// Un partido con un equipo que no esté en los datos se descarta para no romper la página
-export function hasKnownTeams(match, getTeam) {
-  return Boolean(getTeam(match.homeId) && getTeam(match.awayId));
-}
-
-function rowKey(match, index) {
-  return `${match.date}-${match.homeId}-${match.awayId}-${index}`;
-}
+// Convierte los partidos de la API (GET /api/home) en las filas que pinta MatchList.
+import { shortDate, shortTime } from '../../services/format.js';
+import { capitalize } from '../../utils/text.js';
 
 // 'home' | 'away' | undefined (empate o marcador que falta)
 function getWinner(homeGoals, awayGoals) {
@@ -15,27 +8,33 @@ function getWinner(homeGoals, awayGoals) {
   return homeGoals > awayGoals ? 'home' : 'away';
 }
 
-export function toResultRow(match, index) {
+function formatRowDate(iso) {
+  return iso ? capitalize(shortDate(iso)) : '—';
+}
+
+export function toResultRow(match) {
   const [homeGoals, awayGoals] = match.score ?? [];
   const hasScore = homeGoals != null && awayGoals != null;
   return {
-    key: rowKey(match, index),
-    date: match.date,
-    homeId: match.homeId,
-    awayId: match.awayId,
+    key: match.id,
+    date: formatRowDate(match.date),
+    homeTeam: match.homeTeam,
+    awayTeam: match.awayTeam,
     center: hasScore ? `${homeGoals} – ${awayGoals}` : '—',
     competition: match.competition,
     winner: hasScore ? getWinner(homeGoals, awayGoals) : undefined,
   };
 }
 
-export function toUpcomingRow(match, index) {
+export function toUpcomingRow(match) {
+  // Solo los partidos con hora fijada (TIMED) tienen hora fiable; los SCHEDULED aún están por definir
+  const kickoff = match.status === 'TIMED' && match.date ? shortTime(match.date) : '—';
   return {
-    key: rowKey(match, index),
-    date: match.date,
-    homeId: match.homeId,
-    awayId: match.awayId,
-    center: match.time,
-    competition: match.competition ?? 'LaLiga',
+    key: match.id,
+    date: formatRowDate(match.date),
+    homeTeam: match.homeTeam,
+    awayTeam: match.awayTeam,
+    center: kickoff,
+    competition: match.competition,
   };
 }

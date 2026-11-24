@@ -8,6 +8,7 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { sessionMiddleware } from './middleware/session.js';
 import { loadUser } from './middleware/auth.js';
 import { authRouter } from './routes/auth.js';
+import { homeRouter } from './routes/home.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
 
@@ -32,6 +33,7 @@ export function createApp() {
   // --- Rutas de la API ------------------------------------------------------
   // Aquí se montan los routers de cada recurso, p. ej.: app.use('/api/teams', teamsRouter);
   app.use('/api/auth', authRouter); // Ivan · 14 Acceso
+  app.use('/api/home', homeRouter); // Ivan · 01 Inicio
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
   // ---------------------------------------------------------------------------

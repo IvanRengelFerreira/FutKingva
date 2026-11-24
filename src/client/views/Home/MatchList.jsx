@@ -1,6 +1,5 @@
 import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
-import { getTeam } from '../../data/mockData.js';
 
 // Lista de partidos de Inicio, para «Últimos resultados» y «Próximos partidos».
 // Escritorio: tabla con FECHA · LOCAL · marcador (u hora) · VISITANTE · COMPETICIÓN.
@@ -8,10 +7,10 @@ import { getTeam } from '../../data/mockData.js';
 // Diseño: Figma › Mockups › 01 · Inicio › Tabla resultados (escritorio) y Resultado (móvil)
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=40-156
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=41-155
-// items: [{ key, date, homeId, awayId, center, competition, winner }]  (winner: 'home' | 'away' | undefined)
-// Los equipos que no existan en los datos se saltan; un marcador que falte se pinta «—».
+// items: [{ key, date, homeTeam, awayTeam, center, competition, winner }]  (winner: 'home' | 'away' | undefined)
+// Un marcador u hora que falte se pinta «—».
 export default function MatchList({ items, label, emptyText, maxMobile }) {
-  const rows = items.filter((item) => getTeam(item.homeId) && getTeam(item.awayId));
+  const rows = items.filter((item) => item.homeTeam && item.awayTeam);
 
   if (rows.length === 0) {
     return <p className="home__empty">{emptyText}</p>;
@@ -36,9 +35,9 @@ export default function MatchList({ items, label, emptyText, maxMobile }) {
               <span className="match-list__competition-mobile">{item.competition ?? '—'} · </span>
               {item.date ?? '—'}
             </span>
-            <TeamCell teamId={item.homeId} winner={item.winner === 'home'} />
+            <TeamCell team={item.homeTeam} winner={item.winner === 'home'} />
             <span className="match-list__center">{item.center ?? '—'}</span>
-            <TeamCell teamId={item.awayId} winner={item.winner === 'away'} away />
+            <TeamCell team={item.awayTeam} winner={item.winner === 'away'} away />
             <span className="match-list__competition">{item.competition ?? '—'}</span>
           </li>
         ))}
@@ -47,14 +46,13 @@ export default function MatchList({ items, label, emptyText, maxMobile }) {
   );
 }
 
-function TeamCell({ teamId, winner, away = false }) {
-  const team = getTeam(teamId);
+function TeamCell({ team, winner, away = false }) {
   return (
     <span
       className={`match-list__team${away ? ' match-list__team--away' : ''}${winner ? ' match-list__team--winner' : ''}`}
     >
-      <Crest teamId={teamId} size={26} className="match-list__crest" />
-      <Link to={`/equipos/${teamId}`} className="match-list__team-name">
+      <Crest team={team} size={26} className="match-list__crest" />
+      <Link to={`/equipos/${team.id}`} className="match-list__team-name">
         <span className="home__desktop">{team.name}</span>
         <span className="home__mobile">{team.shortName ?? team.name}</span>
       </Link>

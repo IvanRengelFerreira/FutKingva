@@ -1,4 +1,5 @@
 // Ayudas para enseñar datos de la API en español. Responsable: Angel.
+import { capitalize } from '../utils/text.js';
 
 // Las fechas y horas de los partidos se enseñan siempre en hora de Madrid
 const TIME_ZONE = 'Europe/Madrid';
@@ -30,4 +31,27 @@ export function shortDate(iso) {
 /** Hora en Madrid: «21:00» */
 export function shortTime(iso) {
   return new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE });
+}
+
+/** Fecha numérica en hora de Madrid: «08/11/2026» */
+export function numericDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: TIME_ZONE,
+  });
+}
+
+/** Fecha del día en español (hora de Madrid): { full: «Martes 24 de noviembre», short: «Mar 24 nov» } */
+export function todayLabel(date = new Date()) {
+  const full = date
+    .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
+    .replace(',', '');
+  const short = date
+    .toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short', timeZone: TIME_ZONE })
+    .replaceAll(',', '')
+    .replaceAll('.', '');
+  return { full: capitalize(full), short: capitalize(short) };
 }

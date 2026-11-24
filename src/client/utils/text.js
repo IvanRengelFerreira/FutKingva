@@ -14,3 +14,8 @@ export function toKey(text = '') {
 export function toSearchText(text = '') {
   return toKey(text).trim();
 }
+
+/** Primera letra en mayúscula: «martes» → «Martes» */
+export function capitalize(text = '') {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+}

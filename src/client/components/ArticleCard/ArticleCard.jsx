@@ -32,6 +32,7 @@ export default function ArticleCard({
   const compact = layout === 'compact';
   // En la lista de móvil la fecha va corta: 14/10/2026 → 14/10
   const shownDate = compact && date ? date.slice(0, 5) : date;
+  const meta = [author, shownDate].filter(Boolean).join(' · ');
 
   return (
     <article className={`article-card article-card--${layout} ${className}`.trim()}>
@@ -43,7 +44,7 @@ export default function ArticleCard({
       />
 
       <div className="article-card__body">
-        <Tag category={category} />
+        {category && <Tag category={category} />}
         <h3 className="article-card__title">
           <Link className="article-card__link" to={href}>
             {title}
@@ -52,10 +53,7 @@ export default function ArticleCard({
         {!compact && !minimal && excerpt && <p className="article-card__excerpt">{excerpt}</p>}
         {!minimal && (
           <div className="article-card__footer">
-            <span className="article-card__meta">
-              {author}
-              {shownDate && ` · ${shownDate}`}
-            </span>
+            <span className="article-card__meta">{meta}</span>
             {!compact && (
               <span className="article-card__more" aria-hidden="true">
                 Leer →
