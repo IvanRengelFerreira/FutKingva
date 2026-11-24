@@ -1,17 +1,20 @@
-// Búsqueda y filtros de la pestaña «Usuarios» de 20 · Panel de administración (UsersPanel).
+// Filtros y parámetros de consulta de la pestaña «Usuarios» de 20 · Panel de administración.
+// El filtrado y la paginación se delegan en el servidor (GET /api/admin/users) para buscar sobre
+// toda la base de datos y mantener totales de paginación exactos.
 
-import { toSearchText } from '../../utils/text.js';
+export const NO_FILTERS = { query: '', role: 'all', status: 'all' };
 
 export function isFiltering({ query, role, status }) {
   return Boolean(query.trim()) || role !== 'all' || status !== 'all';
 }
 
-export function filterUsers(users, { query, role, status }) {
-  const search = toSearchText(query);
-  return users.filter(
-    (user) =>
-      (role === 'all' || user.role === role) &&
-      (status === 'all' || user.status === status) &&
-      (!search || toSearchText(user.name).includes(search) || toSearchText(user.email).includes(search)),
-  );
+export function buildUsersQuery({ query, role, status }, page, limit) {
+  const search = query.trim();
+  return {
+    ...(search ? { search } : {}),
+    ...(role !== 'all' ? { role } : {}),
+    ...(status !== 'all' ? { status } : {}),
+    limit,
+    offset: (page - 1) * limit,
+  };
 }
