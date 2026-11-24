@@ -12,6 +12,7 @@ import { homeRouter } from './routes/home.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
 import { adminRouter } from './routes/admin.js';
+import { syncRouter } from './routes/sync.js';
 
 export function createApp() {
   const app = express();
@@ -38,6 +39,7 @@ export function createApp() {
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
   app.use('/api/admin', adminRouter); // Ivan · 20 Administración
+  app.use('/api/admin/sync', syncRouter); // Ivan · 20 Administración (TEMPORAL: botones de sincronización)
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común

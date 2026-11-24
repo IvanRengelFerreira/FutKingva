@@ -95,6 +95,7 @@ Formato común: `{ "error": { "code", "message", "fields"? } }`. `message` va **
 | Sin permiso                     | `requireRole(...)` / `AppError.forbidden()`     | 403 `FORBIDDEN`           |
 | No existe                       | `AppError.notFound('…')`                        | 404 `NOT_FOUND`           |
 | Ya existe o choca               | `AppError.conflict('…', fields)`                | 409 `CONFLICT`            |
+| La API externa falla            | `AppError.badGateway('…')`                      | 502 `BAD_GATEWAY`         |
 | BD caída                        | (automático)                                    | 503 `SERVICE_UNAVAILABLE` |
 
 `fields` son los errores de cada campo del formulario. El front los pinta junto al campo con `FieldError`.

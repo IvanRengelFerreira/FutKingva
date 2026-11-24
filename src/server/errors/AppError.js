@@ -42,4 +42,9 @@ export class AppError extends Error {
   static conflict(message, fields) {
     return new AppError(409, 'CONFLICT', message, fields);
   }
+
+  /** La API externa ha fallado */
+  static badGateway(message = 'No se ha podido obtener respuesta del servicio externo') {
+    return new AppError(502, 'BAD_GATEWAY', message);
+  }
 }

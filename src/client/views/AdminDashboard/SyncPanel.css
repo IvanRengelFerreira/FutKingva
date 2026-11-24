@@ -1,0 +1,117 @@
+/*
+ * TEMPORAL: estilos de la sección de sincronización manual en 20 · Panel de administración.
+ * La sincronización automática periódica se implementará en otra tarea.
+ */
+
+.admin-sync {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.admin-sync__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-sync__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-sync__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.admin-sync__subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.admin-sync__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-sync__status--ok {
+  --tag-color: var(--status-win);
+}
+
+.admin-sync__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-sync__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+}
+
+.admin-sync__item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-sync__item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-sync__item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.admin-sync__item-empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.admin-sync__item-error {
+  width: 100%;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--status-loss);
+}
+
+@media (max-width: 799px) {
+  .admin-sync {
+    padding: 16px;
+  }
+
+  .admin-sync__actions {
+    flex-direction: column;
+  }
+
+  .admin-sync__list {
+    grid-template-columns: 1fr;
+  }
+}
