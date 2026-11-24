@@ -31,3 +31,12 @@ export function shortDate(iso) {
 export function shortTime(iso) {
   return new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE });
 }
+
+/** Mes y año en hora de Madrid: «09/2026» */
+export function monthYear(iso) {
+  return new Date(iso).toLocaleDateString('es-ES', {
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: TIME_ZONE,
+  });
+}

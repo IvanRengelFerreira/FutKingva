@@ -5,7 +5,7 @@ import { prisma } from '../db.js';
 import { AppError } from '../errors/AppError.js';
 
 // Por ahora FutKingva solo tiene datos de LaLiga
-const LALIGA = 'LaLiga';
+export const LALIGA = 'LaLiga';
 
 const SEASON_FIELDS = { id: true, start_year: true, label: true, current_matchday: true };
 

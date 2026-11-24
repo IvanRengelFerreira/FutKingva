@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import Tabs from '../../components/Tabs/Tabs.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
+import LoadingState from '../../components/LoadingState/LoadingState.jsx';
+import ErrorState from '../../components/ErrorState/ErrorState.jsx';
 import { useLogout, useSession } from '../../context/SessionContext.jsx';
 import { useNotifications } from '../../context/NotificationsContext.jsx';
 import { useUserData } from '../../context/UserDataContext.jsx';
-import { PROFILE_EXAMPLE } from '../../data/mockData.js';
+import { useApi } from '../../services/useApi.js';
+import { getProfile } from '../../services/profile.js';
+import { monthYear } from '../../services/format.js';
 import SectionHeader from './SectionHeader.jsx';
 import { FavoriteTeams, FavoritePlayers } from './FavoriteCards.jsx';
 import SavedComparisons from './SavedComparisons.jsx';
@@ -22,9 +26,8 @@ const ROLE_LABELS = {
 };
 
 // 12 · Mi perfil (RF3): datos del usuario, favoritos, comparativas guardadas, equipo ideal y notificaciones.
-// Solo con sesión (RequireRole en App.jsx). El nombre, las iniciales y el correo salen de la sesión (useSession);
-// los favoritos, las comparativas y el equipo ideal, de lo que el usuario ha guardado (useUserData,
-// que empieza con los datos de ejemplo de mockData.js y se guarda en el navegador).
+// Solo con sesión (RequireRole en App.jsx). Los datos del perfil llegan de GET /api/me/profile y los favoritos
+// de GET /api/me/favorites (a través de UserDataContext).
 // Pestaña Favoritos: el resumen del mockup (todo); las demás enseñan solo su bloque.
 // Diseño: Figma › Mockups › 12 · Mi perfil
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=56-781
@@ -36,13 +39,38 @@ export default function Profile() {
   const {
     favoriteTeams,
     favoritePlayers,
+    favoriteTeamItems,
+    favoritePlayerItems,
+    favoritesLoading,
+    favoritesError,
+    reloadFavorites,
     savedComparisons: comparisons,
     idealTeam,
     toggleFavoriteTeam,
     toggleFavoritePlayer,
     removeComparison,
   } = useUserData();
+  const {
+    data: profile,
+    error: profileError,
+    loading: profileLoading,
+    reload: reloadProfile,
+  } = useApi((signal) => getProfile({ signal }), [user.id]);
   const [editNotice, setEditNotice] = useState(false);
+
+  if (profileLoading || favoritesLoading) {
+    return <LoadingState label="Cargando perfil…" />;
+  }
+
+  if (profileError || favoritesError) {
+    const retry = () => {
+      if (profileError) reloadProfile();
+      if (favoritesError) reloadFavorites();
+    };
+    return (
+      <ErrorState error={profileError ?? favoritesError} title="No se ha podido cargar tu perfil" onRetry={retry} />
+    );
+  }
 
   const tabs = [
     { id: 'favorites', label: 'Favoritos' },
@@ -69,22 +97,22 @@ export default function Profile() {
     <section className="page profile">
       <header className="profile-hero">
         <Avatar
-          name={user.name}
-          initials={user.initials}
+          name={profile.name}
+          initials={profile.initials}
           size={96}
           className="profile-hero__avatar profile__desktop-flex"
         />
         <Avatar
-          name={user.name}
-          initials={user.initials}
+          name={profile.name}
+          initials={profile.initials}
           size={80}
           className="profile-hero__avatar profile__mobile-flex"
         />
         <div className="profile-hero__text">
-          <p className="profile-hero__eyebrow">{ROLE_LABELS[user.role] ?? 'Usuario registrado'}</p>
-          <h1 className="profile-hero__name">{user.name}</h1>
+          <p className="profile-hero__eyebrow">{ROLE_LABELS[profile.role] ?? 'Usuario registrado'}</p>
+          <h1 className="profile-hero__name">{profile.name}</h1>
           <p className="profile-hero__meta">
-            {user.email} · Miembro desde {PROFILE_EXAMPLE.memberSince}
+            {profile.email} · Miembro desde {monthYear(profile.memberSince)}
           </p>
         </div>
         <dl className="profile-hero__counts">
@@ -113,7 +141,7 @@ export default function Profile() {
         </div>
         {editNotice && (
           <p className="profile-hero__notice" role="status">
-            Podrás editar tu perfil cuando FutKingva tenga servidor. De momento, los datos son de ejemplo.
+            La edición de perfil todavía no está disponible.
           </p>
         )}
       </header>
@@ -126,14 +154,14 @@ export default function Profile() {
             <SectionHeader id="profile-teams-title" title="Equipos favoritos">
               <ManageLink to="/equipos" />
             </SectionHeader>
-            <FavoriteTeams teamIds={favoriteTeams} onRemove={toggleFavoriteTeam} />
+            <FavoriteTeams teams={favoriteTeamItems} onRemove={toggleFavoriteTeam} />
           </section>
 
           <section className="profile__section" aria-labelledby="profile-players-title">
             <SectionHeader id="profile-players-title" title="Jugadores favoritos">
               <ManageLink to="/equipos" />
             </SectionHeader>
-            <FavoritePlayers playerIds={favoritePlayers} onRemove={toggleFavoritePlayer} />
+            <FavoritePlayers players={favoritePlayerItems} onRemove={toggleFavoritePlayer} />
           </section>
 
           <div className="profile__columns">

@@ -11,6 +11,8 @@ import { authRouter } from './routes/auth.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
 import { playersRouter } from './routes/players.js';
+import { favoritesRouter } from './routes/favorites.js';
+import { profileRouter } from './routes/profile.js';
 
 export function createApp() {
   const app = express();
@@ -36,6 +38,8 @@ export function createApp() {
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
   app.use('/api/players', playersRouter); // Ivan · 04 Ficha de jugador
+  app.use('/api/me/favorites', favoritesRouter); // Ivan · 12 Mi perfil
+  app.use('/api/me/profile', profileRouter); // Ivan · 12 Mi perfil
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común
