@@ -10,24 +10,27 @@ import chevronIcon from '../../assets/icon-chevron-right-lg.svg';
 // Equipos de 02 · Equipos y jugadores.
 //   Escritorio: rejilla de tarjetas (LÍDER o liga, estrella de favorito, escudo, nombre, puesto y puntos, forma, «Ver ficha»)
 //   Móvil: lista de tarjetas con escudo, nombre, «1º · 24 pts», forma y flecha (el líder con borde oro)
-// rows: { ...team, row } de teamsData.js · mobileRows: las que se ven en móvil (con «Cargar más»)
+// teams: los de GET /api/teams ({ ...equipo, standing }): en escritorio, la página; en móvil, los ya cargados
 // Diseño: Figma › Mockups › 02 · Equipos y jugadores › tarjeta «Equipo» (escritorio) y Lista (móvil)
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=43-158
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=43-578
-export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite }) {
+
+const COMPETITION = 'LaLiga'; // Por ahora solo hay datos de LaLiga
+
+export default function TeamGrid({ teams, favorites, onToggleFavorite }) {
   const { user } = useSession();
 
   return (
     <>
       <ul className="teams__grid teams__desktop-grid">
-        {rows.map((team) => {
-          const leader = team.row.position === 1;
+        {teams.map((team) => {
+          const leader = team.standing?.position === 1;
           const favorite = favorites.includes(team.id);
           return (
             <li key={team.id} className="team-card">
               <div className="team-card__top">
                 <span className={`team-card__label${leader ? ' team-card__label--leader' : ''}`}>
-                  {leader ? 'Líder' : team.competition}
+                  {leader ? 'Líder' : COMPETITION}
                 </span>
                 {user ? (
                   <button
@@ -50,25 +53,25 @@ export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite
                   </Link>
                 )}
               </div>
-              <Crest teamId={team.id} size={72} />
+              <Crest team={team} size={72} />
               <h2 className="team-card__name">{team.name}</h2>
               <div className="team-card__stats">
                 <span className="team-card__stat">
-                  <span className="team-card__value">{team.row.position}º</span>
+                  <span className="team-card__value">{team.standing ? `${team.standing.position}º` : '—'}</span>
                   <span className="team-card__stat-label">
                     <abbr title="Posición">Pos.</abbr>
                   </span>
                 </span>
                 <span className="team-card__stat">
                   <span className={`team-card__value${leader ? ' team-card__value--gold' : ''}`}>
-                    {team.row.points}
+                    {team.standing?.points ?? '—'}
                   </span>
                   <span className="team-card__stat-label">
                     <abbr title="Puntos">Pts</abbr>
                   </span>
                 </span>
               </div>
-              <FormGuide form={team.row.form} size={20} />
+              <FormGuide form={team.standing?.form} size={20} />
               <Button
                 variant="tertiary"
                 to={`/equipos/${team.id}`}
@@ -83,20 +86,20 @@ export default function TeamGrid({ rows, mobileRows, favorites, onToggleFavorite
       </ul>
 
       <ul className="teams__list teams__mobile-flex">
-        {mobileRows.map((team) => (
+        {teams.map((team) => (
           <li key={team.id}>
             <Link
-              className={`teams__item${team.row.position === 1 ? ' teams__item--leader' : ''}`}
+              className={`teams__item${team.standing?.position === 1 ? ' teams__item--leader' : ''}`}
               to={`/equipos/${team.id}`}
             >
-              <Crest teamId={team.id} size={44} />
+              <Crest team={team} size={44} />
               <span className="teams__item-text">
                 <span className="teams__item-name">{team.name}</span>
                 <span className="teams__item-meta">
-                  <span className={team.row.position === 1 ? 'teams__item-points--leader' : undefined}>
-                    {team.row.position}º · {team.row.points} pts
+                  <span className={team.standing?.position === 1 ? 'teams__item-points--leader' : undefined}>
+                    {team.standing ? `${team.standing.position}º · ${team.standing.points} pts` : COMPETITION}
                   </span>
-                  <FormGuide form={team.row.form} size={14} />
+                  <FormGuide form={team.standing?.form} size={14} />
                 </span>
               </span>
               <img src={chevronIcon} alt="" width="18" height="18" />

@@ -1,5 +1,6 @@
 // Jugadores de LaLiga (04 · Ficha de jugador, 10 · Comparador, 11 · Equipo ideal). Responsable: Ivan.
-//   GET /api/players?search=&ids=&position=&limit=&offset=  → listado paginado
+//   GET /api/players?search=&ids=&position=&sort=&limit=&offset=  → listado paginado
+//     ?sort=rating|goals|assists|name (por defecto rating; lo usa 02 · Equipos y jugadores, Angel)
 //   GET /api/players/:id?season=2025                        → ficha completa del jugador
 
 import { Prisma } from '../generated/prisma/client.ts';
@@ -21,6 +22,7 @@ const MAX_IDS = 4; // Límite del Comparador (RF4: de 2 a 4 jugadores)
 const LAST_MATCHES_COUNT = 5;
 const MIN_RANK_MATCHES = 3; // Mínimo de partidos en la temporada para entrar en los rankings
 const TEAM_INCLUDE = { select: TEAM_SUMMARY_FIELDS };
+const SORTS = ['rating', 'goals', 'assists', 'name']; // El primero es el orden por defecto
 
 // Caracteres con tilde o diacrítico que se pliegan en SQL en ambos lados de la búsqueda (sin depender de unaccent)
 const ACCENTS_FROM = 'áéíóúüñàèìòùâêîôûäëïöãõçćčšžýțșă';
@@ -45,14 +47,15 @@ export async function list(req, res) {
 
   const { limit, offset } = readPagination(req.query);
   const pattern = buildSearchPattern(req.query.search);
+  const sort = parseSort(req.query.sort);
 
   const [total, ids] = await Promise.all([
     countFilteredPlayers(pattern, position),
-    findRankedPlayerIds(season.id, pattern, position, limit, offset),
+    findRankedPlayerIds(season.id, pattern, position, sort, limit, offset),
   ]);
   const items = await loadPlayerItems(ids, season.id);
 
-  res.json({ items, total, limit, offset });
+  res.json({ items, total, limit, offset, season: seasonSummary(season) });
 }
 
 /** GET /api/players/:id */
@@ -94,6 +97,22 @@ function parsePosition(value) {
     });
   }
   return normalized;
+}
+
+function parseSort(value) {
+  if (value === undefined || value === '') return SORTS[0];
+  if (!SORTS.includes(value)) {
+    throw AppError.badRequest('El orden no es válido', { sort: `Usa uno de: ${SORTS.join(', ')}` });
+  }
+  return value;
+}
+
+// Va delante del orden de siempre (valoración, minutos…), que hace de desempate
+function sortPrefix(sort) {
+  if (sort === 'goals') return Prisma.sql`st.goals DESC NULLS LAST,`;
+  if (sort === 'assists') return Prisma.sql`st.assists DESC NULLS LAST,`;
+  if (sort === 'name') return Prisma.sql`p.name ASC,`;
+  return Prisma.empty;
 }
 
 function parseIds(value) {
@@ -152,7 +171,7 @@ async function countFilteredPlayers(pattern, position) {
   return row.total;
 }
 
-async function findRankedPlayerIds(seasonId, pattern, position, limit, offset) {
+async function findRankedPlayerIds(seasonId, pattern, position, sort, limit, offset) {
   const rows = await prisma.$queryRaw`
     WITH season_totals AS (
       SELECT
@@ -160,6 +179,7 @@ async function findRankedPlayerIds(seasonId, pattern, position, limit, offset) {
         SUM(played)::int AS played,
         SUM(minutes)::int AS minutes,
         SUM(goals)::int AS goals,
+        SUM(assists)::int AS assists,
         -- Misma regla de ponderación que weightedRating en utils/players.js: mantener a la par
         CASE
           WHEN COUNT(rating) = 0 THEN NULL
@@ -177,12 +197,14 @@ async function findRankedPlayerIds(seasonId, pattern, position, limit, offset) {
     LEFT JOIN season_totals st ON st.player_id = p.id
     ${playerFilter(pattern, position)}
     ORDER BY
+      ${sortPrefix(sort)}
       st.rating DESC NULLS LAST,
       st.minutes DESC NULLS LAST,
       st.played DESC NULLS LAST,
       st.goals DESC NULLS LAST,
       (p.team_id IS NOT NULL) DESC,
-      p.name ASC
+      p.name ASC,
+      p.id ASC
     LIMIT ${limit} OFFSET ${offset}
   `;
   return rows.map((row) => row.id);
