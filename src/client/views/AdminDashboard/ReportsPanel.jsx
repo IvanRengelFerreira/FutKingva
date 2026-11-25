@@ -16,9 +16,10 @@ import { useAdminAction } from './useAdminAction.js';
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=64-1365
 const REPORTS_PER_PAGE = 20;
 
-// En la BD solo existen reportes de artículos (no hay tabla de comentarios).
-// El color de la etiqueta reutiliza el de la categoría Táctica de Tag (oro).
+// Tipos del mockup. De momento la BD solo tiene reportes de artículos (no hay tabla de comentarios todavía).
+// El color de la etiqueta reutiliza el de las categorías de Tag: Comentario en violeta, Artículo en oro.
 const TYPES = {
+  comment: { label: 'Comentario', category: 'Previa' },
   article: { label: 'Artículo', category: 'Táctica' },
 };
 

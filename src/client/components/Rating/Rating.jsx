@@ -8,9 +8,20 @@ import './Rating.css';
 //   <Rating value={8.1} />              → md: 37 px de alto (lista de móvil, tarjetas)
 //   <Rating value={player.rating} size="sm" />   → 32 px (tablas, como la plantilla de la ficha de equipo)
 //   <Rating value={9.1} size="lg" />    → 52 px (destacados, guía de estilo)
-// Si el jugador no tiene valoración (undefined), no pinta nada.
+// Si el jugador no tiene valoración (null/undefined), pinta el hexágono apagado con «—», para que el hueco
+// del mockup se mantenga hasta tener el dato.
 export default function Rating({ value, size = 'md', className = '' }) {
-  if (value == null) return null;
+  if (value == null) {
+    return (
+      <span
+        className={`rating rating--${size} rating--none ${className}`.trim()}
+        role="img"
+        aria-label="Sin valoración"
+      >
+        <span aria-hidden="true">—</span>
+      </span>
+    );
+  }
 
   const text = value.toFixed(1).replace('.', ',');
 

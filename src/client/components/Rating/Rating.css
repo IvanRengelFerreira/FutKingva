@@ -53,3 +53,9 @@
 .rating--loss {
   --rating-color: var(--status-loss);
 }
+
+/* Sin valoración: mismo hexágono, apagado, con «—» (como la cabecera de la ficha de jugador) */
+.rating--none {
+  --rating-color: var(--bg-elevated);
+  color: var(--text-tertiary);
+}

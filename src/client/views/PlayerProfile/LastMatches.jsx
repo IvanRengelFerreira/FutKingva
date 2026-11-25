@@ -1,13 +1,14 @@
 import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import FormGuide from '../../components/FormGuide/FormGuide.jsx';
+import Rating from '../../components/Rating/Rating.jsx';
 import { MISSING, formatNumber, formatScore } from './format.js';
 
 const MOBILE_MATCHES_COUNT = 4;
 const DESKTOP_MATCHES_COUNT = 5;
 
 // Últimos partidos del jugador: tabla en escritorio (5) y lista en móvil (4, como el mockup).
-// Sin valoración por partido porque la BD solo guarda valoración media por temporada.
+// La valoración por partido es la del mockup; la BD aún no la tiene, así que sale «—» hasta tener una fuente.
 function opponentName(match) {
   const name = match.opponent?.shortName ?? match.opponent?.name ?? MISSING;
   return match.venue ? `${name} (${match.venue})` : name;
@@ -24,6 +25,10 @@ function Result({ match }) {
       <span className="player-match__score">{formatScore(match.score)}</span>
     </span>
   );
+}
+
+function Value({ rating, size }) {
+  return rating != null ? <Rating value={rating} size={size} /> : <span className="player-match__none">{MISSING}</span>;
 }
 
 export default function LastMatches({ team, lastMatches, isMobile }) {
@@ -59,6 +64,7 @@ export default function LastMatches({ team, lastMatches, isMobile }) {
                 </p>
               </div>
               <Result match={match} />
+              <Value rating={match.rating} size="md" />
             </li>
           ))}
         </ul>
@@ -77,6 +83,9 @@ export default function LastMatches({ team, lastMatches, isMobile }) {
                 </th>
                 <th scope="col" className="player-matches__min">
                   Min
+                </th>
+                <th scope="col" className="player-matches__rating">
+                  Val.
                 </th>
               </tr>
             </thead>
@@ -103,6 +112,9 @@ export default function LastMatches({ team, lastMatches, isMobile }) {
                     {formatNumber(match.assists)}
                   </td>
                   <td className="player-matches__min">{formatMinutes(match.minutes)}</td>
+                  <td className="player-matches__rating">
+                    <Value rating={match.rating} size="sm" />
+                  </td>
                 </tr>
               ))}
             </tbody>

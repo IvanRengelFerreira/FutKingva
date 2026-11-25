@@ -14,7 +14,7 @@ import useIsMobile from './useIsMobile.js';
 import './PlayerProfile.css';
 
 // 04 · Ficha de jugador: cabecera con valoración, indicadores de la temporada, gráfico de
-// minutos por partido y últimos partidos. Pública. El jugador sale del id de la dirección
+// rendimiento por jornada y últimos partidos. Pública. El jugador sale del id de la dirección
 // (/jugadores/2354) y sus datos, de la API (GET /api/players/2354).
 // Diseño: Figma › Mockups › 04 · Ficha de jugador
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=45-221
