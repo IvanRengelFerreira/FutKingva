@@ -15,6 +15,7 @@ import { adminRouter } from './routes/admin.js';
 import { syncRouter } from './routes/sync.js';
 import { contactRouter } from './routes/contact.js';
 import { playerDataRouter } from './routes/playerData.js';
+import { playersRouter } from './routes/players.js';
 
 export function createApp() {
   const app = express();
@@ -44,6 +45,7 @@ export function createApp() {
   app.use('/api/admin/sync', syncRouter); // Ivan · 20 Administración (TEMPORAL: botones de sincronización)
   app.use('/api/contact', contactRouter); // Carlota · 16 Contacto
   app.use('/api/player-data', playerDataRouter); // Carlota · 19 Actualizar datos
+  app.use('/api/players', playersRouter); // Ivan · 04 Ficha de jugador
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común

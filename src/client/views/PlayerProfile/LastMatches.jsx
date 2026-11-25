@@ -1,17 +1,16 @@
 import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import FormGuide from '../../components/FormGuide/FormGuide.jsx';
-import Rating from '../../components/Rating/Rating.jsx';
-import { getTeam } from '../../data/mockData.js';
 import { MISSING, formatNumber, formatScore } from './format.js';
 
+const MOBILE_MATCHES_COUNT = 4;
+const DESKTOP_MATCHES_COUNT = 5;
+
 // Últimos partidos del jugador: tabla en escritorio (5) y lista en móvil (4, como el mockup).
-// «(C)» = jugó en casa, «(F)» = fuera (viene de PLAYER_PROFILE_EXTRAS; si no está, no se pone).
-function opponentName(match, venues) {
-  const team = getTeam(match.opponentId);
-  const name = team?.shortName ?? team?.name ?? MISSING;
-  const venue = venues?.[match.round];
-  return venue ? `${name} (${venue})` : name;
+// Sin valoración por partido porque la BD solo guarda valoración media por temporada.
+function opponentName(match) {
+  const name = match.opponent?.shortName ?? match.opponent?.name ?? MISSING;
+  return match.venue ? `${name} (${match.venue})` : name;
 }
 
 function formatMinutes(minutes) {
@@ -27,12 +26,8 @@ function Result({ match }) {
   );
 }
 
-function Value({ rating, size }) {
-  return rating != null ? <Rating value={rating} size={size} /> : <span className="player-match__none">{MISSING}</span>;
-}
-
-export default function LastMatches({ player, extras, isMobile }) {
-  const matches = (player.lastMatches ?? []).slice(0, isMobile ? 4 : 5);
+export default function LastMatches({ team, lastMatches, isMobile }) {
+  const matches = lastMatches.slice(0, isMobile ? MOBILE_MATCHES_COUNT : DESKTOP_MATCHES_COUNT);
 
   return (
     <section className="player-matches" aria-labelledby="player-matches-title">
@@ -41,9 +36,11 @@ export default function LastMatches({ player, extras, isMobile }) {
           Últimos partidos
         </h2>
         <span className="player-section-head__line" aria-hidden="true" />
-        <Link className="player-section-head__link" to={`/equipos/${player.teamId}`}>
-          {isMobile ? 'Ver' : 'Ver todos'} <span aria-hidden="true">→</span>
-        </Link>
+        {team && (
+          <Link className="player-section-head__link" to={`/equipos/${team.id}`}>
+            {isMobile ? 'Ver' : 'Ver todos'} <span aria-hidden="true">→</span>
+          </Link>
+        )}
       </div>
 
       {matches.length === 0 ? (
@@ -53,16 +50,15 @@ export default function LastMatches({ player, extras, isMobile }) {
       ) : isMobile ? (
         <ul className="player-card player-matches__list">
           {matches.map((match) => (
-            <li key={match.round} className="player-match-item">
-              <Crest teamId={match.opponentId} size={36} />
+            <li key={match.id} className="player-match-item">
+              <Crest team={match.opponent} size={36} />
               <div className="player-match-item__info">
-                <p className="player-match-item__name">{opponentName(match, extras.venues)}</p>
+                <p className="player-match-item__name">{opponentName(match)}</p>
                 <p className="player-match-item__stats">
                   {formatNumber(match.goals)} G · {formatNumber(match.assists)} A · {formatMinutes(match.minutes)}
                 </p>
               </div>
               <Result match={match} />
-              <Value rating={match.rating} size="md" />
             </li>
           ))}
         </ul>
@@ -82,18 +78,15 @@ export default function LastMatches({ player, extras, isMobile }) {
                 <th scope="col" className="player-matches__min">
                   Min
                 </th>
-                <th scope="col" className="player-matches__rating">
-                  Val.
-                </th>
               </tr>
             </thead>
             <tbody>
               {matches.map((match) => (
-                <tr key={match.round}>
+                <tr key={match.id}>
                   <td>
                     <span className="player-match__rival">
-                      <Crest teamId={match.opponentId} size={26} />
-                      {opponentName(match, extras.venues)}
+                      <Crest team={match.opponent} size={26} />
+                      {opponentName(match)}
                     </span>
                   </td>
                   <td>
@@ -110,9 +103,6 @@ export default function LastMatches({ player, extras, isMobile }) {
                     {formatNumber(match.assists)}
                   </td>
                   <td className="player-matches__min">{formatMinutes(match.minutes)}</td>
-                  <td className="player-matches__rating">
-                    <Value rating={match.rating} size="sm" />
-                  </td>
                 </tr>
               ))}
             </tbody>

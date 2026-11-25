@@ -1,49 +1,64 @@
-import { MISSING, formatNumber, formatPercent } from './format.js';
+import { MISSING, formatNumber, formatRank } from './format.js';
 
-// Indicadores de la temporada. Como StatCard, pero con una línea más debajo de la etiqueta
-// (en escritorio: «668 minutos», «xG 1,5»…). Lo que falta en los datos sale «—».
-// El mockup móvil usa otros indicadores y otro orden que el de escritorio, de ahí dos listas.
-function desktopStats(player, extras) {
+// Indicadores de la temporada con los datos reales de player_season_stats (sin xG, precisión de pase ni pases clave,
+// que no existen en la BD). Lo que falta en la temporada actual sale «—».
+function desktopStats(stats, ranks) {
+  const played = stats?.played;
+  const minutes = stats?.minutes;
+  const goals = stats?.goals;
+
   return [
     {
       label: 'Partidos',
-      value: formatNumber(player.matches),
-      detail: player.minutes != null ? `${player.minutes} minutos` : null,
+      value: formatNumber(played),
+      detail: played > 0 && minutes != null ? `${Math.round(minutes / played)} min/partido` : null,
+    },
+    {
+      label: 'Minutos',
+      value: formatNumber(minutes),
+      detail: null,
     },
     {
       label: 'Goles',
-      value: formatNumber(player.goals),
-      detail: player.xg != null ? `xG ${formatNumber(player.xg, 1)}` : null,
+      value: formatNumber(goals),
+      detail: goals != null && played > 0 ? `${formatNumber(goals / played, 2)} por partido` : null,
     },
-    { label: 'Asistencias', value: formatNumber(player.assists), tone: 'gold', detail: extras.assistsRank },
     {
-      label: 'Precisión pase',
-      value: formatPercent(player.passAccuracy),
-      tone: 'win',
-      detail: extras.passAccuracyChange,
+      label: 'Asistencias',
+      value: formatNumber(stats?.assists),
+      tone: 'gold',
+      detail: formatRank(ranks?.assists),
     },
-    { label: 'Pases clave', value: formatNumber(extras.keyPasses), detail: extras.keyPassesPer90 },
-    { label: 'Tarjetas', value: formatNumber(player.cards), detail: player.cards != null ? 'Amarillas' : null },
+    {
+      label: 'Amarillas',
+      value: formatNumber(stats?.yellowCards),
+      detail: null,
+    },
+    {
+      label: 'Rojas',
+      value: formatNumber(stats?.redCards),
+      detail: null,
+    },
   ];
 }
 
-function mobileStats(player) {
+function mobileStats(stats) {
   return [
-    { label: 'Partidos', value: formatNumber(player.matches) },
-    { label: 'Goles', value: formatNumber(player.goals) },
-    { label: 'Asist.', value: formatNumber(player.assists), tone: 'gold' },
-    { label: 'Minutos', value: formatNumber(player.minutes) },
-    { label: 'xG', value: formatNumber(player.xg, 1) },
-    { label: 'Pase', value: formatPercent(player.passAccuracy), tone: 'win' },
+    { label: 'Partidos', value: formatNumber(stats?.played) },
+    { label: 'Goles', value: formatNumber(stats?.goals) },
+    { label: 'Asist.', value: formatNumber(stats?.assists), tone: 'gold' },
+    { label: 'Minutos', value: formatNumber(stats?.minutes) },
+    { label: 'Amarillas', value: formatNumber(stats?.yellowCards) },
+    { label: 'Rojas', value: formatNumber(stats?.redCards) },
   ];
 }
 
-export default function PlayerStats({ player, extras, isMobile }) {
-  const stats = isMobile ? mobileStats(player) : desktopStats(player, extras);
+export default function PlayerStats({ stats, ranks, isMobile }) {
+  const items = isMobile ? mobileStats(stats) : desktopStats(stats, ranks);
 
   return (
     <ul className="player-stats" aria-label="Indicadores de la temporada">
-      {stats.map((stat) => (
+      {items.map((stat) => (
         <li key={stat.label} className={`player-stat player-stat--${stat.tone ?? 'default'}`}>
           <span className="player-stat__value">{stat.value}</span>
           <span className="player-stat__label">{stat.label}</span>
