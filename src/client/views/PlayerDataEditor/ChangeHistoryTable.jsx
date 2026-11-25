@@ -1,52 +1,67 @@
 import Avatar from '../../components/Avatar/Avatar.jsx';
-import { getPlayer } from '../../data/mockData.js';
+import LoadingState from '../../components/LoadingState/LoadingState.jsx';
+import ErrorState from '../../components/ErrorState/ErrorState.jsx';
+import { fieldLabel } from '../../../shared/validation/playerData.js';
+import { displayValue, shortDay } from './playerDataFields.js';
 
-export default function ChangeHistoryTable({ entries }) {
+// Historial de cambios (GET /api/player-data/history): las correcciones de todos los editores, las últimas primero
+export default function ChangeHistoryTable({ history }) {
+  const { data, error, loading, reload } = history;
+
   return (
     <div className="player-data__history">
       <h2 className="player-data__history-title">Historial de cambios</h2>
-      <div className="player-data__table">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">
-                <span className="player-data__more">Fecha</span>
-                <span className="player-data__less">Día</span>
-              </th>
-              <th scope="col">Jugador · campo</th>
-              <th scope="col">Cambio</th>
-              <th scope="col" className="player-data__by">
-                Por
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((entry) => {
-              const player = getPlayer(entry.playerId);
-              return (
+      {loading && !data && <LoadingState label="Cargando historial…" />}
+      {error && <ErrorState error={error} title="No se ha podido cargar el historial" onRetry={reload} />}
+      {data && (
+        <div className="player-data__table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <span className="player-data__more">Fecha</span>
+                  <span className="player-data__less">Día</span>
+                </th>
+                <th scope="col">Jugador · campo</th>
+                <th scope="col">Cambio</th>
+                <th scope="col" className="player-data__by">
+                  Por
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.items.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="player-data__history-empty">
+                    Todavía no hay cambios.
+                  </td>
+                </tr>
+              )}
+              {data.items.map((entry) => (
                 <tr key={entry.id}>
-                  <td className="player-data__date">{entry.date}</td>
+                  <td className="player-data__date">{shortDay(entry.createdAt)}</td>
                   <td>
                     <span className="player-data__entry">
-                      <Avatar name={player?.name} size={26} />
+                      <Avatar name={entry.player.name} size={26} />
                       <span>
-                        <span className="player-data__entry-name">{player?.name}</span>
-                        <span className="player-data__entry-field">{entry.field}</span>
+                        <span className="player-data__entry-name">{entry.player.name}</span>
+                        <span className="player-data__entry-field">{fieldLabel(entry.field)}</span>
                       </span>
                     </span>
                   </td>
                   <td className="player-data__change">
-                    {entry.from} <span className="player-data__arrow" aria-label="pasa a" /> <strong>{entry.to}</strong>
+                    {displayValue(entry.oldValue)} <span className="player-data__arrow" aria-label="pasa a" />{' '}
+                    <strong>{displayValue(entry.newValue)}</strong>
                   </td>
                   <td className="player-data__by">
-                    <Avatar initials={entry.by} name={entry.by} size={26} />
+                    <Avatar name={entry.editor?.name ?? '?'} size={26} />
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

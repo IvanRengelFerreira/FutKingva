@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import TextField from '../../components/TextField/TextField.jsx';
-import Select from '../../components/Select/Select.jsx';
-import Checkbox from '../../components/Checkbox/Checkbox.jsx';
-import Button from '../../components/Button/Button.jsx';
-import { isValidEmail } from '../Access/validation.js';
-import sendIcon from '../../assets/icon-send.svg';
+import ContactForm from './ContactForm.jsx';
 import mapIcon from '../../assets/icon-map.svg';
 import arrowIcon from '../../assets/icon-arrow-right.svg';
 import atIcon from '../../assets/icon-at.svg';
@@ -16,22 +11,9 @@ import './Contact.css';
 
 // 16 · Contacto: formulario para escribir al equipo y, al lado, otras formas de contacto,
 // preguntas frecuentes y redes sociales. Se llega desde el pie, el menú móvil y Acceso.
-// Sin servidor: al enviar no se manda nada; si todo está bien, sale el aviso verde y el formulario se vacía.
-// Los errores salen al pulsar «Enviar mensaje» y desaparecen al corregir el campo (como en Acceso).
-// Los textos de ayuda de los campos son el ejemplo de Figma: la usuaria que avisa de la tarjeta de Pedri,
-// que luego se corrige en Actualizar datos (19).
+// El formulario (ContactForm) guarda el mensaje en la base de datos con POST /api/contact.
 // Diseño: Figma › Mockups › 16 · Contacto
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=59-1254
-
-const SUBJECTS = [
-  { value: 'consulta', label: 'Duda o consulta' },
-  { value: 'sugerencia', label: 'Sugerencia' },
-  { value: 'datos', label: 'Error en los datos' },
-  { value: 'editor', label: 'Quiero ser editor' },
-  { value: 'otro', label: 'Otro' },
-];
-
-const MAX_MESSAGE = 1000;
 
 const FAQS = [
   {
@@ -63,49 +45,14 @@ const SOCIALS = [
   { label: 'Chat de la comunidad', icon: chatIcon },
 ];
 
-const EMPTY_FORM = { name: '', email: '', subject: '', message: '', accepted: false };
-
-// Mensaje de error del correo (null = está bien)
-function emailError(email) {
-  if (!email.trim()) return 'Escribe tu correo electrónico';
-  if (!isValidEmail(email)) return 'El correo no es válido';
-  return null;
-}
-
-// Errores de cada campo del formulario (null = está bien)
-function validateForm(form) {
-  return {
-    name: form.name.trim() ? null : 'Escribe tu nombre',
-    email: emailError(form.email),
-    subject: form.subject ? null : 'Elige un asunto',
-    message: form.message.trim() ? null : 'Escribe tu mensaje',
-    accepted: form.accepted ? null : 'Tienes que aceptar la política de privacidad',
-  };
-}
-
 export default function Contact() {
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [submitted, setSubmitted] = useState(false); // Ya ha pulsado «Enviar»: se enseñan los errores
   const [sent, setSent] = useState(false);
+  // Cambia tras cada envío correcto: React vuelve a montar el formulario y queda vacío y sin errores
+  const [formKey, setFormKey] = useState(0);
 
-  // Errores de cada campo (null = está bien); se calculan siempre y se enseñan tras pulsar «Enviar»
-  const errors = validateForm(form);
-  const shown = (field) => (submitted ? errors[field] : null);
-
-  function change(field, value) {
-    setForm((current) => ({ ...current, [field]: value }));
-    setSent(false);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    if (Object.values(errors).some(Boolean)) {
-      setSubmitted(true);
-      return;
-    }
-    setForm(EMPTY_FORM);
-    setSubmitted(false);
+  function handleSent() {
     setSent(true);
+    setFormKey((key) => key + 1);
   }
 
   return (
@@ -121,70 +68,7 @@ export default function Contact() {
       </header>
 
       <div className="contact__layout">
-        <form className="contact__form" onSubmit={handleSubmit} noValidate>
-          <div className="contact__row">
-            <TextField
-              label="Nombre"
-              placeholder="Carlota"
-              autoComplete="name"
-              value={form.name}
-              onChange={(e) => change('name', e.target.value)}
-              error={shown('name')}
-            />
-            <TextField
-              label="Correo electrónico"
-              type="email"
-              placeholder="carlota.r@ejemplo.com"
-              autoComplete="email"
-              value={form.email}
-              onChange={(e) => change('email', e.target.value)}
-              error={shown('email')}
-            />
-          </div>
-
-          <Select
-            label="Asunto"
-            placeholder="Elige un asunto"
-            options={SUBJECTS}
-            value={form.subject}
-            onChange={(e) => change('subject', e.target.value)}
-            error={shown('subject')}
-          />
-
-          <TextField
-            className="contact__message"
-            label="Mensaje"
-            multiline
-            maxLength={MAX_MESSAGE}
-            placeholder="En la ficha de Pedri aparecen 2 tarjetas, pero en el último partido vio otra amarilla. ¿Podéis revisarlo?"
-            value={form.message}
-            onChange={(e) => change('message', e.target.value)}
-            error={shown('message')}
-          />
-
-          <Checkbox
-            checked={form.accepted}
-            onChange={(e) => change('accepted', e.target.checked)}
-            error={shown('accepted')}
-          >
-            Acepto la política de privacidad
-          </Checkbox>
-
-          <div className="contact__actions">
-            <Button type="submit" className="contact__submit">
-              <img src={sendIcon} alt="" width="16" height="16" />
-              Enviar mensaje
-            </Button>
-            <p className="contact__sent" role="status">
-              {sent && (
-                <>
-                  <span className="contact__sent-icon" aria-hidden="true" />
-                  Mensaje enviado. Te responderemos en 48 h.
-                </>
-              )}
-            </p>
-          </div>
-        </form>
+        <ContactForm key={formKey} sent={sent} onSent={handleSent} onChange={() => setSent(false)} />
 
         <aside className="contact__side">
           <div className="contact__box">

@@ -48,11 +48,6 @@
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--status-win) 20%, transparent);
 }
 
-.player-data__dot--syncing {
-  background: var(--accent-gold);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-gold) 20%, transparent);
-}
-
 .player-data__sync-text p {
   margin: 0;
 }
@@ -131,6 +126,13 @@
   grid-template-columns: minmax(0, 1fr) 500px;
   align-items: start;
   gap: 32px;
+}
+
+.player-data__main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 }
 
 .player-data__card {
@@ -276,6 +278,12 @@
 }
 
 /* Historial de cambios */
+.player-data__history-empty {
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
 .player-data__history {
   display: flex;
   flex-direction: column;
