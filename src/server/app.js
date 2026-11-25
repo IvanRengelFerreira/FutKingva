@@ -10,6 +10,7 @@ import { loadUser } from './middleware/auth.js';
 import { authRouter } from './routes/auth.js';
 import { standingsRouter } from './routes/standings.js';
 import { teamsRouter } from './routes/teams.js';
+import { playersRouter } from './routes/players.js';
 import { contactRouter } from './routes/contact.js';
 import { playerDataRouter } from './routes/playerData.js';
 
@@ -36,6 +37,7 @@ export function createApp() {
   app.use('/api/auth', authRouter); // Ivan · 14 Acceso
   app.use('/api/standings', standingsRouter); // Angel · 05 Clasificaciones
   app.use('/api/teams', teamsRouter); // Angel · 03 Ficha de equipo
+  app.use('/api/players', playersRouter); // Angel · 02 Equipos y jugadores
   app.use('/api/contact', contactRouter); // Carlota · 16 Contacto
   app.use('/api/player-data', playerDataRouter); // Carlota · 19 Actualizar datos
   // ---------------------------------------------------------------------------

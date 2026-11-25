@@ -5,6 +5,7 @@
 import { existsSync } from 'node:fs';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { config } from './config.js';
+import { TEAM_SUMMARY_FIELDS } from './utils/teams.js';
 
 if (!existsSync(new URL('./generated/prisma/client.ts', import.meta.url))) {
   throw new Error('Falta el cliente de Prisma: ejecuta `npx prisma@7.10.1 generate` en src/server.');
@@ -27,4 +28,14 @@ export const prisma = new PrismaClient({
 export async function findUserByEmail(email) {
   const [row] = await prisma.$queryRaw`SELECT id FROM users WHERE lower(email) = lower(${email}) LIMIT 1`;
   return row ? prisma.users.findUnique({ where: { id: row.id } }) : null;
+}
+
+// Equipos de una temporada (inscritos o en la tabla), cada uno con su fila de standings (ninguna o una).
+// Lo comparten los listados de equipos y de jugadores.
+export function findSeasonTeams(seasonId) {
+  const inSeason = { some: { season_id: seasonId } };
+  return prisma.teams.findMany({
+    where: { OR: [{ season_teams: inSeason }, { standings: inSeason }] },
+    select: { ...TEAM_SUMMARY_FIELDS, standings: { where: { season_id: seasonId } } },
+  });
 }

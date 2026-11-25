@@ -1,10 +1,15 @@
-// Ficha de un equipo de LaLiga (03 · Ficha de equipo, RF2). Responsable: Angel.
+// Equipos de LaLiga (RF2). Responsable: Angel.
+//
+// Listado (02 · Equipos y jugadores): cada equipo con su fila de la clasificación.
+//   GET /api/teams?season=2025&q=real&sort=standings|name|goals&limit=12&offset=0
+//
+// Ficha (03 · Ficha de equipo):
 //   GET /api/teams/:id              → temporada actual
 //   GET /api/teams/:id?season=2025  → la 2025/26
 // Datos del club, su fila de la clasificación (y la tabla entera para la pestaña Estadísticas),
 // la plantilla, los próximos partidos y los últimos resultados.
 
-import { prisma } from '../db.js';
+import { prisma, findSeasonTeams } from '../db.js';
 import { AppError } from '../errors/AppError.js';
 import { resolveSeason, seasonSummary } from '../utils/seasons.js';
 import { TEAM_SUMMARY_FIELDS, teamSummary } from '../utils/teams.js';
@@ -12,11 +17,54 @@ import { standingRow } from '../utils/standings.js';
 import { playerSummary, bySquadOrder } from '../utils/players.js';
 import { MATCH_TEAMS, teamMatch } from '../utils/matches.js';
 import { readId } from '../utils/params.js';
+import { readPagination } from '../utils/pagination.js';
+import { readNameFilter, readSort, byName } from '../utils/search.js';
 
 const COMPETITION = 'LaLiga'; // Por ahora solo hay datos de LaLiga
 const UPCOMING_COUNT = 3; // Como en el mockup: los tres próximos
 const RESULTS_COUNT = 5; // Los mismos que la forma
 const UPCOMING_STATUSES = ['SCHEDULED', 'TIMED', 'IN_PLAY', 'PAUSED'];
+
+// Órdenes del listado (el primero, si no se pide ninguno). Los equipos sin fila en la tabla van al final.
+const TEAM_ORDERS = {
+  standings: (a, b) => byPosition(a, b) || byName(a, b),
+  name: byName,
+  goals: (a, b) => goalsFor(b) - goalsFor(a) || byPosition(a, b) || byName(a, b),
+};
+
+export async function list(req, res) {
+  const { limit, offset } = readPagination(req.query);
+  const sort = readSort(req.query.sort, Object.keys(TEAM_ORDERS));
+  const matchesName = readNameFilter(req.query.q);
+  const { season, isCurrent } = await resolveSeason(req.query.season);
+
+  const teams = (await findSeasonTeams(season.id))
+    .filter((team) => matchesName(team.name, team.short_name))
+    .map(teamListItem)
+    .sort(TEAM_ORDERS[sort]);
+
+  res.json({
+    items: teams.slice(offset, offset + limit),
+    total: teams.length,
+    limit,
+    offset,
+    season: { ...seasonSummary(season), isCurrent },
+  });
+}
+
+function teamListItem(team) {
+  const [row] = team.standings;
+  return { ...teamSummary(team), standing: row ? standingRow({ ...row, teams: team }) : null };
+}
+
+function byPosition(a, b) {
+  const last = Number.MAX_SAFE_INTEGER;
+  return (a.standing?.position ?? last) - (b.standing?.position ?? last);
+}
+
+function goalsFor(team) {
+  return team.standing?.goalsFor ?? -1;
+}
 
 export async function detail(req, res) {
   const id = readId(req.params.id, 'id del equipo');
