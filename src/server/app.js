@@ -16,6 +16,8 @@ import { syncRouter } from './routes/sync.js';
 import { contactRouter } from './routes/contact.js';
 import { playerDataRouter } from './routes/playerData.js';
 import { playersRouter } from './routes/players.js';
+import { favoritesRouter } from './routes/favorites.js';
+import { profileRouter } from './routes/profile.js';
 
 export function createApp() {
   const app = express();
@@ -46,6 +48,8 @@ export function createApp() {
   app.use('/api/contact', contactRouter); // Carlota · 16 Contacto
   app.use('/api/player-data', playerDataRouter); // Carlota · 19 Actualizar datos
   app.use('/api/players', playersRouter); // Ivan · 04 Ficha de jugador
+  app.use('/api/me/favorites', favoritesRouter); // Ivan · 12 Mi perfil
+  app.use('/api/me/profile', profileRouter); // Ivan · 12 Mi perfil
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común

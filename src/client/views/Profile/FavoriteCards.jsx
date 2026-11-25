@@ -1,12 +1,13 @@
 import { Link } from 'react-router';
 import Crest from '../../components/Crest/Crest.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
-import { getTeam, getPlayer, STANDINGS_LALIGA } from '../../data/mockData.js';
 import starFilledIcon from '../../assets/icon-star-filled.svg';
 
+const MISSING = '—';
+
 // Equipos favoritos: escudo, nombre, «LaLiga · 1.º · 24 pts» y estrella para quitarlo
-export function FavoriteTeams({ teamIds, onRemove }) {
-  if (teamIds.length === 0) {
+export function FavoriteTeams({ teams, onRemove }) {
+  if (teams.length === 0) {
     return (
       <p className="profile__empty">
         No sigues a ningún equipo. Márcalos con la estrella en <Link to="/equipos">Equipos y jugadores</Link>.
@@ -16,21 +17,23 @@ export function FavoriteTeams({ teamIds, onRemove }) {
 
   return (
     <ul className="profile__cards">
-      {teamIds.map((teamId) => {
-        const team = getTeam(teamId);
-        const row = STANDINGS_LALIGA.find((item) => item.teamId === teamId);
+      {teams.map((team) => {
+        const meta = [
+          team.competition,
+          team.position != null && `${team.position}.º`,
+          team.points != null && `${team.points} pts`,
+        ]
+          .filter(Boolean)
+          .join(' · ');
+
         return (
-          <li key={teamId} className="profile-card">
-            <Crest teamId={teamId} size={44} />
-            <Link className="profile-card__text" to={`/equipos/${teamId}`}>
-              <span className="profile-card__name">{team?.name}</span>
-              <span className="profile-card__meta">
-                {[team?.competition, row && `${row.position}.º`, row && `${row.points} pts`]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </span>
+          <li key={team.id} className="profile-card">
+            <Crest team={team} size={44} />
+            <Link className="profile-card__text" to={`/equipos/${team.id}`}>
+              <span className="profile-card__name">{team.name}</span>
+              {meta && <span className="profile-card__meta">{meta}</span>}
             </Link>
-            <FavoriteStar name={team?.name} onClick={() => onRemove(teamId)} />
+            <FavoriteStar name={team.name} onClick={() => onRemove(team.id)} />
           </li>
         );
       })}
@@ -39,26 +42,26 @@ export function FavoriteTeams({ teamIds, onRemove }) {
 }
 
 // Jugadores favoritos: avatar con el color del club, nombre, «FCB · 2 G · 4 A» y estrella para quitarlo
-export function FavoritePlayers({ playerIds, onRemove }) {
-  if (playerIds.length === 0) {
+export function FavoritePlayers({ players, onRemove }) {
+  if (players.length === 0) {
     return <p className="profile__empty">No sigues a ningún jugador.</p>;
   }
 
   return (
     <ul className="profile__cards">
-      {playerIds.map((playerId) => {
-        const player = getPlayer(playerId);
-        const team = getTeam(player?.teamId);
+      {players.map((player) => {
+        const meta = [player.team?.code, `${player.goals ?? MISSING} G`, `${player.assists ?? MISSING} A`]
+          .filter(Boolean)
+          .join(' · ');
+
         return (
-          <li key={playerId} className="profile-card">
-            <Avatar name={player?.name} size={44} color={team?.color} />
-            <Link className="profile-card__text" to={`/jugadores/${playerId}`}>
-              <span className="profile-card__name">{player?.name}</span>
-              <span className="profile-card__meta">
-                {team?.code} · {player?.goals ?? 0} G · {player?.assists ?? 0} A
-              </span>
+          <li key={player.id} className="profile-card">
+            <Avatar name={player.name} size={44} color={player.team?.color} />
+            <Link className="profile-card__text" to={`/jugadores/${player.id}`}>
+              <span className="profile-card__name">{player.name}</span>
+              <span className="profile-card__meta">{meta}</span>
             </Link>
-            <FavoriteStar name={player?.name} onClick={() => onRemove(playerId)} />
+            <FavoriteStar name={player.name} onClick={() => onRemove(player.id)} />
           </li>
         );
       })}

@@ -44,6 +44,15 @@ export function numericDate(iso) {
   });
 }
 
+/** Mes y año en hora de Madrid: «09/2026» */
+export function monthYear(iso) {
+  return new Date(iso).toLocaleDateString('es-ES', {
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: TIME_ZONE,
+  });
+}
+
 /** Fecha del día en español (hora de Madrid): { full: «Martes 24 de noviembre», short: «Mar 24 nov» } */
 export function todayLabel(date = new Date()) {
   const full = date

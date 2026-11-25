@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { PROFILE_EXAMPLE, IDEAL_TEAM_EXAMPLE, getPlayer } from '../data/mockData.js';
 import { CHANGE_HISTORY } from '../data/changeHistory.js';
+import { useFavoritesData } from './useFavoritesData.js';
 
-// Lo que el usuario guarda en la web: favoritos, comparativas, equipo ideal y, para los editores,
-// las correcciones de datos de jugadores. No hay servidor, así que se guarda en el navegador
-// (localStorage): se mantiene al cambiar de página y al recargar.
-// Empieza con los datos de ejemplo de mockData.js (los del mockup de Mi perfil).
+// Lo que el usuario guarda en la web: favoritos (API /api/me/favorites en useFavoritesData, no se guardan
+// en el navegador) y comparativas, equipo ideal y correcciones de editores (en localStorage hasta conectarlos).
 //
 // Uso en cualquier componente o vista:
 //   const { favoriteTeams, toggleFavoriteTeam, savedComparisons, saveComparison, idealTeam, saveIdealTeam } = useUserData();
-//   favoriteTeams / favoritePlayers   → ids de TEAMS / PLAYERS
-//   toggleFavoriteTeam(id) · toggleFavoritePlayer(id)
+//   favoriteTeams / favoritePlayers         → ids numéricos desde /api/me/favorites (useFavoritesData)
+//   favoriteTeamItems / favoritePlayerItems → datos completos para las tarjetas de 12 · Mi perfil
+//   favoritesLoading / favoritesError / reloadFavorites · toggleFavoriteTeam(id) · toggleFavoritePlayer(id)
 //   savedComparisons → [{ id, name, playerIds, date }] · saveComparison(playerIds) devuelve la comparativa guardada
 //   removeComparison(id)
 //   idealTeam → { name, formation, players: [{ slot, playerId }] } · saveIdealTeam(team)
@@ -23,8 +23,6 @@ const STORAGE_KEY = 'futkingva-user-data';
 const TODAY_DATE = '17/10/2026';
 
 const INITIAL_DATA = {
-  favoriteTeams: PROFILE_EXAMPLE.favoriteTeams,
-  favoritePlayers: PROFILE_EXAMPLE.favoritePlayers,
   savedComparisons: PROFILE_EXAMPLE.savedComparisons,
   idealTeam: {
     name: IDEAL_TEAM_EXAMPLE.name,
@@ -72,11 +70,6 @@ function storeData(data) {
   }
 }
 
-/** Añade el id a la lista, o lo quita si ya estaba */
-function toggleId(list, id) {
-  return list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
-}
-
 /** Misma clave para los mismos jugadores, en cualquier orden: detecta comparativas repetidas */
 function comparisonKey(playerIds) {
   return [...playerIds].sort().join(',');
@@ -95,6 +88,7 @@ function comparisonName(playerIds) {
 const UserDataContext = createContext(null);
 
 export function UserDataProvider({ children }) {
+  const favorites = useFavoritesData();
   const [data, setData] = useState(() => {
     const initial = readStoredData();
     applyCorrections(initial.playerCorrections);
@@ -104,14 +98,6 @@ export function UserDataProvider({ children }) {
   useEffect(() => {
     storeData(data);
   }, [data]);
-
-  function toggleFavoriteTeam(teamId) {
-    setData((current) => ({ ...current, favoriteTeams: toggleId(current.favoriteTeams, teamId) }));
-  }
-
-  function toggleFavoritePlayer(playerId) {
-    setData((current) => ({ ...current, favoritePlayers: toggleId(current.favoritePlayers, playerId) }));
-  }
 
   // Guarda la comparativa (si ya había una con los mismos jugadores, la sustituye) y la pone la primera
   function saveComparison(playerIds) {
@@ -150,8 +136,7 @@ export function UserDataProvider({ children }) {
 
   const value = {
     ...data,
-    toggleFavoriteTeam,
-    toggleFavoritePlayer,
+    ...favorites,
     saveComparison,
     removeComparison,
     saveIdealTeam,
