@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { IDEAL_TEAM_EXAMPLE, getPlayer } from '../data/mockData.js';
+import { getPlayer } from '../data/mockData.js';
 import { CHANGE_HISTORY } from '../data/changeHistory.js';
 import { useFavoritesData } from './useFavoritesData.js';
 import { useComparisonsData } from './useComparisonsData.js';
+import { useIdealTeamData } from './useIdealTeamData.js';
 
-// Lo que el usuario guarda en la web: favoritos (API /api/me/favorites en useFavoritesData) y comparativas
-// (API /api/me/comparisons en useComparisonsData), que no se guardan en el navegador; equipo ideal y
-// correcciones de editores (en localStorage hasta conectarlos).
+// Lo que el usuario guarda en la web. Favoritos (useFavoritesData → /api/me/favorites), comparativas
+// (useComparisonsData → /api/me/comparisons) y equipo ideal (useIdealTeamData → /api/me/ideal-team) vienen
+// de la API y no se guardan en el navegador; las correcciones de editores siguen en localStorage.
 //
 // Uso en cualquier componente o vista:
 //   const { favoriteTeams, toggleFavoriteTeam, savedComparisons, saveComparison, idealTeam, saveIdealTeam } = useUserData();
@@ -15,18 +16,14 @@ import { useComparisonsData } from './useComparisonsData.js';
 //   favoritesLoading / favoritesError / reloadFavorites · toggleFavoriteTeam(id) · toggleFavoritePlayer(id)
 //   savedComparisons → [{ id, name, playerIds, players, createdAt, date }] · saveComparison(playerIds) devuelve la comparativa guardada
 //   removeComparison(id)
-//   idealTeam → { name, formation, players: [{ slot, playerId }] } · saveIdealTeam(team)
+//   idealTeam → { name, formation, updatedAt, season, players: [{ slot, playerId, player }] } (desde /api/me/ideal-team)
+//   idealTeamLoading · idealTeamError · reloadIdealTeam() · saveIdealTeam(team)
 //   playerCorrections → { playerId: { campo: valor } } · dataHistory → historial de 19 · Actualizar datos
 //   savePlayerCorrection(playerId, changes, entries)
 
 const STORAGE_KEY = 'futkingva-user-data';
 
 const INITIAL_DATA = {
-  idealTeam: {
-    name: IDEAL_TEAM_EXAMPLE.name,
-    formation: IDEAL_TEAM_EXAMPLE.formation,
-    players: IDEAL_TEAM_EXAMPLE.players,
-  },
   playerCorrections: {},
   dataHistory: CHANGE_HISTORY,
 };
@@ -73,6 +70,7 @@ const UserDataContext = createContext(null);
 export function UserDataProvider({ children }) {
   const favorites = useFavoritesData();
   const comparisons = useComparisonsData();
+  const idealTeamData = useIdealTeamData();
   const [data, setData] = useState(() => {
     const initial = readStoredData();
     applyCorrections(initial.playerCorrections);
@@ -82,10 +80,6 @@ export function UserDataProvider({ children }) {
   useEffect(() => {
     storeData(data);
   }, [data]);
-
-  function saveIdealTeam(team) {
-    setData((current) => ({ ...current, idealTeam: team }));
-  }
 
   // changes: { campo: valor escrito } · entries: filas nuevas del historial (las más recientes, primero)
   function savePlayerCorrection(playerId, changes, entries) {
@@ -104,7 +98,7 @@ export function UserDataProvider({ children }) {
     ...data,
     ...favorites,
     ...comparisons,
-    saveIdealTeam,
+    ...idealTeamData,
     savePlayerCorrection,
   };
 

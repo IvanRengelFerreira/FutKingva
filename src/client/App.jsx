@@ -35,7 +35,7 @@ import NotFound from './views/NotFound/NotFound.jsx';
 // Proveedores (envuelven toda la web, de fuera adentro):
 //   SessionProvider       → la sesión del usuario (useSession), guardada en el servidor.
 //   NotificationsProvider → los avisos del usuario (useNotifications); va dentro de la sesión.
-//   UserDataProvider      → favoritos, comparativas, equipo ideal y correcciones (useUserData), en el navegador.
+//   UserDataProvider      → favoritos, comparativas y equipo ideal (API) y correcciones (navegador): useUserData.
 
 const EDITORS = ['editor'];
 const ADMINS = ['admin'];

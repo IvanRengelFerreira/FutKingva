@@ -5,15 +5,14 @@
 // Cada función devuelve un objeto { campo: 'mensaje' } solo con los campos que fallan ({} si todo vale).
 // JavaScript puro, sin dependencias, para que funcione en Node y en el navegador.
 
+import { onlyErrors, text } from './common.js';
+
 export const NAME_MIN = 2;
 export const NAME_MAX = 40;
 export const EMAIL_MAX = 254;
 export const PASSWORD_MIN = 8;
 // Tope para que nadie mande una contraseña enorme y haga trabajar de más al servidor al calcular el hash
 export const PASSWORD_MAX = 128;
-
-// Lo que llega del servidor puede no ser texto (null, números…): se trata como vacío
-const text = (value) => (typeof value === 'string' ? value : '');
 
 /** Correo con forma algo@algo.algo */
 export function isValidEmail(email) {
@@ -35,11 +34,6 @@ export function passwordError(password) {
   if (value.length > PASSWORD_MAX) return `La contraseña no puede tener más de ${PASSWORD_MAX} caracteres`;
   if (!/\p{L}/u.test(value) || !/\d/.test(value)) return 'La contraseña tiene que tener al menos una letra y un número';
   return null;
-}
-
-// Quita los campos sin error
-function onlyErrors(errors) {
-  return Object.fromEntries(Object.entries(errors).filter(([, message]) => message));
 }
 
 function nameError(name) {
