@@ -18,6 +18,7 @@ import { playerDataRouter } from './routes/playerData.js';
 import { playersRouter } from './routes/players.js';
 import { favoritesRouter } from './routes/favorites.js';
 import { profileRouter } from './routes/profile.js';
+import { comparisonsRouter } from './routes/comparisons.js';
 
 export function createApp() {
   const app = express();
@@ -50,6 +51,7 @@ export function createApp() {
   app.use('/api/players', playersRouter); // Ivan · 04 Ficha de jugador
   app.use('/api/me/favorites', favoritesRouter); // Ivan · 12 Mi perfil
   app.use('/api/me/profile', profileRouter); // Ivan · 12 Mi perfil
+  app.use('/api/me/comparisons', comparisonsRouter); // Ivan · 10 Comparador
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común

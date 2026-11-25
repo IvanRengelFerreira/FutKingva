@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import Avatar from '../../components/Avatar/Avatar.jsx';
-import { getPlayer } from '../../data/mockData.js';
+import FieldError from '../../components/FieldError/FieldError.jsx';
 
 // Colores de los jugadores de una comparativa (los mismos del Comparador: serie 1, 2, 3 y 4)
 const SERIES = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)'];
+const REMOVE_ERROR_MESSAGE = 'No se ha podido eliminar la comparativa.';
 
 // Comparativas guardadas: tabla en escritorio y tarjetas en móvil. «Abrir» lleva al Comparador.
 export default function SavedComparisons({ comparisons, onRemove }) {
+  const [removingId, setRemovingId] = useState(null);
+  const [removeError, setRemoveError] = useState(null);
+
   if (comparisons.length === 0) {
     return (
       <p className="profile__empty">
@@ -15,8 +20,22 @@ export default function SavedComparisons({ comparisons, onRemove }) {
     );
   }
 
+  async function handleRemove(id) {
+    setRemovingId(id);
+    setRemoveError(null);
+    try {
+      await onRemove(id);
+    } catch (error) {
+      setRemoveError(error?.message || REMOVE_ERROR_MESSAGE);
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
   return (
     <>
+      <FieldError>{removeError}</FieldError>
+
       <div className="profile-comparisons profile__desktop-block">
         <table className="profile-comparisons__table">
           <caption className="profile__sr-only">Comparativas guardadas</caption>
@@ -39,11 +58,15 @@ export default function SavedComparisons({ comparisons, onRemove }) {
               <tr key={comparison.id}>
                 <th scope="row">{comparison.name}</th>
                 <td className="profile-comparisons__players-col">
-                  <ComparisonPlayers playerIds={comparison.playerIds} />
+                  <ComparisonPlayers players={comparison.players} />
                 </td>
                 <td className="profile-comparisons__date">{comparison.date}</td>
                 <td className="profile-comparisons__actions">
-                  <ComparisonActions comparison={comparison} onRemove={onRemove} />
+                  <ComparisonActions
+                    comparison={comparison}
+                    removing={removingId === comparison.id}
+                    onRemove={handleRemove}
+                  />
                 </td>
               </tr>
             ))}
@@ -54,13 +77,17 @@ export default function SavedComparisons({ comparisons, onRemove }) {
       <ul className="profile__list profile__mobile-flex">
         {comparisons.map((comparison) => (
           <li key={comparison.id} className="profile-card">
-            <ComparisonPlayers playerIds={comparison.playerIds} />
+            <ComparisonPlayers players={comparison.players} />
             <span className="profile-card__text">
               <span className="profile-card__name">{comparison.name}</span>
               <span className="profile-card__meta">{comparison.date}</span>
             </span>
             <span className="profile-card__buttons">
-              <ComparisonActions comparison={comparison} onRemove={onRemove} />
+              <ComparisonActions
+                comparison={comparison}
+                removing={removingId === comparison.id}
+                onRemove={handleRemove}
+              />
             </span>
           </li>
         ))}
@@ -70,18 +97,18 @@ export default function SavedComparisons({ comparisons, onRemove }) {
 }
 
 // Avatares de los jugadores de una comparativa, montados uno sobre otro con el color de su serie
-function ComparisonPlayers({ playerIds }) {
+function ComparisonPlayers({ players }) {
   return (
     <span className="profile-comparison__players">
-      {playerIds.map((playerId, i) => (
-        <Avatar key={playerId} name={getPlayer(playerId)?.name} size={30} color={SERIES[i]} />
+      {players.map((player, i) => (
+        <Avatar key={player.id} name={player.name} size={30} color={SERIES[i]} />
       ))}
     </span>
   );
 }
 
 // «Abrir» (lleva al Comparador con los jugadores de la comparativa) y «Eliminar»
-function ComparisonActions({ comparison, onRemove }) {
+function ComparisonActions({ comparison, removing, onRemove }) {
   return (
     <>
       <Link
@@ -92,7 +119,12 @@ function ComparisonActions({ comparison, onRemove }) {
       >
         Abrir
       </Link>
-      <button type="button" className="profile__action profile__action--danger" onClick={() => onRemove(comparison.id)}>
+      <button
+        type="button"
+        className="profile__action profile__action--danger"
+        disabled={removing}
+        onClick={() => onRemove(comparison.id)}
+      >
         Eliminar
       </button>
     </>
