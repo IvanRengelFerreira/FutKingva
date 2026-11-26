@@ -33,10 +33,9 @@ model articles {
   author_id           BigInt?
   title               String
   summary             String?
-  body                Json
+  body                Json                  @db.JsonB
   category            String
-  cover               Json?
-  views               Int                   @default(0)
+  cover               Json?                 @db.JsonB
   tags                String[]              @default([])
   status              article_status        @default(DRAFT)
   published_at        DateTime?             @db.Timestamptz(6)

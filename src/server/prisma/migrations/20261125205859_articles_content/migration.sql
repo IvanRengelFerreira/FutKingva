@@ -5,13 +5,15 @@
 -- y volver a crear `body`, lo que pierde el texto). No toca los CHECK, triggers ni índices de 0_init.
 --
 --   articles.category  Táctica | Crónica | Previa | Datos
---   articles.views     visitas totales (se suman en cada GET /api/articles/:id)
 --   articles.body      texto en bloques jsonb, sin HTML (la web lo pinta con React)
 --   articles.cover     portada dibujada { "type": …, … } (la forma la comprueba el servidor;
 --                      los ids de equipo de dentro no llevan clave ajena)
 --   articles.cover_url se quita: no hay servidor de archivos
 --   users.title        cargo que sale bajo el autor («Editora», «Editor»…); opcional
---   article_daily_views visitas por día → «Visitas este mes» y la comparación con el mes anterior (17)
+--   article_daily_views visitas por día: única fuente de las visitas. Cada GET /api/articles/:id hace
+--                      INSERT … ON CONFLICT (article_id, day) DO UPDATE SET views = views + 1 (no toca
+--                      `articles`, así no salta el trigger de updated_at). Total = SUM(views); «Visitas
+--                      este mes» y la comparación con el mes anterior (17) = SUM filtrando por `day`
 --   saved_articles     artículos guardados por cada usuario (botón «Guardar» de 09)
 --
 -- «Programado» = PUBLISHED con published_at en el futuro (el enum article_status no cambia).
@@ -21,10 +23,6 @@ ALTER TABLE articles ADD COLUMN category text NOT NULL DEFAULT 'Datos';
 ALTER TABLE articles ALTER COLUMN category DROP DEFAULT;
 ALTER TABLE articles ADD CONSTRAINT articles_category_check
   CHECK (category IN ('Táctica', 'Crónica', 'Previa', 'Datos'));
-
--- Visitas totales
-ALTER TABLE articles ADD COLUMN views integer NOT NULL DEFAULT 0;
-ALTER TABLE articles ADD CONSTRAINT articles_views_check CHECK (views >= 0);
 
 -- Cuerpo en bloques: el texto que ya hubiera pasa a ser un párrafo (no se pierde)
 ALTER TABLE articles ALTER COLUMN body TYPE jsonb USING jsonb_build_array(
@@ -42,7 +40,7 @@ ALTER TABLE articles DROP COLUMN cover_url;
 ALTER TABLE users ADD COLUMN title text;
 ALTER TABLE users ADD CONSTRAINT users_title_check CHECK (title IS NULL OR length(title) BETWEEN 1 AND 40);
 
--- Visitas por día (una fila por artículo y día con visitas; se suma junto con articles.views)
+-- Visitas por día (una fila por artículo y día con visitas)
 CREATE TABLE article_daily_views (
   article_id bigint  NOT NULL REFERENCES articles (id) ON DELETE CASCADE,
   day        date    NOT NULL,
