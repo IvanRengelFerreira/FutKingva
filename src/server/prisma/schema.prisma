@@ -29,22 +29,48 @@ model appearances {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model articles {
-  id           BigInt         @id @default(autoincrement())
-  author_id    BigInt?
-  title        String
-  summary      String?
-  body         String
-  cover_url    String?
-  tags         String[]       @default([])
-  status       article_status @default(DRAFT)
-  published_at DateTime?      @db.Timestamptz(6)
-  created_at   DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime       @default(now()) @db.Timestamptz(6)
-  users        users?         @relation(fields: [author_id], references: [id], onUpdate: NoAction)
-  reports      reports[]
+  id                  BigInt                @id @default(autoincrement())
+  author_id           BigInt?
+  title               String
+  summary             String?
+  body                Json
+  category            String
+  cover               Json?
+  views               Int                   @default(0)
+  tags                String[]              @default([])
+  status              article_status        @default(DRAFT)
+  published_at        DateTime?             @db.Timestamptz(6)
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  users               users?                @relation(fields: [author_id], references: [id], onUpdate: NoAction)
+  reports             reports[]
+  article_daily_views article_daily_views[]
+  saved_articles      saved_articles[]
 
   @@index([author_id], map: "articles_author_idx")
   @@index([status, published_at(sort: Desc)], map: "articles_status_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model article_daily_views {
+  article_id BigInt
+  day        DateTime @db.Date
+  views      Int      @default(0)
+  articles   articles @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([article_id, day])
+  @@index([day], map: "article_daily_views_day_idx")
+}
+
+model saved_articles {
+  user_id    BigInt
+  article_id BigInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  articles   articles @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, article_id])
+  @@index([article_id], map: "saved_articles_article_idx")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -460,6 +486,7 @@ model users {
   email                              String                @unique
   password_hash                      String
   name                               String
+  title                              String?
   role                               user_role             @default(USER)
   status                             user_status           @default(ACTIVE)
   created_at                         DateTime              @default(now()) @db.Timestamptz(6)
@@ -471,6 +498,7 @@ model users {
   ideal_teams                        ideal_teams?
   notifications                      notifications[]
   player_data_changes                player_data_changes[]
+  saved_articles                     saved_articles[]
   reports_reports_reporter_idTousers reports[]             @relation("reports_reporter_idTousers")
   reports_reports_resolved_byTousers reports[]             @relation("reports_resolved_byTousers")
 }
