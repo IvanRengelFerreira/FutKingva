@@ -8,8 +8,8 @@ import chevronIcon from '../../assets/icon-chevron-right-lg.svg';
 // de 03 · Ficha de equipo y 13 · Resultados de búsqueda).
 //   Escritorio: tabla con jugador, equipo, posición, PJ, goles, asistencias y valoración
 //   Móvil: tarjetas con avatar, nombre, «FCB · Extremo · 5 G · 3 A» y valoración
-// rows: { ...player, team } de teamsData.js · mobileRows: las que se ven en móvil (con «Cargar más»)
-export default function PlayerList({ rows, mobileRows }) {
+// players: los de GET /api/players ({ ...jugador, team }): en escritorio, la página; en móvil, los ya cargados
+export default function PlayerList({ players }) {
   return (
     <>
       <div className="teams__table-wrapper teams__desktop-block">
@@ -39,7 +39,7 @@ export default function PlayerList({ rows, mobileRows }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((player) => (
+            {players.map((player) => (
               <tr key={player.id}>
                 <th scope="row">
                   <Link className="teams__player" to={`/jugadores/${player.id}`}>
@@ -48,12 +48,16 @@ export default function PlayerList({ rows, mobileRows }) {
                   </Link>
                 </th>
                 <td className="teams__team-col">
-                  <Link className="teams__player-team" to={`/equipos/${player.teamId}`}>
-                    <Crest teamId={player.teamId} size={22} />
-                    {player.team?.name}
-                  </Link>
+                  {player.team ? (
+                    <Link className="teams__player-team" to={`/equipos/${player.team.id}`}>
+                      <Crest team={player.team} size={22} />
+                      {player.team.name}
+                    </Link>
+                  ) : (
+                    '—'
+                  )}
                 </td>
-                <td className="teams__position-col">{player.position}</td>
+                <td className="teams__position-col">{player.position ?? '—'}</td>
                 <td className="teams__num">{player.matches ?? '—'}</td>
                 <td className="teams__num teams__big">{player.goals ?? '—'}</td>
                 <td className="teams__num teams__big">{player.assists ?? '—'}</td>
@@ -67,14 +71,16 @@ export default function PlayerList({ rows, mobileRows }) {
       </div>
 
       <ul className="teams__list teams__mobile-flex">
-        {mobileRows.map((player) => (
+        {players.map((player) => (
           <li key={player.id}>
             <Link className="teams__item" to={`/jugadores/${player.id}`}>
               <Avatar name={player.name} size={44} color={player.team?.color} />
               <span className="teams__item-text">
                 <span className="teams__item-name">{player.name}</span>
                 <span className="teams__item-meta">
-                  {player.team?.code} · {player.position} · {player.goals ?? 0} G · {player.assists ?? 0} A
+                  {[player.team?.code, player.position, `${player.goals ?? 0} G`, `${player.assists ?? 0} A`]
+                    .filter(Boolean)
+                    .join(' · ')}
                 </span>
               </span>
               {player.rating != null ? (
