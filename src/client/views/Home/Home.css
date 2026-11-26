@@ -274,7 +274,7 @@
   text-decoration: none;
 }
 
-.home-star:hover {
+a.home-star:hover {
   border-color: var(--accent-gold);
 }
 

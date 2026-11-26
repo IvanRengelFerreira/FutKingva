@@ -39,9 +39,7 @@ export default function IdealTeamCard({ team }) {
             {team.formation} · {totals.count}/{slots.length} jugadores · {goalsText}
           </span>
         </span>
-        {totals.averageRating != null && (
-          <Rating value={totals.averageRating} size="md" className="profile__desktop-flex" />
-        )}
+        <Rating value={totals.averageRating} size="md" className="profile__desktop-flex" />
       </div>
       <Link className="profile__outline-button" to="/equipo-ideal">
         <img src={editIcon} alt="" width="16" height="16" />

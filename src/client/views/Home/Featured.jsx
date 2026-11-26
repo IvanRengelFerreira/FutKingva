@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import ArticleCard from '../../components/ArticleCard/ArticleCard.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
+import Rating from '../../components/Rating/Rating.jsx';
 import Button from '../../components/Button/Button.jsx';
 import { useSession } from '../../context/SessionContext.jsx';
 import { numericDate } from '../../services/format.js';
@@ -31,10 +32,25 @@ export default function Featured({ article, topScorer }) {
         />
       )}
 
-      {topScorer && <TopScorerCard player={topScorer} />}
+      {topScorer ? <TopScorerCard player={topScorer} /> : <EmptyTopScorerCard />}
 
       <Favorites />
     </aside>
+  );
+}
+
+// La tarjeta del mockup se mantiene aunque la jornada aún no tenga datos por jugador (BD sin partidos jugados uno a uno)
+function EmptyTopScorerCard() {
+  return (
+    <div className="home-star">
+      <Avatar initials="—" size={60} className="home-star__avatar" />
+      <span className="home-star__text">
+        <span className="home-star__eyebrow">Jugador de la jornada</span>
+        <span className="home-star__name">—</span>
+        <span className="home-star__note">Todavía no hay datos de la jornada.</span>
+      </span>
+      <Rating value={null} size="lg" className="home-star__rating" />
+    </div>
   );
 }
 
@@ -55,6 +71,7 @@ function TopScorerCard({ player }) {
           {player.team?.name ?? '—'} · {goalsLabel}
         </span>
       </span>
+      <Rating value={player.rating} size="lg" className="home-star__rating" />
     </Link>
   );
 }

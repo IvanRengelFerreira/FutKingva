@@ -1,5 +1,6 @@
 // Estadísticas del comparador (10 · Comparador): qué filas salen en la tabla, cómo se escriben
-// y cuál es el mejor valor de cada una (la corona). Solo usa datos reales disponibles en la BD.
+// y cuál es el mejor valor de cada una (la corona). Las filas y ejes son los del mockup: los que la BD
+// aún no tiene (xG, tiros a puerta, % de pases, valoración) salen vacíos («—») hasta tener una fuente.
 
 import { shortPlayerName } from '../../../shared/players.js';
 
@@ -14,17 +15,21 @@ export const STATS = [
   { id: 'minutes', label: 'Minutos', best: null, perMatch: true },
   { id: 'goals', label: 'Goles', best: 'max', perMatch: true },
   { id: 'assists', label: 'Asistencias', best: 'max', perMatch: true },
+  { id: 'xg', label: 'xG', best: 'max', perMatch: true, decimals: 1 },
+  { id: 'shotsOnTarget', label: 'Tiros a puerta', best: 'max', perMatch: true },
+  { id: 'passAccuracy', label: 'Pases completados %', best: 'max', suffix: ' %' },
   { id: 'cards', label: 'Tarjetas', best: 'min', perMatch: true },
   { id: 'rating', label: 'Valoración media', best: 'max', decimals: 1 },
 ];
 
-// Ejes del radar con los datos disponibles en la BD (sin valoración, que es NULL en toda la BD); siempre totales
+// Ejes del radar (los mismos del mockup); siempre con los totales de la temporada
 export const RADAR_AXES = [
-  { id: 'matches', label: 'Partidos', max: 38 },
-  { id: 'minutes', label: 'Minutos', max: 3420 },
-  { id: 'goals', label: 'Goles', max: 25 },
-  { id: 'assists', label: 'Asistencias', max: 15 },
-  { id: 'cards', label: 'Tarjetas', max: 15 },
+  { id: 'goals', label: 'Goles', max: 8 },
+  { id: 'assists', label: 'Asistencias', max: 6 },
+  { id: 'xg', label: 'xG', max: 8 },
+  { id: 'shotsOnTarget', label: 'Tiros', max: 20 },
+  { id: 'passAccuracy', label: 'Pase %', min: 50, max: 100 },
+  { id: 'rating', label: 'Valoración', min: 5, max: 9 },
 ];
 
 export const MODES = [
@@ -52,12 +57,12 @@ export function statValue(player, stat, mode) {
   return value;
 }
 
-// «4,0» · en «Por partido», con dos decimales (los minutos, sin decimales)
+// «4,0» · «91 %» · en «Por partido», con dos decimales (los minutos, sin decimales)
 export function formatStat(value, stat, mode) {
   if (value == null) return MISSING;
   let decimals = stat.decimals ?? 0;
   if (mode === 'perMatch' && stat.perMatch) decimals = stat.id === 'minutes' ? 0 : 2;
-  return value.toFixed(decimals).replace('.', ',');
+  return value.toFixed(decimals).replace('.', ',') + (stat.suffix ?? '');
 }
 
 // Índices de los jugadores con el mejor valor (pueden empatar). Sin corona si todos empatan.
@@ -81,7 +86,7 @@ export function radarAxesFor(players) {
 
 // Valores para el radar: si falta un dato, el punto va al centro del eje
 export function radarValues(player) {
-  return Object.fromEntries(RADAR_AXES.map((axis) => [axis.id, rawStatValue(player, axis.id) ?? 0]));
+  return Object.fromEntries(RADAR_AXES.map((axis) => [axis.id, rawStatValue(player, axis.id) ?? axis.min ?? 0]));
 }
 
 // Nombre corto para la tabla y el radar: «Jude Bellingham» → «Bellingham»; «Pedri» y «Vinícius Jr.» se quedan igual

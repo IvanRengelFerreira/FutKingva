@@ -7,6 +7,11 @@ export function formatNumber(value, decimals = 0) {
   return value.toFixed(decimals).replace('.', ',');
 }
 
+// 91 → «91 %» · undefined → «—»
+export function formatPercent(value) {
+  return value == null ? MISSING : `${value} %`;
+}
+
 // 174 → «1,74 m»
 export function formatHeight(heightCm) {
   return heightCm != null ? `${(heightCm / 100).toFixed(2).replace('.', ',')} m` : null;

@@ -1,45 +1,38 @@
-import { MISSING, formatNumber, formatRank } from './format.js';
+import { MISSING, formatNumber, formatPercent, formatRank } from './format.js';
 
-// Indicadores de la temporada con los datos reales de player_season_stats (sin xG, precisión de pase ni pases clave,
-// que no existen en la BD). Lo que falta en la temporada actual sale «—».
+// Indicadores de la temporada: los del mockup. Los que la BD aún no tiene (xG, precisión de pase,
+// pases clave) salen «—» hasta tener una fuente. El mockup móvil usa otros indicadores, de ahí dos listas.
 function desktopStats(stats, ranks) {
-  const played = stats?.played;
-  const minutes = stats?.minutes;
-  const goals = stats?.goals;
-
   return [
     {
       label: 'Partidos',
-      value: formatNumber(played),
-      detail: played > 0 && minutes != null ? `${Math.round(minutes / played)} min/partido` : null,
-    },
-    {
-      label: 'Minutos',
-      value: formatNumber(minutes),
-      detail: null,
+      value: formatNumber(stats?.played),
+      detail: stats?.minutes != null ? `${formatNumber(stats.minutes)} minutos` : null,
     },
     {
       label: 'Goles',
-      value: formatNumber(goals),
-      detail: goals != null && played > 0 ? `${formatNumber(goals / played, 2)} por partido` : null,
+      value: formatNumber(stats?.goals),
+      detail: stats?.xg != null ? `xG ${formatNumber(stats.xg, 1)}` : null,
     },
-    {
-      label: 'Asistencias',
-      value: formatNumber(stats?.assists),
-      tone: 'gold',
-      detail: formatRank(ranks?.assists),
-    },
-    {
-      label: 'Amarillas',
-      value: formatNumber(stats?.yellowCards),
-      detail: null,
-    },
-    {
-      label: 'Rojas',
-      value: formatNumber(stats?.redCards),
-      detail: null,
-    },
+    { label: 'Asistencias', value: formatNumber(stats?.assists), tone: 'gold', detail: formatRank(ranks?.assists) },
+    { label: 'Precisión pase', value: formatPercent(stats?.passAccuracy), tone: 'win', detail: null },
+    { label: 'Pases clave', value: formatNumber(stats?.keyPasses), detail: null },
+    { label: 'Tarjetas', value: formatNumber(totalCards(stats)), detail: cardsDetail(stats) },
   ];
+}
+
+// Tarjetas = amarillas + rojas (como en el comparador); null si no hay ninguno de los dos datos
+function totalCards(stats) {
+  if (stats?.yellowCards == null && stats?.redCards == null) return null;
+  return (stats.yellowCards ?? 0) + (stats.redCards ?? 0);
+}
+
+// «3 amarillas · 1 roja»
+function cardsDetail(stats) {
+  if (totalCards(stats) == null) return null;
+  const yellow = stats.yellowCards ?? 0;
+  const red = stats.redCards ?? 0;
+  return `${yellow} ${yellow === 1 ? 'amarilla' : 'amarillas'} · ${red} ${red === 1 ? 'roja' : 'rojas'}`;
 }
 
 function mobileStats(stats) {
@@ -48,8 +41,8 @@ function mobileStats(stats) {
     { label: 'Goles', value: formatNumber(stats?.goals) },
     { label: 'Asist.', value: formatNumber(stats?.assists), tone: 'gold' },
     { label: 'Minutos', value: formatNumber(stats?.minutes) },
-    { label: 'Amarillas', value: formatNumber(stats?.yellowCards) },
-    { label: 'Rojas', value: formatNumber(stats?.redCards) },
+    { label: 'xG', value: formatNumber(stats?.xg, 1) },
+    { label: 'Pase', value: formatPercent(stats?.passAccuracy), tone: 'win' },
   ];
 }
 
