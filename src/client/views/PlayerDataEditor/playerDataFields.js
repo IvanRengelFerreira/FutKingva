@@ -1,8 +1,7 @@
 import { POSITIONS, STAT_FIELDS } from '../../../shared/validation/playerData.js';
 
-// Casillas del formulario, en el orden de Figma. Las de STAT_FIELDS se guardan en la BD;
-// xG y tiros a puerta salen como en el diseño pero no se pueden corregir:
-// el xG se calculará a partir de otros datos (no se guarda) y los tiros a puerta aún no los tenemos.
+// Casillas del formulario, en el orden de Figma. Todas se guardan en la BD (player_season_stats).
+// El xG lleva decimales («1,45»): se escribe con coma o con punto y se enseña con coma.
 const stat = (key) => STAT_FIELDS.find((field) => field.key === key);
 
 export const FORM_FIELDS = [
@@ -10,8 +9,8 @@ export const FORM_FIELDS = [
   stat('minutes'),
   stat('goals'),
   stat('assists'),
-  { key: 'xg', label: 'xG', readOnly: true, hint: 'Se calculará' },
-  { key: 'shotsOnTarget', label: 'Tiros a puerta', readOnly: true, hint: 'Sin datos' },
+  stat('xg'),
+  stat('shotsOnTarget'),
   stat('yellowCards'),
   stat('redCards'),
 ];
@@ -21,40 +20,51 @@ export const POSITION_OPTIONS = POSITIONS.map((position) => position.value);
 const EDITABLE_KEYS = [...STAT_FIELDS.map((field) => field.key), 'position'];
 const EMPTY = '—'; // Dato que todavía no tenemos (null en la BD)
 
+/** Número de la BD → texto en español (1.5 → «1,5») */
+function toText(value) {
+  return String(value).replace('.', ',');
+}
+
+/** Texto de una casilla → número («1,5» → 1.5; «abc» → NaN, no válido; vacío → null) */
+function toNumber(text) {
+  const clean = text.trim().replace(',', '.');
+  if (!clean) return null;
+  return /^\d+(\.\d+)?$/.test(clean) ? Number(clean) : Number.NaN;
+}
+
 /** Datos de la API → textos de las casillas (null → vacío) */
 export function toFormValues(data) {
   const values = { position: data.player.position ?? '' };
   STAT_FIELDS.forEach((field) => {
     const value = data.stats[field.key];
-    values[field.key] = value == null ? '' : String(value);
+    values[field.key] = value == null ? '' : toText(value);
   });
   return values;
 }
 
-/** Texto para enseñar un valor guardado («antes 2», historial): vacío o null → «—» */
+/** Texto para enseñar un valor guardado («antes 2», historial): vacío o null → «—»; «1.5» → «1,5» */
 export function displayValue(value) {
-  return value == null || value === '' ? EMPTY : String(value);
+  return value == null || value === '' ? EMPTY : toText(value);
 }
 
-// ¿Es el mismo dato? «03» = «3», y los espacios no cuentan
+// ¿Es el mismo dato? «03» = «3», «1,50» = «1.5», y los espacios no cuentan
 function sameValue(a, b) {
-  const textA = a.trim();
-  const textB = b.trim();
-  if (textA === textB) return true;
-  return /^\d+$/.test(textA) && /^\d+$/.test(textB) && Number(textA) === Number(textB);
+  if (a.trim() === b.trim()) return true;
+  const numberA = toNumber(a);
+  const numberB = toNumber(b);
+  return numberA != null && !Number.isNaN(numberA) && numberA === numberB;
 }
 
 export function getChangedFields(values, original) {
   return EDITABLE_KEYS.filter((key) => !sameValue(values[key], original[key]));
 }
 
-/** Lo que se envía a la API: solo los campos cambiados, los números como números («abc» → NaN, no válido) */
+/** Lo que se envía a la API: solo los campos cambiados, los números como números (vacío o «abc» → NaN, no válido) */
 export function toPayload(values, changedFields) {
   return Object.fromEntries(
     changedFields.map((key) => {
       if (key === 'position') return [key, values.position];
-      const text = values[key].trim();
-      return [key, /^\d+$/.test(text) ? Number(text) : Number.NaN];
+      return [key, toNumber(values[key]) ?? Number.NaN];
     }),
   );
 }

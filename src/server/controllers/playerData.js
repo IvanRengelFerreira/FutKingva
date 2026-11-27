@@ -21,6 +21,9 @@ const SUGGESTIONS_MAX = 20;
 const HISTORY_LIMIT = 20;
 const HISTORY_MAX = 100;
 const QUERY_MAX = 60;
+// Tildes que se pliegan en SQL para buscar sin distinguirlas («vinicius» encuentra «Vinícius»), como en controllers/players.js
+const ACCENTS_FROM = 'áéíóúüñàèìòùâêîôûäëïöãõçćčšžýțșă';
+const ACCENTS_TO = 'aeiouunaeiouaeiouaeioaocccszytsa';
 
 const PLAYER_FIELDS = {
   id: true,
@@ -65,7 +68,7 @@ export async function search(req, res) {
   const where = {
     ...inSeasonSquads(season.id),
     ...(teamId ? { team_id: teamId } : {}),
-    ...(q ? { name: { contains: q, mode: 'insensitive' } } : {}),
+    ...(q ? { id: { in: await findIdsByName(q) } } : {}),
   };
   const [rows, total] = await Promise.all([
     prisma.players.findMany({ where, orderBy: { name: 'asc' }, take: limit, select: PLAYER_FIELDS }),
@@ -153,6 +156,17 @@ export async function history(req, res) {
 
 // --- Ayudas ----------------------------------------------------------------
 
+// Ids de los jugadores cuyo nombre contiene lo buscado, sin distinguir mayúsculas ni tildes
+async function findIdsByName(text) {
+  const pattern = `%${text.replace(/[\\%_]/g, '\\$&')}%`; // Los comodines de LIKE escritos por el usuario, literales
+  const rows = await prisma.$queryRaw`
+    SELECT id FROM players
+    WHERE translate(lower(name), ${ACCENTS_FROM}, ${ACCENTS_TO})
+          LIKE translate(lower(${pattern}), ${ACCENTS_FROM}, ${ACCENTS_TO}) ESCAPE '\\'
+  `;
+  return rows.map((row) => row.id);
+}
+
 // Jugadores de las plantillas de la temporada (players.team_id es su club de ahora)
 function inSeasonSquads(seasonId) {
   return { teams: { season_teams: { some: { season_id: seasonId } } } };
@@ -183,8 +197,14 @@ function playerProfile(player) {
   };
 }
 
+// El xG llega de Prisma como Decimal: se pasa a número para compararlo y enviarlo
 function statValues(stats) {
-  return Object.fromEntries(STAT_FIELDS.map((field) => [field.key, stats ? stats[field.column] : null]));
+  return Object.fromEntries(
+    STAT_FIELDS.map((field) => {
+      const value = stats ? stats[field.column] : null;
+      return [field.key, value == null ? null : Number(value)];
+    }),
+  );
 }
 
 // Qué campos de la estadística ha corregido un editor ({ yellowCards: true, … })
