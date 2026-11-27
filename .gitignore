@@ -24,8 +24,8 @@ dist/
 npm-debug.log*
 .env
 
-# --- Respuestas de prueba de las fuentes de datos (src/server/scripts/explore*.mjs) ---
-src/server/scripts/samples/
+# --- Scripts de exploración de las APIs y sus respuestas de prueba (solo en local) ---
+src/server/scripts/
 
 # --- Cliente de Prisma generado (npx prisma generate) ---
 src/server/generated/

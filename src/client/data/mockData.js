@@ -1,7 +1,7 @@
 /*
  * FutKingva · Datos de ejemplo
  * ------------------------------------------------------------------
- * Todos los datos de la web, escritos a mano (no hay servidor). Son los
+ * Datos escritos a mano para las páginas que aún no usan la API. Son los
  * mismos que salen en los mockups de Figma, para que todas las páginas
  * cuenten la misma historia.
  *
@@ -30,7 +30,6 @@
  */
 
 export const SEASON = '2026/27';
-export const TODAY = { label: 'Sábado 17 de octubre', round: 9, time: '17:00' };
 
 /* ---------------------------------------------------------------- */
 /* Equipos                                                           */
@@ -339,63 +338,6 @@ export const STANDINGS_ZONES = [
 /* ---------------------------------------------------------------- */
 /* Partidos                                                          */
 /* ---------------------------------------------------------------- */
-
-// En juego a las 17:00. score: [local, visitante] · minute: minuto actual (de 90).
-// Villarreal–Elche es real (acabó 0-0). Los marcadores de la Premier y la Bundesliga
-// son simulados: los partidos sí son de ese día, pero su resultado no se pudo consultar.
-export const LIVE_MATCHES = [
-  { id: 'vil-elc', homeId: 'villarreal', awayId: 'elche', score: [0, 0], minute: 38, competition: 'LaLiga' },
-  {
-    id: 'bre-liv',
-    homeId: 'brentford',
-    awayId: 'liverpool',
-    score: [1, 1],
-    minute: 52,
-    competition: 'Premier League',
-    simulated: true,
-  },
-  {
-    id: 'mci-ips',
-    homeId: 'manchester-city',
-    awayId: 'ipswich',
-    score: [2, 0],
-    minute: 52,
-    competition: 'Premier League',
-    simulated: true,
-  },
-  {
-    id: 'fcu-bvb',
-    homeId: 'union-berlin',
-    awayId: 'dortmund',
-    score: [0, 1],
-    minute: 81,
-    competition: 'Bundesliga',
-    simulated: true,
-  },
-];
-
-// Próximos partidos (hora peninsular): resto de la J9 y los siguientes del Real Madrid (ficha de equipo)
-export const UPCOMING_MATCHES = [
-  { date: 'Sáb 17/10', time: '18:30', homeId: 'real-betis', awayId: 'barcelona' },
-  { date: 'Sáb 17/10', time: '21:00', homeId: 'valencia', awayId: 'athletic-club' },
-  { date: 'Dom 18/10', time: '14:00', homeId: 'osasuna', awayId: 'racing' },
-  { date: 'Dom 18/10', time: '16:15', homeId: 'celta', awayId: 'alaves' },
-  { date: 'Dom 18/10', time: '18:30', homeId: 'malaga', awayId: 'real-sociedad' },
-  { date: 'Dom 18/10', time: '21:00', homeId: 'real-madrid', awayId: 'sevilla' },
-  { date: 'Lun 19/10', time: '21:00', homeId: 'getafe', awayId: 'rayo-vallecano' },
-  { date: 'Mié 21/10', time: '21:00', homeId: 'real-madrid', awayId: 'rb-leipzig', competition: 'Champions League' },
-  { date: 'Dom 25/10', time: '20:00', homeId: 'barcelona', awayId: 'real-madrid', round: 10 }, // el Clásico
-];
-
-// Últimos resultados (J9 ya jugados y final de la J8), del más reciente al más antiguo
-export const LATEST_RESULTS = [
-  { date: '17/10', homeId: 'espanyol', awayId: 'atletico-madrid', score: [0, 1], competition: 'LaLiga' },
-  { date: '16/10', homeId: 'deportivo', awayId: 'levante', score: [1, 1], competition: 'LaLiga' },
-  { date: '12/10', homeId: 'levante', awayId: 'sevilla', score: [3, 3], competition: 'LaLiga' },
-  { date: '11/10', homeId: 'real-betis', awayId: 'osasuna', score: [5, 2], competition: 'LaLiga' },
-  { date: '11/10', homeId: 'real-sociedad', awayId: 'deportivo', score: [3, 2], competition: 'LaLiga' },
-  { date: '11/10', homeId: 'racing', awayId: 'valencia', score: [2, 2], competition: 'LaLiga' },
-];
 
 /* ---------------------------------------------------------------- */
 /* Jugadores (temporada 2026/27)                                     */
@@ -782,33 +724,6 @@ export const PLAYERS = {
   },
 };
 
-// Jugador de la jornada 8: Isco, doblete en el Betis 5-2 Osasuna (real; la nota es estimada)
-export const PLAYER_OF_THE_ROUND = { playerId: 'isco', round: 8, rating: 9.1, note: 'Doblete ante Osasuna' };
-
-// Comparador de ejemplo: jugador A (serie/1, oro), B (serie/2, azul) y C (serie/3, violeta)
-export const COMPARISON_EXAMPLE = ['pedri', 'bellingham', 'lamine-yamal'];
-
-// Equipo ideal de ejemplo (4-3-3, 10 de 11: falta el extremo izquierdo).
-// Regla de negocio: un equipo ideal no repite posición. Totales estimados.
-export const IDEAL_TEAM_EXAMPLE = {
-  name: 'Los Coronados',
-  formation: '4-3-3',
-  players: [
-    { slot: 'POR', playerId: 'courtois' },
-    { slot: 'LD', playerId: 'aramburu' },
-    { slot: 'DFC1', playerId: 'militao' },
-    { slot: 'DFC2', playerId: 'laporte' },
-    { slot: 'LI', playerId: 'balde' },
-    { slot: 'MC1', playerId: 'baena' },
-    { slot: 'MC2', playerId: 'pedri' },
-    { slot: 'MC3', playerId: 'valverde' },
-    { slot: 'ED', playerId: 'lamine-yamal' },
-    { slot: 'DC', playerId: 'mbappe' },
-    { slot: 'EI', playerId: null },
-  ],
-  totals: { goals: 18, assists: 19, averageAge: 26.2, averageRating: 7.5 },
-};
-
 /* ---------------------------------------------------------------- */
 /* Árbitros                                                          */
 /* ---------------------------------------------------------------- */
@@ -1137,114 +1052,6 @@ export const NOTIFICATIONS = [
 /* Panel de administración (estimado)                                */
 /* ---------------------------------------------------------------- */
 
-export const ADMIN_STATS = { users: 1284, editors: 3, blockedAccounts: 7, pendingReports: 3 };
-
-// role: 'user', 'editor' o 'admin' (los mismos que la sesión) · status: 'active' o 'blocked'
-// isCurrentUser: la cuenta con la que se ha entrado (sale «(tú)» y no se puede bloquear)
-export const USERS = [
-  {
-    id: 1,
-    name: 'Lucía Gómez',
-    initials: 'LG',
-    email: 'lucia.g@ejemplo.com',
-    role: 'user',
-    status: 'active',
-    registered: '02/10/2026',
-  },
-  {
-    id: 2,
-    name: 'Carlota R.',
-    initials: 'CR',
-    email: 'carlota.r@ejemplo.com',
-    role: 'editor',
-    status: 'active',
-    registered: '15/09/2026',
-  },
-  {
-    id: 3,
-    name: 'Ángel M.',
-    initials: 'AM',
-    email: 'angel.m@ejemplo.com',
-    role: 'editor',
-    status: 'active',
-    registered: '15/09/2026',
-  },
-  {
-    id: 4,
-    name: 'Admin',
-    initials: 'A',
-    email: 'admin@ejemplo.com',
-    role: 'admin',
-    status: 'active',
-    registered: '14/09/2026',
-    isCurrentUser: true,
-  },
-  {
-    id: 5,
-    name: 'Marcos Pérez',
-    initials: 'MP',
-    email: 'marcos.p@ejemplo.com',
-    role: 'user',
-    status: 'blocked',
-    registered: '28/09/2026',
-  },
-  {
-    id: 6,
-    name: 'Daniel Ruiz',
-    initials: 'DR',
-    email: 'daniel.r@ejemplo.com',
-    role: 'editor',
-    status: 'active',
-    registered: '20/09/2026',
-  },
-  {
-    id: 7,
-    name: 'Sara López',
-    initials: 'SL',
-    email: 'sara.l@ejemplo.com',
-    role: 'user',
-    status: 'active',
-    registered: '11/10/2026',
-  },
-  {
-    id: 8,
-    name: 'Elena Martín',
-    initials: 'EM',
-    email: 'elena.m@ejemplo.com',
-    role: 'user',
-    status: 'active',
-    registered: '16/10/2026',
-  },
-];
-
-// type: 'comment' (Comentario) o 'article' (Artículo)
-export const REPORTS = [
-  {
-    id: 1,
-    content: 'Comentario en «Barça: ocho de ocho y 34 goles…»',
-    type: 'comment',
-    reason: 'Lenguaje ofensivo',
-    author: 'marcos_p',
-    date: '12/10',
-  },
-  {
-    id: 2,
-    content: 'Comentario en «Pedri y el arte de no perder el balón»',
-    type: 'comment',
-    reason: 'Spam / publicidad',
-    author: 'promo_apuestas',
-    date: '16/10',
-  },
-  {
-    id: 3,
-    content: 'Gil Manzano y la tarjeta fácil',
-    type: 'article',
-    reason: 'Posible dato incorrecto',
-    author: 'Carlota R.',
-    date: '14/10',
-  },
-];
-
 /* ---------------------------------------------------------------- */
 /* Funciones de ayuda                                                */
 /* ---------------------------------------------------------------- */
@@ -1266,139 +1073,23 @@ export function getArticle(id) {
   return ARTICLES.find((article) => article.id === id);
 }
 
-// Jugadores de un equipo
-export function getPlayersByTeam(teamId) {
-  return Object.values(PLAYERS).filter((player) => player.teamId === teamId);
-}
-
 // Zona de la tabla a la que pertenece una posición (o undefined si no tiene)
 export function getStandingsZone(position) {
   return STANDINGS_ZONES.find((zone) => position >= zone.from && position <= zone.to);
 }
 
-// --- Página 01 · Inicio ---
-// Análisis destacado de Inicio: artículo de ARTICLES con su entradilla, la cifra del hexágono
-// y los minutos de lectura. Entradilla, cifra (91 %) y minutos son ESTIMADOS (no hay texto real del artículo).
-export const HOME_FEATURED_ARTICLE = {
-  articleId: 'pedri-arte-de-no-perder-el-balon',
-  excerpt:
-    'Cinco partidos seguidos por encima del 90 % de acierto en el pase. Qué ha cambiado en su posición esta temporada.',
-  stat: '91 %',
-  readingMinutes: 6,
-};
-
-// Texto corto de PLAYER_OF_THE_ROUND para el móvil de Inicio (Isco marcó dos goles al Osasuna)
-export const HOME_PLAYER_NOTE_SHORT = '2 goles';
-
 /* ---------------------------------------------------------------- */
 /* --- Página 04 · Ficha de jugador ---                              */
 /* ---------------------------------------------------------------- */
-
-// Datos extra de la ficha de jugador (mockup 04), por id de jugador. TODO ESTIMADO (no se pudo consultar):
-// la altura, el pie, los puestos en LaLiga y los pases clave. Solo está Pedri; el resto de jugadores
-// se muestra con «—» en lo que falta.
-// clubName: nombre del club en la cabecera · fullName: nombre completo
-// ratingRank / assistsRank: puesto en LaLiga · passAccuracyChange: cambio respecto a la 25/26
-// keyPasses: pases clave de la temporada · keyPassesPer90: los mismos por 90 minutos
-// venues: por jornada, C si jugó en casa y F si jugó fuera (para «Getafe (C)»)
-export const PLAYER_PROFILE_EXTRAS = {
-  pedri: {
-    clubName: 'FC Barcelona',
-    fullName: 'Pedro González López',
-    height: '1,74 m',
-    foot: 'Diestro',
-    ratingRank: '3.º mejor de LaLiga',
-    assistsRank: '2.º en LaLiga',
-    passAccuracyChange: '+4 % vs 25/26',
-    keyPasses: 21,
-    keyPassesPer90: '2,8 por 90',
-    venues: { 8: 'C', 7: 'F', 6: 'C', 5: 'F', 4: 'F' },
-  },
-};
 
 /* ---------------------------------------------------------------- */
 /* --- Página 11 · Mi equipo ideal ---                              */
 /* ---------------------------------------------------------------- */
 
-// Edad ESTIMADA (a 17/10/2026) de los jugadores de PLAYERS que no tienen «age». Sirve para la media de edad
-// del equipo ideal; con estas edades el equipo de ejemplo da 26,2 años, como en el mockup.
-export const PLAYER_AGES_ESTIMATED = {
-  courtois: 34,
-  'alexander-arnold': 28,
-  militao: 28,
-  huijsen: 21,
-  valverde: 28,
-  vinicius: 26,
-  'raul-asencio': 23,
-  aramburu: 24,
-  laporte: 32,
-  balde: 22,
-  baena: 25,
-  raphinha: 29,
-  'gerard-martin': 24,
-  'nico-williams': 24,
-  kubo: 25,
-  'giuliano-simeone': 23,
-};
-
 /* ---------------------------------------------------------------- */
 /* --- Página 03 · Ficha de equipo ---                               */
 /* ---------------------------------------------------------------- */
 
-// Estadio y año de fundación de los 20 equipos de LaLiga (según Wikipedia, 2025).
-// stadium: como sale en la cabecera de la ficha («Estadio Santiago Bernabéu») · stadiumShort: versión corta del móvil
-export const TEAM_PROFILE_EXTRAS = {
-  'real-madrid': { stadium: 'Estadio Santiago Bernabéu', stadiumShort: 'Santiago Bernabéu', founded: 1902 },
-  barcelona: { stadium: 'Spotify Camp Nou', stadiumShort: 'Camp Nou', founded: 1899 },
-  'atletico-madrid': { stadium: 'Riyadh Air Metropolitano', stadiumShort: 'Metropolitano', founded: 1903 },
-  'real-betis': { stadium: 'Estadio Benito Villamarín', stadiumShort: 'Benito Villamarín', founded: 1907 },
-  sevilla: { stadium: 'Estadio Ramón Sánchez-Pizjuán', stadiumShort: 'Sánchez-Pizjuán', founded: 1890 },
-  'real-sociedad': { stadium: 'Reale Arena', stadiumShort: 'Reale Arena', founded: 1909 },
-  alaves: { stadium: 'Estadio de Mendizorroza', stadiumShort: 'Mendizorroza', founded: 1921 },
-  deportivo: { stadium: 'Estadio Abanca Riazor', stadiumShort: 'Riazor', founded: 1906 },
-  celta: { stadium: 'Estadio Abanca Balaídos', stadiumShort: 'Balaídos', founded: 1923 },
-  'athletic-club': { stadium: 'San Mamés', stadiumShort: 'San Mamés', founded: 1898 },
-  villarreal: { stadium: 'Estadio de la Cerámica', stadiumShort: 'La Cerámica', founded: 1923 },
-  espanyol: { stadium: 'RCDE Stadium', stadiumShort: 'RCDE Stadium', founded: 1900 },
-  'rayo-vallecano': { stadium: 'Estadio de Vallecas', stadiumShort: 'Vallecas', founded: 1924 },
-  getafe: { stadium: 'Coliseum', stadiumShort: 'Coliseum', founded: 1983 },
-  racing: { stadium: 'Campos de Sport de El Sardinero', stadiumShort: 'El Sardinero', founded: 1913 },
-  osasuna: { stadium: 'Estadio El Sadar', stadiumShort: 'El Sadar', founded: 1920 },
-  levante: { stadium: 'Estadio Ciutat de València', stadiumShort: 'Ciutat de València', founded: 1909 },
-  elche: { stadium: 'Estadio Martínez Valero', stadiumShort: 'Martínez Valero', founded: 1923 },
-  valencia: { stadium: 'Estadio de Mestalla', stadiumShort: 'Mestalla', founded: 1919 },
-  malaga: { stadium: 'Estadio La Rosaleda', stadiumShort: 'La Rosaleda', founded: 1904 },
-};
-
-// Últimos resultados de un equipo en su ficha, del más reciente al más antiguo.
-// Solo está el Real Madrid (los del mockup 03, ESTIMADOS); cuadran con su forma (DVVDV) y con el
-// Atlético 2-1 Real Madrid de la J7. Los demás equipos sacan sus partidos de LATEST_RESULTS.
-// venue: 'C' en casa · 'F' fuera · score: [goles del equipo, goles del rival]
-export const TEAM_RECENT_RESULTS = {
-  'real-madrid': [
-    { date: '10/10', opponentId: 'villarreal', venue: 'C', score: [1, 0] },
-    { date: '20/09', opponentId: 'atletico-madrid', venue: 'F', score: [1, 2] },
-    { date: '15/09', opponentId: 'elche', venue: 'F', score: [3, 2] },
-    { date: '12/09', opponentId: 'rayo-vallecano', venue: 'C', score: [4, 1] },
-    { date: '04/09', opponentId: 'real-betis', venue: 'F', score: [0, 1] },
-  ],
-};
-
 /* ---------------------------------------------------------------- */
 /* --- Página 12 · Mi perfil ---                                     */
 /* ---------------------------------------------------------------- */
-
-// Datos del usuario de ejemplo (antes de conectar la sesión real; hoy solo los usa UserDataContext). Favoritos y comparativas: ids de TEAMS y PLAYERS.
-// Las comparativas guardadas abren el Comparador (10). memberSince: mes y año de alta.
-export const PROFILE_EXAMPLE = {
-  email: 'usuario@ejemplo.com',
-  memberSince: '09/2026',
-  favoriteTeams: ['barcelona', 'villarreal', 'athletic-club', 'real-betis'],
-  favoritePlayers: ['pedri', 'lamine-yamal', 'mbappe', 'nico-williams'],
-  savedComparisons: [
-    { id: 1, name: 'Medios de Barça y Madrid', playerIds: ['pedri', 'bellingham', 'lamine-yamal'], date: '16/10/2026' },
-    { id: 2, name: 'Extremos jóvenes', playerIds: ['lamine-yamal', 'nico-williams'], date: '12/10/2026' },
-    { id: 3, name: 'Delanteros del Madrid', playerIds: ['mbappe', 'vinicius'], date: '10/10/2026' },
-    { id: 4, name: 'Centrales', playerIds: ['militao', 'huijsen', 'laporte'], date: '02/10/2026' },
-  ],
-};
