@@ -20,6 +20,8 @@ import { favoritesRouter } from './routes/favorites.js';
 import { profileRouter } from './routes/profile.js';
 import { comparisonsRouter } from './routes/comparisons.js';
 import { idealTeamRouter } from './routes/idealTeam.js';
+import { articlesRouter } from './routes/articles.js';
+import { savedArticlesRouter } from './routes/savedArticles.js';
 
 export function createApp() {
   const app = express();
@@ -54,6 +56,8 @@ export function createApp() {
   app.use('/api/me/profile', profileRouter); // Ivan · 12 Mi perfil
   app.use('/api/me/comparisons', comparisonsRouter); // Ivan · 10 Comparador
   app.use('/api/me/ideal-team', idealTeamRouter); // Ivan · 11 Mi equipo ideal
+  app.use('/api/articles', articlesRouter); // Carlota · 08 Análisis, 09 Artículo, 17 Panel de editor, 18 Editor
+  app.use('/api/me/saved-articles', savedArticlesRouter); // Carlota · 09 Artículo (guardar)
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común
