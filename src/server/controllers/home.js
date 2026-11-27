@@ -1,6 +1,6 @@
 // Resumen de la portada (01 · Inicio). Responsable: Ivan.
 //   GET /api/home → jornada actual, partidos en juego, últimos resultados, próximos partidos,
-//                   clasificación rápida (top 5), último análisis publicado y jugador de la jornada.
+//                   clasificación rápida (top 5), análisis destacado y jugador de la jornada.
 
 import { prisma } from '../db.js';
 import { resolveSeason, seasonSummary } from '../utils/seasons.js';
@@ -13,6 +13,7 @@ const UPCOMING_STATUSES = ['SCHEDULED', 'TIMED'];
 const LATEST_RESULTS_LIMIT = 8;
 const UPCOMING_MATCHES_LIMIT = 8;
 const STANDINGS_LIMIT = 5;
+const FEATURED_TAG = 'Destacado';
 
 export async function overview(req, res) {
   const { season } = await resolveSeason();
@@ -79,9 +80,10 @@ async function findTopStandings(seasonId) {
   return rows.map(standingRow);
 }
 
-async function findFeaturedArticle() {
-  const article = await prisma.articles.findFirst({
-    where: { status: 'PUBLISHED' },
+function findLatestPublishedArticle(extraWhere = {}) {
+  return prisma.articles.findFirst({
+    // Publicado y con fecha ya pasada: un artículo programado no sale hasta su hora
+    where: { status: 'PUBLISHED', published_at: { lte: new Date() }, ...extraWhere },
     orderBy: [{ published_at: 'desc' }, { id: 'desc' }],
     select: {
       id: true,
@@ -91,6 +93,12 @@ async function findFeaturedArticle() {
       users: { select: { name: true } },
     },
   });
+}
+
+// El último marcado como «Destacado»; si no hay ninguno, el último publicado
+async function findFeaturedArticle() {
+  const article =
+    (await findLatestPublishedArticle({ tags: { has: FEATURED_TAG } })) ?? (await findLatestPublishedArticle());
   if (!article) return null;
 
   return {
