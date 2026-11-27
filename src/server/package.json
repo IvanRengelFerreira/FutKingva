@@ -11,6 +11,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed:demo": "node seed/demoUsers.js",
+    "seed:articles": "node seed/articles.js",
     "import:stats": "node sync/importPlayerStats.js",
     "import:stats:dry": "node sync/importPlayerStats.js --dry-run",
     "lint": "eslint .",
