@@ -15,6 +15,9 @@ import { toKey } from '../../utils/text.js';
 //   <Illustration type="Táctica" stat="91 %" />                       → con hexágono (destacado)
 //   <Illustration type="Crónica" score="3 – 0" caption="FINAL · 90+2'" />
 //   <Illustration type="Previa" home="real-madrid" away="sevilla" />  → ids de TEAMS (mockData.js)
+//   <Illustration type="Previa" home={team} away={team} />            → equipos de la API ({ name, code, color });
+//                                                                         null = escudo con «?»
+//   <Illustration type={article.category} {...coverProps(article)} />  → portada de un artículo de la API
 //   <Illustration type="Datos" values={[3, 4.5, 4, 6, 5.5, 7.5, 9]} />
 //   <Illustration type="Datos" size="thumb" />                         → miniatura de móvil (96 × 84)
 // type admite la categoría tal cual viene en ARTICLES: 'Táctica', 'Crónica', 'Previa' o 'Datos'.
@@ -125,13 +128,18 @@ function PreviewDrawing({ geo, home = 'real-madrid', away = 'barcelona' }) {
   const cy = height / 2;
   return (
     <>
-      <Crest team={getTeam(home)} cx={crests.left} cy={cy} r={crests.r} size={crests.size} />
+      <Crest team={resolveTeam(home)} cx={crests.left} cy={cy} r={crests.r} size={crests.size} />
       <text className="illustration__vs" x={width / 2} y={cy} fontSize={crests.vs}>
         VS
       </text>
-      <Crest team={getTeam(away)} cx={crests.right} cy={cy} r={crests.r} size={crests.size} />
+      <Crest team={resolveTeam(away)} cx={crests.right} cy={cy} r={crests.r} size={crests.size} />
     </>
   );
+}
+
+// Un equipo de mockData.js (por su id) o ya cargado de la API ({ name, code, color }); null → sin equipo
+function resolveTeam(team) {
+  return typeof team === 'string' ? getTeam(team) : team;
 }
 
 function Crest({ team, cx, cy, r, size }) {
@@ -183,8 +191,11 @@ const DRAWINGS = {
 // Texto alternativo para lectores de pantalla
 function label(key, { score, home, away }) {
   if (key === 'cronica') return `Ilustración: marcador ${score ?? ''}`.trim();
-  if (key === 'previa')
-    return `Ilustración: ${getTeam(home ?? 'real-madrid')?.name} contra ${getTeam(away ?? 'barcelona')?.name}`;
+  if (key === 'previa') return `Ilustración: ${teamName(home, 'real-madrid')} contra ${teamName(away, 'barcelona')}`;
   if (key === 'datos') return 'Ilustración: gráfico de barras';
   return 'Ilustración: jugada dibujada sobre el campo';
+}
+
+function teamName(team, fallback) {
+  return resolveTeam(team === undefined ? fallback : team)?.name ?? 'equipo por decidir';
 }

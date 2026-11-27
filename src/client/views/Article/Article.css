@@ -139,6 +139,46 @@
   color: color-mix(in srgb, var(--text-primary) 60%, var(--text-secondary));
 }
 
+.article__heading {
+  margin: 8px 0 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+.article__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-left: 24px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--text-primary) 60%, var(--text-secondary));
+}
+
+.article__paragraph strong,
+.article__list strong {
+  color: var(--text-primary);
+}
+
+.article__link {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article__link:hover {
+  color: var(--accent-amber);
+}
+
+.article__link:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
 .article__quote {
   margin: 0;
   font-family: 'Instrument Serif', serif;
@@ -250,6 +290,45 @@
   color: var(--text-tertiary);
 }
 
+/* Gráfico sin datos por jornada: se queda el recuadro con un aviso */
+.article__chart-empty {
+  margin: 0;
+  padding: 32px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Ficha de jugador insertada en el texto */
+.article__player {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.article__player-info {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Hueco de imagen o gráfico del editor */
+.article__placeholder {
+  align-items: center;
+  padding: 40px 20px;
+  border-style: dashed;
+}
+
+.article__placeholder-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
 /* Análisis relacionados: tres tarjetas sencillas */
 .article__related {
   display: flex;
@@ -332,8 +411,13 @@
     border-radius: 12px;
   }
 
-  .article__paragraph {
+  .article__paragraph,
+  .article__list {
     font-size: 16px;
+  }
+
+  .article__heading {
+    font-size: 25px;
   }
 
   .article__stats {

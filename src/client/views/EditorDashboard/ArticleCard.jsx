@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import Tag from '../../components/Tag/Tag.jsx';
 import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx';
 import { formatNumber } from './formatNumber.js';
+import { numericDate } from '../../services/format.js';
 
 // Tarjeta móvil: sin botón «Ver»
 export default function ArticleCard({ article, onRemove }) {
@@ -25,7 +26,8 @@ export default function ArticleCard({ article, onRemove }) {
       </div>
       <p className="editor-dashboard__article-title">{article.title}</p>
       <p className="editor-dashboard__card-meta">
-        {article.date ?? '—'} · {formatNumber(article.visits)} visitas
+        {numericDate(article.publishedAt) || '—'} · {article.status === 'published' ? formatNumber(article.views) : '—'}{' '}
+        visitas
       </p>
     </li>
   );
