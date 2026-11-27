@@ -7,9 +7,10 @@ export function formatNumber(value, decimals = 0) {
   return value.toFixed(decimals).replace('.', ',');
 }
 
-// 91 → «91 %» · undefined → «—»
+// 91 → «91 %» · 94.4 → «94 %» · undefined → «—»
 export function formatPercent(value) {
-  return value == null ? MISSING : `${value} %`;
+  if (value == null || Number.isNaN(value)) return MISSING;
+  return `${Math.round(value)} %`;
 }
 
 // 174 → «1,74 m»

@@ -266,24 +266,28 @@ model player_data_changes {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model player_season_stats {
-  season_id     BigInt
-  player_id     BigInt
-  team_id       BigInt
-  played        Int         @default(0) @db.SmallInt
-  starts        Int?        @db.SmallInt
-  minutes       Int?
-  goals         Int         @default(0) @db.SmallInt
-  assists       Int         @default(0) @db.SmallInt
-  penalties     Int         @default(0) @db.SmallInt
-  yellow_cards  Int?        @db.SmallInt
-  red_cards     Int?        @db.SmallInt
-  rating        Decimal?    @db.Decimal(3, 1)
-  source        data_source
-  field_sources Json        @default("{}")
-  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
-  players       players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  seasons       seasons     @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  teams         teams       @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  season_id       BigInt
+  player_id       BigInt
+  team_id         BigInt
+  played          Int         @default(0) @db.SmallInt
+  starts          Int?        @db.SmallInt
+  minutes         Int?
+  goals           Int         @default(0) @db.SmallInt
+  assists         Int         @default(0) @db.SmallInt
+  penalties       Int         @default(0) @db.SmallInt
+  xg              Decimal?    @db.Decimal(5, 2)
+  shots_on_target Int?        @db.SmallInt
+  pass_accuracy   Decimal?    @db.Decimal(4, 1)
+  key_passes      Int?        @db.SmallInt
+  yellow_cards    Int?        @db.SmallInt
+  red_cards       Int?        @db.SmallInt
+  rating          Decimal?    @db.Decimal(3, 1)
+  source          data_source
+  field_sources   Json        @default("{}")
+  updated_at      DateTime    @default(now()) @db.Timestamptz(6)
+  players         players     @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasons         seasons     @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams           teams       @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([season_id, player_id, team_id])
   @@index([player_id], map: "player_season_stats_player_idx")
@@ -309,6 +313,7 @@ model players {
   fd_id                                                BigInt?               @unique
   af_id                                                BigInt?               @unique
   tm_id                                                BigInt?               @unique
+  fm_id                                                BigInt?               @unique
   updated_at                                           DateTime              @default(now()) @db.Timestamptz(6)
   appearances                                          appearances[]
   comparison_players                                   comparison_players[]
@@ -466,6 +471,7 @@ model teams {
   fd_id                               BigInt?               @unique
   af_id                               BigInt?               @unique
   tm_id                               BigInt?               @unique
+  fm_id                               BigInt?               @unique
   updated_at                          DateTime              @default(now()) @db.Timestamptz(6)
   appearances                         appearances[]
   favorite_teams                      favorite_teams[]
@@ -511,6 +517,8 @@ enum data_source {
   FOOTBALL_DATA
   API_FOOTBALL
   TRANSFERMARKT
+  FOTMOB
+  FBREF
   EDITOR
   ESTIMATED
   SIMULATOR

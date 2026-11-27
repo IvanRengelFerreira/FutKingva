@@ -11,6 +11,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed:demo": "node seed/demoUsers.js",
+    "import:stats": "node sync/importPlayerStats.js",
+    "import:stats:dry": "node sync/importPlayerStats.js --dry-run",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

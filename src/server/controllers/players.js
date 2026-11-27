@@ -32,7 +32,8 @@ const ACCENTS_TO = 'aeiouunaeiouaeiouaeioaocccszytsa';
  * GET /api/players
  * Si llega ?ids=1,2,3 (máx. 4), devuelve esos jugadores en ese orden e ignora search, limit y offset.
  * Cada elemento de `items` sigue la forma de `playerListItem` (reutilizada por 10 · Comparador y 11 · Equipo ideal):
- *   { id, name, number, position, positionGroup, age, team, matches, minutes, goals, assists, yellowCards, redCards, rating }
+ *   { id, name, number, position, positionGroup, age, team, matches, minutes, goals, assists,
+ *     xg, shotsOnTarget, passAccuracy, keyPasses, yellowCards, redCards, rating }
  */
 export async function list(req, res) {
   const { season } = await resolveSeason(req.query.season);

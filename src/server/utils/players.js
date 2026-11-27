@@ -75,7 +75,8 @@ export function playerProfile(player) {
 
 /**
  * Forma de cada jugador en GET /api/players (reutilizada por 10 · Comparador y 11 · Equipo ideal):
- * { id, name, number, position, positionGroup, age, team, matches, minutes, goals, assists, yellowCards, redCards, rating }
+ * { id, name, number, position, positionGroup, age, team, matches, minutes, goals, assists,
+ *   xg, shotsOnTarget, passAccuracy, keyPasses, yellowCards, redCards, rating }
  * @param player fila de players con teams incluido
  * @param stats salida de aggregateSeasonStats (en camelCase) o null
  */
@@ -85,6 +86,10 @@ export function playerListItem(player, stats) {
     age: ageFromBirthDate(player.date_of_birth),
     team: teamSummary(player.teams),
     minutes: stats?.minutes ?? null,
+    xg: stats?.xg ?? null,
+    shotsOnTarget: stats?.shotsOnTarget ?? null,
+    passAccuracy: stats?.passAccuracy ?? null,
+    keyPasses: stats?.keyPasses ?? null,
     yellowCards: stats?.yellowCards ?? null,
     redCards: stats?.redCards ?? null,
   };
@@ -92,17 +97,22 @@ export function playerListItem(player, stats) {
 
 /**
  * Combina las filas de player_season_stats de un jugador en una temporada (puede tener varias si
- * cambió de club a mitad): suma partidos, minutos, goles, asistencias y tarjetas, y pondera la
- * valoración por minutos jugados (si faltan minutos, pondera por partidos).
+ * cambió de club a mitad): suma totales y pondera porcentajes y valoración por minutos jugados
+ * (si faltan minutos, pondera por partidos).
  */
 export function aggregateSeasonStats(rows) {
   if (!rows || rows.length === 0) return null;
 
   return {
-    played: rows.reduce((total, row) => total + row.played, 0),
+    played: rows.reduce((total, row) => total + (row.played ?? 0), 0),
+    starts: sumOptional(rows, 'starts'),
     minutes: sumOptional(rows, 'minutes'),
-    goals: rows.reduce((total, row) => total + row.goals, 0),
-    assists: rows.reduce((total, row) => total + row.assists, 0),
+    goals: rows.reduce((total, row) => total + (row.goals ?? 0), 0),
+    assists: rows.reduce((total, row) => total + (row.assists ?? 0), 0),
+    xg: sumDecimalOptional(rows, 'xg', 2),
+    shotsOnTarget: sumOptional(rows, 'shots_on_target'),
+    passAccuracy: weightedAverage(rows, 'pass_accuracy', 1),
+    keyPasses: sumOptional(rows, 'key_passes'),
     yellowCards: sumOptional(rows, 'yellow_cards'),
     redCards: sumOptional(rows, 'red_cards'),
     rating: weightedRating(rows),
@@ -143,23 +153,38 @@ function fullNameOf(player) {
   return [player.first_name, player.last_name].filter(Boolean).join(' ') || player.name;
 }
 
-// Suma un campo opcional: devuelve null si ninguna fila trae dato (evita convertir «sin dato» en 0)
+// Suma un campo entero opcional: devuelve null si ninguna fila trae dato (evita convertir «sin dato» en 0)
 function sumOptional(rows, field) {
   const values = rows.map((row) => row[field]).filter((value) => value != null);
   return values.length > 0 ? values.reduce((total, value) => total + value, 0) : null;
 }
 
+// Suma un Decimal opcional (p. ej. xG) convirtiendo de Prisma Decimal a Number redondeado
+function sumDecimalOptional(rows, field, decimals) {
+  const values = rows.map((row) => row[field]).filter((value) => value != null);
+  if (values.length === 0) return null;
+  const total = values.reduce((sum, value) => sum + Number(value), 0);
+  const factor = 10 ** decimals;
+  return Math.round(total * factor) / factor;
+}
+
+// Media ponderada por minutos (o partidos si faltan minutos) para magnitudes intensivas (rating, % pase)
+function weightedAverage(rows, field, decimals) {
+  const valid = rows.filter((row) => row[field] != null);
+  if (valid.length === 0) return null;
+  const factor = 10 ** decimals;
+  if (valid.length === 1) return Math.round(Number(valid[0][field]) * factor) / factor;
+
+  const weights = valid.map((row) => row.minutes ?? row.played ?? 1);
+  const weightSum = weights.reduce((total, w) => total + w, 0);
+  const score = valid.reduce((total, row, i) => total + Number(row[field]) * weights[i], 0);
+  const average = weightSum > 0 ? score / weightSum : score / valid.length;
+  return Math.round(average * factor) / factor;
+}
+
 // Misma regla de ponderación que la CTE season_totals en controllers/players.js: mantener a la par
 function weightedRating(rows) {
-  const rated = rows.filter((row) => row.rating != null);
-  if (rated.length === 0) return null;
-  if (rated.length === 1) return Number(rated[0].rating);
-
-  const weights = rated.map((row) => row.minutes ?? row.played ?? 1);
-  const weightSum = weights.reduce((total, w) => total + w, 0);
-  const score = rated.reduce((total, row, i) => total + Number(row.rating) * weights[i], 0);
-  const average = weightSum > 0 ? score / weightSum : score / rated.length;
-  return Math.round(average * 10) / 10;
+  return weightedAverage(rows, 'rating', 1);
 }
 
 function positionIndex(player) {
