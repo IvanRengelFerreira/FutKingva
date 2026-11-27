@@ -86,6 +86,10 @@
   color: var(--status-win);
 }
 
+.editor-dashboard__message--error {
+  color: var(--status-loss);
+}
+
 .editor-dashboard__message:empty {
   display: none;
 }
