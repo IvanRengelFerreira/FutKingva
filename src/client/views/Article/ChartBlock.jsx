@@ -1,25 +1,12 @@
-import BarChart from '../../components/BarChart/BarChart.jsx';
-import { getPlayer } from '../../data/mockData.js';
-
-// En oro, las jornadas por encima del 90 %
-const GOLD_THRESHOLD = 90;
-
-// Gráfico de precisión de pase por jornada de un jugador
-export default function ChartBlock({ block }) {
-  const player = getPlayer(block.playerId);
-  if (!player?.passAccuracyByRound) return null; // Sin datos del jugador, no hay gráfico
-
-  const data = player.passAccuracyByRound.map((value, i) => ({
-    label: `J${i + 1}`,
-    value,
-    tone: value >= GOLD_THRESHOLD ? 'gold' : 'win',
-  }));
-
+// Gráfico de acierto en el pase por jornada de un jugador.
+// La BD todavía no guarda el % de pase de cada partido (solo el de la temporada): el recuadro del mockup
+// se queda con su título y un aviso hasta tener el dato (con él, se pinta con <BarChart>, oro por encima del 90 %).
+export default function ChartBlock({ block, player }) {
   return (
     <figure className="article__box article__figure">
       <figcaption className="article__box-title">{block.title}</figcaption>
-      <BarChart label={block.title} data={data} min={80} max={95} height={170} />
-      <p className="article__source">{block.source}</p>
+      <p className="article__chart-empty">Todavía no hay datos por jornada{player ? ` de ${player.name}` : ''}.</p>
+      {block.source && <p className="article__source">{block.source}</p>}
     </figure>
   );
 }
