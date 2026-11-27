@@ -1,5 +1,7 @@
 // Crea (o deja como nuevos) los 10 artículos de ejemplo de Análisis: `node seed/articles.js` en src/server.
 // Son los de mockData.js (ARTICLES) con los textos de Figma (08 · Análisis, 09 · Artículo y 18 · Editor de artículo).
+// En Figma solo tienen cuerpo el de Pedri y el Clásico; el de los demás publicados está escrito aparte con los
+// datos de mockData.js (para publicar hace falta texto). Los dos borradores se quedan vacíos.
 // Responsable: Carlota. Lo usan 08 · Análisis, 09 · Artículo, 17 · Panel de editor y 18 · Editor de artículo.
 //
 // Antes hay que crear las cuentas de demostración (`npm run seed:demo`): el autor de todos es el editor de prueba.
@@ -88,6 +90,26 @@ const ARTICLES = [
     date: '2026-10-11T10:00',
     visits: 3205,
     summary: 'El 3 – 0 al Getafe completa un pleno de victorias en LaLiga.',
+    body: [
+      paragraph(
+        'El Barça de Hansi Flick ha cerrado la octava jornada como la empezó: ganando. El 3 – 0 al Getafe es la octava victoria en ocho partidos, un pleno que deja al equipo líder con 24 puntos.',
+      ),
+      {
+        type: 'stats',
+        items: [
+          { value: '8 / 8', label: 'Victorias' },
+          { value: '34', label: 'Goles a favor' },
+          { value: '7', label: 'Goles en contra' },
+        ],
+      },
+      paragraph(
+        'Los números explican la diferencia: 34 goles a favor, más de cuatro por partido, y solo 7 en contra. El Getafe, que había encajado 7 goles en siete jornadas, apenas pudo salir de su campo en la primera parte.',
+      ),
+      paragraph(
+        'Pedri volvió a ser el que ordena: marcó, dio una asistencia y terminó por encima del 90 % de acierto en el pase. Con el Betis en el horizonte y el Clásico después, el reto ya no es ganar, sino llegar con piernas.',
+      ),
+      { type: 'mentions', items: [team('FC Barcelona'), player('Pedri'), team('Getafe CF')] },
+    ],
     cover: {
       type: 'match',
       score: '3 – 0',
@@ -123,6 +145,27 @@ const ARTICLES = [
     date: '2026-10-14T10:00',
     visits: 2954,
     summary: 'Qué ha cambiado en el Madrid en sus primeras ocho jornadas con Mourinho.',
+    body: [
+      paragraph(
+        'José Mourinho ha tardado poco en dejar su firma en el Real Madrid. Tras ocho jornadas, el equipo es cuarto con 18 puntos, seis victorias y dos derrotas, y lo que más ha cambiado no está arriba, sino atrás: solo 8 goles encajados, los mismos que el Atlético.',
+      ),
+      { type: 'heading', text: 'Un bloque más bajo' },
+      paragraph(
+        'El Madrid defiende ahora con las líneas más juntas y espera más cerca de su área. Pierde metros de presión, pero gana espacio a la espalda del rival para correr, que es justo lo que necesita su delantero.',
+      ),
+      {
+        type: 'stats',
+        items: [
+          { value: '18', label: 'Puntos (4.º)' },
+          { value: '19', label: 'Goles a favor' },
+          { value: '7', label: 'Goles de Mbappé' },
+        ],
+      },
+      paragraph(
+        'Kylian Mbappé ha marcado 7 de los 19 goles del equipo. Las dos derrotas, ante el Betis y en el derbi del Metropolitano, llegaron en partidos en los que el Madrid tuvo que llevar la iniciativa. Ahí está su tarea pendiente.',
+      ),
+      { type: 'mentions', items: [team('Real Madrid'), player('Kylian Mbappé'), player('Jude Bellingham')] },
+    ],
   },
   {
     title: 'Celta y Athletic, las defensas menos goleadas',
@@ -131,6 +174,26 @@ const ARTICLES = [
     date: '2026-10-13T10:00',
     visits: 3610,
     summary: 'Seis goles encajados cada uno: nadie concede menos en LaLiga.',
+    body: [
+      paragraph(
+        'Si se ordena LaLiga por goles encajados, arriba no aparecen ni el líder ni sus perseguidores. Aparecen el Celta y el Athletic, con 6 goles en contra cada uno, la cifra más baja del campeonato.',
+      ),
+      {
+        type: 'stats',
+        items: [
+          { value: '6', label: 'Encajados del Celta' },
+          { value: '6', label: 'Encajados del Athletic' },
+          { value: '1,0', label: 'Por partido del Athletic' },
+        ],
+      },
+      paragraph(
+        'El Celta lo ha hecho a su manera: cinco empates en ocho jornadas, muchos partidos cerrados y pocas concesiones. Le falta gol, con solo 8 a favor, pero es el equipo al que más cuesta hacerle daño.',
+      ),
+      paragraph(
+        'El Athletic ha jugado dos partidos menos y tiene la misma cifra, así que su media es todavía más baja: un gol encajado por partido. Cuando se iguale el calendario, su defensa puede ser la mejor de la primera vuelta.',
+      ),
+      { type: 'mentions', items: [team('RC Celta de Vigo'), team('Athletic Club')] },
+    ],
   },
   {
     title: 'Los porteros que más paran de LaLiga',
@@ -141,9 +204,36 @@ const ARTICLES = [
     title: 'El Atlético encadena cinco victorias y ya es segundo',
     category: 'Datos',
     status: 'published',
-    date: '2026-10-17T10:00',
+    date: '2026-10-17T21:00', // Después del Espanyol – Atlético de ese día
     visits: 1877,
     summary: 'Desde el 0 – 3 en el Reale Arena, pleno: 15 de 15 puntos.',
+    body: [
+      {
+        type: 'paragraph',
+        spans: [
+          { text: 'El Atlético de Simeone ha encontrado su ritmo. Con el 0 – 1 en el campo del Espanyol suma ' },
+          { text: 'cinco victorias seguidas', bold: true },
+          { text: ' y ya es segundo en la ' },
+          { text: 'clasificación', href: '#/clasificaciones' },
+          { text: ', con 22 puntos, a dos del Barça, que tiene un partido menos.' },
+        ],
+      },
+      {
+        type: 'stats',
+        items: [
+          { value: '15 / 15', label: 'Puntos en las cinco últimas' },
+          { value: '19', label: 'Goles a favor' },
+          { value: '8', label: 'Goles en contra' },
+        ],
+      },
+      paragraph(
+        'La racha empezó con el 0 – 3 en el Reale Arena y pasó por el derbi ante el Real Madrid (2 – 1). En ese tramo el equipo ha ganado de todas las formas: goleando, remontando y aguantando un 0 – 1 lejos de casa.',
+      ),
+      paragraph(
+        'Solo el Barça ha marcado más, y solo el Celta y el Athletic han encajado menos. Si mantiene este ritmo, la pelea por el título será cosa de dos.',
+      ),
+      { type: 'mentions', items: [team('Atlético de Madrid')] },
+    ],
   },
   {
     title: 'Cómo leer el xG sin volverse loco',
@@ -158,6 +248,27 @@ const ARTICLES = [
     visits: 1240,
     summary: 'Lo que dicen los datos antes del partido del domingo.',
     cover: { type: 'teams', homeTeamId: team('Real Madrid'), awayTeamId: team('Sevilla FC') },
+    body: [
+      paragraph(
+        'El Bernabéu recibe el domingo a las 21:00 a un Sevilla que llega quinto, con 14 puntos, y con la sensación de que le cuesta cerrar los partidos: viene de empatar 3 – 3 en el campo del Levante.',
+      ),
+      { type: 'heading', text: 'Las claves del partido' },
+      paragraph(
+        'El Madrid ha encajado 8 goles en ocho jornadas y el Sevilla, 12. Si el partido se rompe, Mbappé tendrá espacios; si el Sevilla consigue juntar líneas, el Madrid tendrá que encontrar otra vía, como en sus dos derrotas.',
+      ),
+      {
+        type: 'stats',
+        items: [
+          { value: '18', label: 'Puntos del Madrid (4.º)' },
+          { value: '14', label: 'Puntos del Sevilla (5.º)' },
+          { value: '7', label: 'Goles de Mbappé' },
+        ],
+      },
+      paragraph(
+        'Con el Leipzig en la Champions el miércoles y el Clásico el domingo siguiente, la semana más exigente del Madrid empieza aquí.',
+      ),
+      { type: 'mentions', items: [team('Real Madrid'), team('Sevilla FC'), player('Kylian Mbappé')] },
+    ],
   },
   {
     title: 'Gil Manzano y la tarjeta fácil',
@@ -166,6 +277,26 @@ const ARTICLES = [
     date: '2026-10-14T10:00',
     visits: 2105,
     summary: '5,8 tarjetas por partido, la media más alta del campeonato.',
+    body: [
+      paragraph(
+        'Jesús Gil Manzano es el árbitro que más tarjetas enseña en lo que va de LaLiga: 5,8 por partido. En sus cinco encuentros ha sacado 27 amarillas y 2 rojas, y ha señalado 3 penaltis.',
+      ),
+      {
+        type: 'stats',
+        items: [
+          { value: '5,8', label: 'Tarjetas por partido' },
+          { value: '27', label: 'Amarillas' },
+          { value: '2', label: 'Rojas' },
+        ],
+      },
+      paragraph(
+        'No es solo cosa de partidos calientes. En el Betis – Osasuna (5 – 2) mostró cinco amarillas y una roja, y en el derbi entre el Atlético y el Real Madrid (2 – 1), otras cinco amarillas.',
+      ),
+      { type: 'quote', text: 'Su criterio es el mismo en un partido grande que en uno de media tabla.' },
+      paragraph(
+        'Para los equipos que le tienen el fin de semana, el dato importa: con él en el campo, los jugadores apercibidos corren más riesgo de perderse el siguiente partido.',
+      ),
+    ],
   },
 ];
 
