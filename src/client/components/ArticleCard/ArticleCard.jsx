@@ -11,8 +11,8 @@ import Illustration from '../Illustration/Illustration.jsx';
 // Diseño: Figma › Mockups › 08 · Análisis (tarjetas de «Últimos análisis», escritorio y móvil)
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=52-575
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=52-762
-// Uso: con un artículo de ARTICLES (mockData.js)
-//   <ArticleCard article={getArticle('barca-ocho-de-ocho')} />
+// Uso: con un artículo de la API, cardProps lo pasa a estas props (cardProps.js)
+//   <ArticleCard {...cardProps(article)} />
 //   <ArticleCard article={article} excerpt="El 3 – 0 al Getafe…" illustration={{ score: '3 – 0', caption: "FINAL · 90+2'" }} />
 //   <ArticleCard article={article} layout="compact" />
 //   <ArticleCard article={article} minimal />   → solo ilustración, etiqueta y titular («Análisis relacionados» de 09)

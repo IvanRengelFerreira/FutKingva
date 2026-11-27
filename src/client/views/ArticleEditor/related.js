@@ -1,23 +1,58 @@
-import { PLAYERS, TEAMS, getPlayer, getTeam } from '../../data/mockData.js';
-import { toSearchText } from '../../utils/text.js';
+import { useEffect, useState } from 'react';
+import { useApi } from '../../services/useApi.js';
+import { listPlayers } from '../../services/players.js';
+import { listTeams } from '../../services/teams.js';
 
-// Nombre de un jugador o equipo relacionado (completo, o corto en las etiquetas ya elegidas)
-export function relatedName(item, full = false) {
-  if (item.type === 'team') return getTeam(item.id)?.name ?? item.id;
-  const player = getPlayer(item.id);
-  return full ? player?.name : (player?.shortName ?? player?.name);
+// Buscador de jugadores y equipos de la BD para «Jugadores / equipos relacionados» y para «Jugador»
+// (GET /api/players?search= y GET /api/teams?q=). Espera a que se deje de escribir para no pedir en cada letra.
+
+const SEARCH_DELAY_MS = 250;
+const MAX_SUGGESTIONS = 5;
+const NO_RESULTS = { players: [], teams: [] };
+
+/** Nombre de un relacionado (los jugadores, sin apellidos de más en las etiquetas ya elegidas) */
+export function relatedName(item) {
+  return item.name;
 }
 
-// Jugadores y equipos que coinciden con lo buscado (máximo 5, sin los ya elegidos)
-export function getSuggestions(query, chosen) {
-  const text = toSearchText(query);
-  if (!text) return [];
+/**
+ * Sugerencias para lo escrito: [{ type: 'player', id, name, team, … } | { type: 'team', id, name, code, color }]
+ * sin los ya elegidos. withTeams = false → solo jugadores.
+ */
+export function useSuggestions(query, chosen = [], { withTeams = true } = {}) {
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setText(query.trim()), SEARCH_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const { data } = useApi(
+    async (signal) => {
+      if (text.length < 2) return NO_RESULTS;
+      const [players, teams] = await Promise.all([
+        listPlayers({ search: text, limit: MAX_SUGGESTIONS }, { signal }),
+        withTeams ? listTeams({ q: text, limit: MAX_SUGGESTIONS }, { signal }) : { items: [] },
+      ]);
+      return { players: players.items, teams: teams.items };
+    },
+    [text, withTeams],
+  );
+
+  if (text.length < 2 || !data) return [];
   const isChosen = (type, id) => chosen.some((item) => item.type === type && item.id === id);
-  const players = Object.values(PLAYERS)
-    .filter((player) => !isChosen('player', player.id) && toSearchText(player.name).includes(text))
-    .map((player) => ({ type: 'player', id: player.id }));
-  const teams = Object.values(TEAMS)
-    .filter((team) => !isChosen('team', team.id) && toSearchText(team.name).includes(text))
-    .map((team) => ({ type: 'team', id: team.id }));
-  return [...players, ...teams].slice(0, 5);
+  const players = data.players
+    .filter((player) => !isChosen('player', player.id))
+    .map((player) => ({
+      type: 'player',
+      id: player.id,
+      name: player.name,
+      team: player.team,
+      position: player.position,
+      rating: player.rating,
+    }));
+  const teams = data.teams
+    .filter((team) => !isChosen('team', team.id))
+    .map((team) => ({ type: 'team', id: team.id, name: team.name, code: team.code, color: team.color }));
+  return [...players, ...teams].slice(0, MAX_SUGGESTIONS);
 }

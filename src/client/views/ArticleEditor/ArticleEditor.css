@@ -210,6 +210,10 @@
   mask-image: url('../../assets/icon-image.svg');
 }
 
+.article-editor__block-icon--user::after {
+  mask-image: url('../../assets/icon-user-small.svg');
+}
+
 .article-editor__block-icon--chart::after {
   mask-image: url('../../assets/icon-chart-small.svg');
 }
@@ -466,6 +470,17 @@
 .article-editor__suggestion:focus-visible {
   background: var(--bg-hover);
   outline: none;
+}
+
+.article-editor__suggestion-team {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Buscador de «Jugador» (barra de herramientas) */
+.article-editor__picker .article-editor__suggestions {
+  margin-top: 6px;
 }
 
 /* Portada */

@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import RoleNotice from '../../components/RoleNotice/RoleNotice.jsx';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import TextField from '../../components/TextField/TextField.jsx';
 import Select from '../../components/Select/Select.jsx';
 import FieldError from '../../components/FieldError/FieldError.jsx';
+import LoadingState from '../../components/LoadingState/LoadingState.jsx';
+import ErrorState from '../../components/ErrorState/ErrorState.jsx';
 import NotFound from '../NotFound/NotFound.jsx';
-import { getArticle } from '../../data/mockData.js';
-import { CATEGORIES, coverProps, getFormErrors, getInitialValues } from './articleForm.js';
+import { useApi } from '../../services/useApi.js';
+import { createArticle, getArticleForEdit, updateArticle } from '../../services/articles.js';
+import { shortTime } from '../../services/format.js';
+import { CATEGORIES, buildPayload, coverPreview, getFormErrors, getInitialValues } from './articleForm.js';
+import { htmlToBlocks } from './blockHtml.js';
 import useRichTextEditor from './useRichTextEditor.js';
 import EditorToolbar from './EditorToolbar.jsx';
 import EditorStatus from './EditorStatus.jsx';
@@ -17,82 +22,112 @@ import RelatedField from './RelatedField.jsx';
 import CoverBox from './CoverBox.jsx';
 import './ArticleEditor.css';
 
-// 18 · Editor de artículo (RF7): escribir o editar un análisis. Solo para el rol editor.
-//   /editor/articulo             → artículo nuevo (vacío)
-//   /editor/articulo/<id>        → artículo de ARTICLES con sus datos (el Clásico, como en Figma)
+// 18 · Editor de artículo (RF7): escribir o editar un análisis. Solo para el rol editor (y solo sus artículos).
+//   /editor/articulo             → artículo nuevo (vacío); al guardarlo por primera vez pasa a /editor/articulo/<id>
+//   /editor/articulo/<id>        → artículo propio de la BD (GET /api/articles/:id/edit), en cualquier estado
 // El editor de texto usa contentEditable y las órdenes del navegador (negrita, cursiva, título, lista,
-// cita, enlace), sin bibliotecas. «Jugador» inserta la ficha del jugador elegido; «Imagen» y «Gráfico»,
-// un bloque de ejemplo. Sin servidor: «Guardar borrador» y «Publicar» solo enseñan el aviso.
-// Para publicar hace falta título, entradilla y texto; si está programado, la fecha en formato dd/mm/aaaa · hh:mm.
+// cita, enlace), sin bibliotecas. Al guardar, el HTML se pasa a bloques (blockHtml.js): la BD no guarda HTML.
+// «Jugador» inserta la ficha del jugador elegido; «Imagen» y «Gráfico», un hueco con su pie.
+// «Guardar borrador» lo guarda como borrador; «Publicar», con el estado elegido (un borrador pasa a publicado).
+// Para publicar o programar hacen falta título, entradilla y texto; si está programado, una fecha futura
+// (dd/mm/aaaa · hh:mm). Las reglas son las del servidor (shared/validation/article.js).
 // Diseño: Figma › Mockups › 18 · Editor de artículo
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=61-1565
 
 export default function ArticleEditor() {
   const { articleId } = useParams();
-  const article = articleId ? getArticle(articleId) : null;
-  if (articleId && !article) return <NotFound />;
-
+  if (!articleId) return <EditorForm key="nuevo" article={null} />;
   // «key»: al pasar de un artículo a otro, el formulario empieza de cero
-  return <EditorForm key={articleId ?? 'nuevo'} initial={getInitialValues(article)} isNew={!article} />;
+  return <ExistingArticle key={articleId} articleId={articleId} />;
 }
 
-function EditorForm({ initial, isNew }) {
-  const [form, setForm] = useState(initial);
-  const [saveState, setSaveState] = useState(isNew ? 'new' : 'saved-before');
-  const [submitted, setSubmitted] = useState(false);
-  const [notice, setNotice] = useState(null);
+function ExistingArticle({ articleId }) {
+  const { data, error, loading, reload } = useApi((signal) => getArticleForEdit(articleId, { signal }), [articleId]);
 
-  // Editor de texto: al escribir se marca «Guardando…» y se borra el aviso anterior
+  if (error?.status === 404 || error?.status === 400) return <NotFound />;
+  if (error || loading || !data) {
+    return (
+      <section className="page article-editor">
+        <RoleNotice role="editor" />
+        {error ? (
+          <ErrorState error={error} title="No se ha podido abrir el artículo" onRetry={reload} />
+        ) : (
+          <LoadingState label="Abriendo el artículo…" />
+        )}
+      </section>
+    );
+  }
+  return <EditorForm article={data} />;
+}
+
+function EditorForm({ article }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [initial] = useState(() => getInitialValues(article));
+  const [form, setForm] = useState(initial);
+  const [saveState, setSaveState] = useState(article ? 'saved' : 'new');
+  const [errors, setErrors] = useState({});
+  const [notice, setNotice] = useState(location.state?.notice ?? null); // Aviso al crear (viene de la dirección)
+
   const { editorRef, words, formats, textHandlers, commands } = useRichTextEditor({
     initialHtml: initial.bodyHtml,
     onEdit: () => {
-      setSaveState('saving');
+      setSaveState('changed');
       setNotice(null);
+      setErrors((current) => ({ ...current, body: null }));
     },
   });
 
-  // «Guardando…» pasa a «Guardado automáticamente» al poco de dejar de escribir
-  useEffect(() => {
-    if (saveState !== 'saving') return undefined;
-    const timer = setTimeout(() => setSaveState('saved'), 800);
-    return () => clearTimeout(timer);
-  }, [saveState]);
-
-  const errors = getFormErrors(form, words);
-  const shown = (field) => (submitted ? errors[field] : null);
-
   function change(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
+    setSaveState((current) => (current === 'new' ? current : 'changed'));
     setNotice(null);
+    setErrors((current) => ({ ...current, [field]: null }));
   }
 
-  function saveDraft() {
-    change('status', 'draft');
-    setNotice({ tone: 'info', text: `Borrador guardado a las ${currentTime()}.` });
-    setSaveState('saved');
-  }
-
-  function publish() {
-    if (Object.values(errors).some(Boolean)) {
-      setSubmitted(true);
-      setNotice({ tone: 'error', text: 'Revisa los campos marcados antes de publicar.' });
+  async function save(status) {
+    const payload = buildPayload(form, htmlToBlocks(editorRef.current), status);
+    const formErrors = getFormErrors(form, payload);
+    if (Object.keys(formErrors).length) {
+      setErrors(formErrors);
+      setNotice({ tone: 'error', text: otherErrors(formErrors) ?? 'Revisa los campos marcados.' });
       return;
     }
-    setSubmitted(false);
-    setSaveState('saved');
-    setNotice(
-      form.status === 'scheduled'
-        ? { tone: 'win', text: `Programado para el ${form.publishAt}.` }
-        : { tone: 'win', text: 'Artículo publicado.' },
-    );
-    if (form.status === 'draft') setForm((current) => ({ ...current, status: 'published' }));
+
+    setSaveState('saving');
+    setNotice(null);
+    try {
+      const saved = article ? await updateArticle(article.id, payload) : await createArticle(payload);
+      const done = savedNotice(saved, form);
+      if (!article) {
+        // Artículo nuevo: a partir de ahora se edita en su dirección (/editor/articulo/<id>)
+        navigate(`/editor/articulo/${saved.id}`, { replace: true, state: { notice: done } });
+        return;
+      }
+      setForm((current) => ({
+        ...current,
+        status: saved.status,
+        updatedAt: saved.updatedAt,
+        cover: saved.cover,
+        coverTeams: saved.coverTeams,
+      }));
+      setErrors({});
+      setNotice(done);
+      setSaveState('saved');
+    } catch (error) {
+      setErrors(error.fields ?? {});
+      setNotice({ tone: 'error', text: otherErrors(error.fields ?? {}) ?? error.message });
+      setSaveState(article ? 'changed' : 'new');
+    }
   }
+
+  const shown = (field) => errors[field] ?? null;
 
   return (
     <section className="page article-editor">
       <RoleNotice role="editor" />
       <Breadcrumbs
-        items={[{ label: 'Panel de editor', to: '/editor' }, { label: isNew ? 'Nuevo artículo' : 'Editar artículo' }]}
+        items={[{ label: 'Panel de editor', to: '/editor' }, { label: article ? 'Editar artículo' : 'Nuevo artículo' }]}
       />
 
       <div className="article-editor__layout">
@@ -109,9 +144,9 @@ function EditorForm({ initial, isNew }) {
           <TextField
             label={<>Subtítulo / entradilla</>}
             placeholder="Resume en una frase de qué trata"
-            value={form.excerpt}
-            onChange={(e) => change('excerpt', e.target.value)}
-            error={shown('excerpt')}
+            value={form.summary}
+            onChange={(e) => change('summary', e.target.value)}
+            error={shown('summary')}
           />
 
           <div className="article-editor__editor">
@@ -132,7 +167,7 @@ function EditorForm({ initial, isNew }) {
             />
             <FieldError id="article-editor-body-error">{shown('body')}</FieldError>
 
-            <EditorStatus saveState={saveState} words={words} />
+            <EditorStatus saveState={saveState} savedAt={form.updatedAt} words={words} />
           </div>
         </div>
 
@@ -143,8 +178,9 @@ function EditorForm({ initial, isNew }) {
             onChange={change}
             publishAtError={shown('publishAt')}
             notice={notice}
-            onSaveDraft={saveDraft}
-            onPublish={publish}
+            saving={saveState === 'saving'}
+            onSaveDraft={() => save('draft')}
+            onPublish={() => save(form.status === 'draft' ? 'published' : form.status)}
           />
 
           <div className="article-editor__box">
@@ -154,18 +190,27 @@ function EditorForm({ initial, isNew }) {
               options={CATEGORIES}
               value={form.category}
               onChange={(e) => change('category', e.target.value)}
+              error={shown('category')}
             />
             <TagsField tags={form.tags} onChange={(tags) => change('tags', tags)} />
             <RelatedField related={form.related} onChange={(related) => change('related', related)} />
           </div>
 
-          <CoverBox category={form.category} illustration={coverProps(form)} />
+          <CoverBox preview={coverPreview(form)} />
         </aside>
       </div>
     </section>
   );
 }
 
-function currentTime() {
-  return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+// Errores que no tienen campo propio en el formulario (etiquetas, portada, estado): van en el aviso
+function otherErrors(errors) {
+  const message = errors.tags ?? errors.cover ?? errors.status;
+  return message ? `${message}.` : null;
+}
+
+function savedNotice(saved, form) {
+  if (saved.status === 'draft') return { tone: 'info', text: `Borrador guardado a las ${shortTime(saved.updatedAt)}.` };
+  if (saved.status === 'scheduled') return { tone: 'win', text: `Programado para el ${form.publishAt}.` };
+  return { tone: 'win', text: 'Artículo publicado.', articleId: saved.id };
 }

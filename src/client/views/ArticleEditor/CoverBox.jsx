@@ -1,10 +1,15 @@
 import { useRef, useState } from 'react';
 import Button from '../../components/Button/Button.jsx';
 import Illustration from '../../components/Illustration/Illustration.jsx';
+import { coverProps } from '../../components/Illustration/coverProps.js';
 import uploadIcon from '../../assets/icon-upload.svg';
 
-// Imagen de portada: la ilustración automática o una imagen elegida por el editor
-export default function CoverBox({ category, illustration }) {
+// Imagen de portada: la ilustración automática (la que se guarda) o una imagen elegida por el editor.
+// La imagen subida solo se ve aquí: todavía no hay servidor de archivos, así que no se guarda.
+// preview: { category, cover, coverTeams } (coverPreview de articleForm.js)
+export default function CoverBox({ preview }) {
+  const { category } = preview;
+  const illustration = coverProps(preview);
   const fileRef = useRef(null);
   const [coverImage, setCoverImage] = useState(null);
 

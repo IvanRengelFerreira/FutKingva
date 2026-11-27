@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { isSafeHref } from '../../../shared/validation/article.js';
 
 function isInsideEditor(editor) {
   const selection = window.getSelection();
@@ -84,10 +85,16 @@ export default function useRichTextEditor({ initialHtml, onEdit }) {
     command('formatBlock', inQuote ? 'p' : 'blockquote');
   }
 
+  // Solo enlaces seguros: https://…, http://… o internos de la web (#/jugadores/…), como exige el servidor
   function addLink() {
     restoreCursor();
-    const url = window.prompt('Dirección del enlace', 'https://');
-    if (url && url !== 'https://') command('createLink', url);
+    const url = window.prompt('Dirección del enlace (https://… o #/… para una página de FutKingva)', 'https://');
+    if (!url || url === 'https://') return;
+    if (!isSafeHref(url.trim())) {
+      window.alert('La dirección tiene que empezar por https://, http:// o #/');
+      return;
+    }
+    command('createLink', url.trim());
   }
 
   function insertBlock(html) {

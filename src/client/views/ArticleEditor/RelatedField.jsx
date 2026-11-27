@@ -2,14 +2,14 @@ import { useState } from 'react';
 import TextField from '../../components/TextField/TextField.jsx';
 import Avatar from '../../components/Avatar/Avatar.jsx';
 import Crest from '../../components/Crest/Crest.jsx';
-import { getPlayer } from '../../data/mockData.js';
-import { getSuggestions, relatedName } from './related.js';
+import { useSuggestions } from './related.js';
 import searchIcon from '../../assets/icon-search-small.svg';
 
-// Jugadores y equipos relacionados: buscador con sugerencias y lista de los ya elegidos
+// Jugadores y equipos relacionados: buscador con sugerencias de la BD y lista de los ya elegidos.
+// Son los «Jugadores y equipos mencionados» del artículo; en las previas, los dos primeros equipos van en la portada.
 export default function RelatedField({ related, onChange }) {
   const [query, setQuery] = useState('');
-  const suggestions = getSuggestions(query, related);
+  const suggestions = useSuggestions(query, related);
 
   function add(item) {
     onChange([...related, item]);
@@ -32,7 +32,10 @@ export default function RelatedField({ related, onChange }) {
             <li key={`${item.type}-${item.id}`}>
               <button type="button" className="article-editor__suggestion" onClick={() => add(item)}>
                 <RelatedBadge item={item} />
-                {relatedName(item, true)}
+                {item.name}
+                {item.type === 'player' && item.team && (
+                  <span className="article-editor__suggestion-team">{item.team.name}</span>
+                )}
               </button>
             </li>
           ))}
@@ -43,11 +46,11 @@ export default function RelatedField({ related, onChange }) {
           {related.map((item) => (
             <li key={`${item.type}-${item.id}`} className="article-editor__chip article-editor__chip--related">
               <RelatedBadge item={item} />
-              {relatedName(item)}
+              {item.name}
               <button
                 type="button"
                 className="article-editor__chip-remove"
-                aria-label={`Quitar ${relatedName(item)}`}
+                aria-label={`Quitar ${item.name}`}
                 onClick={() => onChange(related.filter((other) => other !== item))}
               />
             </li>
@@ -60,6 +63,6 @@ export default function RelatedField({ related, onChange }) {
 
 // Círculo del jugador (iniciales) o escudo del equipo
 function RelatedBadge({ item }) {
-  if (item.type === 'team') return <Crest teamId={item.id} size={22} />;
-  return <Avatar name={getPlayer(item.id)?.name} size={22} />;
+  if (item.type === 'team') return <Crest team={item} size={22} />;
+  return <Avatar name={item.name} size={22} />;
 }

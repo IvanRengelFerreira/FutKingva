@@ -1,23 +1,24 @@
 import { useState } from 'react';
-import Select from '../../components/Select/Select.jsx';
-import { PLAYERS, getPlayer, getTeam } from '../../data/mockData.js';
-import { playerBlockHtml, simpleBlockHtml } from './blockHtml.js';
+import TextField from '../../components/TextField/TextField.jsx';
+import Avatar from '../../components/Avatar/Avatar.jsx';
+import { figureBlockHtml, imageBlockHtml, playerBlockHtml } from './blockHtml.js';
+import { useSuggestions } from './related.js';
 import listIcon from '../../assets/icon-list.svg';
 import quoteIcon from '../../assets/icon-quote.svg';
 import linkIcon from '../../assets/icon-link.svg';
 import imageIcon from '../../assets/icon-image.svg';
 import chartIcon from '../../assets/icon-chart-small.svg';
 import userIcon from '../../assets/icon-user-small.svg';
+import searchIcon from '../../assets/icon-search-small.svg';
 
-// Barra de herramientas del texto y, debajo, el desplegable de «Jugador»
+// Barra de herramientas del texto y, debajo, el buscador de «Jugador» (jugadores de la BD)
 export default function EditorToolbar({ formats, commands }) {
   const { command, toggleHeading, toggleQuote, addLink, insertBlock } = commands;
   const [playerPicker, setPlayerPicker] = useState(false);
 
-  function insertPlayer(event) {
-    const player = getPlayer(event.target.value);
+  function insertPlayer(player) {
     setPlayerPicker(false);
-    if (player) insertBlock(playerBlockHtml(player));
+    insertBlock(playerBlockHtml(player));
   }
 
   return (
@@ -46,16 +47,8 @@ export default function EditorToolbar({ formats, commands }) {
         <ToolButton label="Lista" icon={listIcon} onClick={() => command('insertUnorderedList')} />
         <ToolButton label="Cita" icon={quoteIcon} onClick={toggleQuote} />
         <ToolButton label="Enlace" icon={linkIcon} onClick={addLink} />
-        <ToolButton
-          label="Imagen"
-          icon={imageIcon}
-          onClick={() => insertBlock(simpleBlockHtml('image', 'Imagen', 'Ilustración del artículo'))}
-        />
-        <ToolButton
-          label="Gráfico"
-          icon={chartIcon}
-          onClick={() => insertBlock(simpleBlockHtml('chart', 'Gráfico', 'Barras por jornada'))}
-        />
+        <ToolButton label="Imagen" icon={imageIcon} onClick={() => insertBlock(imageBlockHtml())} />
+        <ToolButton label="Gráfico" icon={chartIcon} onClick={() => insertBlock(figureBlockHtml())} />
         <ToolButton
           label="Jugador"
           icon={userIcon}
@@ -64,23 +57,43 @@ export default function EditorToolbar({ formats, commands }) {
         />
       </div>
 
-      {playerPicker && (
-        <div className="article-editor__picker">
-          <Select
-            size="sm"
-            label="Jugador que quieres insertar"
-            hideLabel
-            placeholder="Elige un jugador…"
-            options={Object.values(PLAYERS).map((player) => ({
-              value: player.id,
-              label: `${player.name} · ${getTeam(player.teamId)?.name ?? ''}`,
-            }))}
-            value=""
-            onChange={insertPlayer}
-          />
-        </div>
-      )}
+      {playerPicker && <PlayerPicker onPick={insertPlayer} />}
     </>
+  );
+}
+
+// Buscador del jugador que se inserta como ficha
+function PlayerPicker({ onPick }) {
+  const [query, setQuery] = useState('');
+  const suggestions = useSuggestions(query, [], { withTeams: false });
+
+  return (
+    <div className="article-editor__picker">
+      <TextField
+        size="sm"
+        label="Jugador que quieres insertar"
+        hideLabel
+        placeholder="Busca un jugador…"
+        icon={searchIcon}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        autoComplete="off"
+        autoFocus
+      />
+      {suggestions.length > 0 && (
+        <ul className="article-editor__suggestions">
+          {suggestions.map((player) => (
+            <li key={player.id}>
+              <button type="button" className="article-editor__suggestion" onClick={() => onPick(player)}>
+                <Avatar name={player.name} size={22} />
+                {player.name}
+                {player.team && <span className="article-editor__suggestion-team">{player.team.name}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
