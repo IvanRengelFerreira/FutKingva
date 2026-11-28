@@ -105,6 +105,14 @@
 }
 
 /* Lista de avisos */
+.notifications__empty {
+  margin: 0;
+  padding: 24px 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
 .notifications__list {
   margin: 0;
   padding: 0;

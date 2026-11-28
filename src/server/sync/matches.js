@@ -9,6 +9,7 @@ import {
   createFootballDataClient,
 } from './footballData.js';
 import { recalculateStandings } from './standings.js';
+import { publishSyncedChanges, standingPositions } from '../realtime/events.js';
 
 const MAX_MINUTE = 130;
 
@@ -121,7 +122,7 @@ function partitionMatches(mapped, existingByFdId) {
       toCreate.push(incoming);
     } else if (!existing.is_simulated && hasMatchChanged(existing, incoming)) {
       // Nunca sobrescribimos partidos del simulador de la demo
-      toUpdate.push({ id: existing.id, data: matchUpdateData(incoming) });
+      toUpdate.push({ id: existing.id, data: matchUpdateData(incoming), previous: existing });
     }
   }
 
@@ -167,7 +168,14 @@ export async function syncMatches(season, api = createFootballDataClient()) {
   const existingByFdId = new Map(existingRows.map((row) => [row.fd_id, row]));
 
   const { toCreate, toUpdate } = partitionMatches(mapped, existingByFdId);
+  const positionsBefore = await standingPositions(season.id);
   await applyMatchChanges(season, toCreate, toUpdate, readCurrentMatchday(apiMatches));
+  // Tiempo real: marcadores, goles y finales de los partidos recientes que han cambiado (RF9)
+  await publishSyncedChanges(
+    season.id,
+    toUpdate.map((item) => item.previous),
+    positionsBefore,
+  );
 
   return { records: toCreate.length + toUpdate.length, requests: api.requestCount() };
 }

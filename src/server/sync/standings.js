@@ -149,6 +149,7 @@ async function persistTable(tx, seasonId, table) {
 
 /**
  * Recalcula y guarda la clasificación de una temporada con sus partidos FINISHED dentro de `tx`.
+ * Los partidos del simulador de la demo (is_simulated) nunca cuentan.
  */
 export async function recalculateStandings(seasonId, tx) {
   const seasonTeams = await tx.season_teams.findMany({ where: { season_id: seasonId }, select: { team_id: true } });
@@ -156,7 +157,7 @@ export async function recalculateStandings(seasonId, tx) {
   if (!seasonTeams.length) return [];
 
   const finishedMatches = await tx.matches.findMany({
-    where: { season_id: seasonId, status: 'FINISHED' },
+    where: { season_id: seasonId, status: 'FINISHED', is_simulated: false },
     orderBy: [{ utc_date: 'asc' }, { matchday: 'asc' }, { id: 'asc' }],
     select: { home_team_id: true, away_team_id: true, home_goals: true, away_goals: true },
   });
