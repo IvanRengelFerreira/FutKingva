@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import './StandingsTable.css';
 import Crest from '../Crest/Crest.jsx';
 import FormGuide from '../FormGuide/FormGuide.jsx';
-import { STANDINGS_LALIGA, STANDINGS_ZONES, getTeam, getStandingsZone } from '../../data/mockData.js';
+import { STANDINGS_ZONES, getStandingsZone } from './zones.js';
 
 // Tabla de clasificación de una liga, con el líder en oro.
 // Dos formas:
@@ -15,16 +15,14 @@ import { STANDINGS_LALIGA, STANDINGS_ZONES, getTeam, getStandingsZone } from '..
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=48-350
 // y Figma › Guía de estilo › 3. Componentes › Tabla de clasificación (la compacta)
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=30-112
-// Uso:
-//   <StandingsTable />                                          → LaLiga completa (STANDINGS_LALIGA)
-//   <StandingsTable variant="compact" limit={5} />              → los 5 primeros
-//   <StandingsTable highlightTeamId="real-madrid" />            → resalta una fila (p. ej. desde la ficha de equipo)
-//   <StandingsTable standings={otraTabla} caption="Clasificación de la Premier League" />
-//   <StandingsTable legendExtra={<span>Actualizada hace 5 min</span>} />   → algo más a la derecha de la leyenda
-// Con datos de la API (GET /api/standings) cada fila trae su equipo (row.team) y no se busca en mockData.js:
-//   <StandingsTable standings={data.table} />
+// Uso: standings son las filas de la API (GET /api/standings), cada una con su equipo (row.team)
+//   <StandingsTable standings={data.table} />                   → la tabla completa
+//   <StandingsTable standings={table} variant="compact" limit={5} />        → los 5 primeros
+//   <StandingsTable standings={table} highlightTeamId={team.id} />          → resalta una fila (ficha de equipo)
+//   <StandingsTable standings={table} caption="Clasificación de la Premier League" />
+//   <StandingsTable standings={table} legendExtra={<span>Actualizada hace 5 min</span>} />   → junto a la leyenda
 export default function StandingsTable({
-  standings = STANDINGS_LALIGA,
+  standings,
   variant = 'full',
   limit,
   highlightTeamId,
@@ -128,7 +126,7 @@ function StandingsHead({ full }) {
 
 // Fila de un equipo; `highlighted` la resalta (p. ej. el equipo de la ficha que se está viendo).
 function StandingsRow({ row, full, highlighted }) {
-  const team = row.team ?? getTeam(row.teamId);
+  const { team } = row;
   const leader = row.position === 1;
   const zone = full ? getStandingsZone(row.position) : undefined;
   const rowClasses = [

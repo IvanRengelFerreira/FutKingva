@@ -5,12 +5,12 @@ import { formatDecimal } from './format.js';
 import chevronIcon from '../../assets/icon-chevron-right-lg.svg';
 
 // Lista de tarjetas de árbitros (móvil)
-export default function RefereeList({ referees }) {
+export default function RefereeList({ referees, season }) {
   return (
     <ul className="referees__list referees__mobile-flex">
       {referees.map((referee) => (
         <li key={referee.id}>
-          <Link className="referees__item" to={`/arbitros/${referee.id}`}>
+          <Link className="referees__item" to={`/arbitros/${referee.id}?season=${season?.year ?? ''}`}>
             <Avatar name={referee.name} size={44} />
             <span className="referees__item-text">
               <span className="referees__item-name">{referee.name}</span>

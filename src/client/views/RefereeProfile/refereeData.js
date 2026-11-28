@@ -1,10 +1,17 @@
 import { formatDecimal } from '../Referees/format.js';
 
-// Año «actual» de los datos de mockData.js (temporada 2026/27 congelada): sirve para contar las temporadas del árbitro
-export const MOCK_CURRENT_YEAR = 2026;
+// Cálculos de 07 · Ficha de árbitro sobre los datos de la API.
 
-// Texto de la cabecera: cuánto se aleja de la media de LaLiga («+12 % sobre la media de LaLiga (5,1)»)
+const MIN_CHART_MAX = 8; // Tope del gráfico del mockup; sube si algún partido tuvo más tarjetas
+export const CHART_GRID_STEPS = 4;
+
+// La BD guarda el país en inglés
+const COUNTRY_NAMES = { Spain: 'España' };
+
+// Texto de la cabecera: cuánto se aleja de la media de LaLiga («+12 % sobre la media de LaLiga (5,1)»).
+// null si falta alguna de las dos cifras.
 export function describeLeagueComparison(cardsPerMatch, leagueCardsPerMatch) {
+  if (cardsPerMatch == null || !leagueCardsPerMatch) return null;
   const difference = Math.round((cardsPerMatch / leagueCardsPerMatch - 1) * 100);
   const average = formatDecimal(leagueCardsPerMatch);
   if (difference === 0) return `En la media de LaLiga (${average})`;
@@ -13,17 +20,11 @@ export function describeLeagueComparison(cardsPerMatch, leagueCardsPerMatch) {
   return `${sign}${Math.abs(difference)} % ${direction} la media de LaLiga (${average})`;
 }
 
-// Temporadas en Primera División, o null si no se sabe desde cuándo
-export function countSeasons(since) {
-  return since ? MOCK_CURRENT_YEAR - since : null;
-}
-
-// Líneas de datos bajo el nombre: país, edad y comité
+// Líneas de datos bajo el nombre: país y comité (solo lo que se sepa)
 export function buildMeta(referee) {
   return [
-    'España',
-    referee.age && `${referee.age} años`,
-    referee.committeeAdjective && `Comité ${referee.committeeAdjective}`,
+    referee.nationality && (COUNTRY_NAMES[referee.nationality] ?? referee.nationality),
+    referee.committee && `Comité de ${referee.committee}`,
   ].filter(Boolean);
 }
 
@@ -34,15 +35,14 @@ export function toChartData(matches) {
     .map((match) => ({
       label: `J${match.round}`,
       segments: [
-        { value: match.yellow, tone: 'yellow-card' },
-        { value: match.red, tone: 'red-card' },
+        { value: match.yellowCards, tone: 'yellow-card' },
+        { value: match.redCards, tone: 'red-card' },
       ],
     }));
 }
 
-// Nombre del equipo en la tabla de escritorio: el completo, salvo los muy largos («Atlético de Madrid» → «Atlético»)
-const LONG_NAME_LENGTH = 14;
-export function tableName(team) {
-  if (!team) return '';
-  return team.name.length > LONG_NAME_LENGTH ? team.shortName : team.name;
+// Borde superior del gráfico: múltiplo de los tramos para que las líneas de guía caigan en números enteros
+export function chartMax(matches) {
+  const highest = Math.max(0, ...matches.map((match) => match.yellowCards + match.redCards));
+  return Math.max(MIN_CHART_MAX, Math.ceil(highest / CHART_GRID_STEPS) * CHART_GRID_STEPS);
 }

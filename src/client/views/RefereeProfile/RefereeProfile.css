@@ -272,6 +272,21 @@
   white-space: nowrap;
 }
 
+.referee-matches__team {
+  color: inherit;
+  text-decoration: none;
+}
+
+.referee-matches__team:hover {
+  color: var(--accent-gold);
+}
+
+.referee-matches__team:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .referee-matches .referee-matches__cards {
   width: 96px;
 }

@@ -1,17 +1,16 @@
 import { Link } from 'react-router';
 import Avatar from '../../components/Avatar/Avatar.jsx';
-import { SEASON } from '../../data/mockData.js';
 import { formatDecimal } from './format.js';
 
 // Tarjetas por partido que llenan la barra entera
 const MAX_CARDS_PER_MATCH = 7.5;
 
 // Tabla de árbitros (escritorio) con una barra de tarjetas por partido
-export default function RefereeTable({ referees }) {
+export default function RefereeTable({ referees, season }) {
   return (
     <div className="referees__table-wrapper referees__desktop-block">
       <table className="referees__table">
-        <caption className="referees__sr-only">Árbitros de LaLiga {SEASON}</caption>
+        <caption className="referees__sr-only">Árbitros de LaLiga {season?.label}</caption>
         <thead>
           <tr>
             <th scope="col">Árbitro</th>
@@ -62,7 +61,10 @@ export default function RefereeTable({ referees }) {
               </td>
               <td className="referees__num referees__num--sm referees__big">{referee.penalties ?? '—'}</td>
               <td className="referees__link">
-                <Link to={`/arbitros/${referee.id}`} aria-label={`Ver ficha de ${referee.name}`}>
+                <Link
+                  to={`/arbitros/${referee.id}?season=${season?.year ?? ''}`}
+                  aria-label={`Ver ficha de ${referee.name}`}
+                >
                   Ver ficha →
                 </Link>
               </td>

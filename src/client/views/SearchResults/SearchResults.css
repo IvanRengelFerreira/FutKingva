@@ -344,6 +344,10 @@ a.search-results__see:hover {
   text-align: right;
 }
 
+.search-results__more {
+  width: 100%;
+}
+
 .search-results__empty {
   padding: 40px 24px;
   border: 1px dashed var(--border);

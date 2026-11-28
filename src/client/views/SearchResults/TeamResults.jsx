@@ -3,7 +3,10 @@ import Crest from '../../components/Crest/Crest.jsx';
 import chevronIcon from '../../assets/icon-chevron-right-lg.svg';
 import Highlighted from './Highlighted.jsx';
 
+const COMPETITION = 'LaLiga'; // Por ahora solo hay datos de LaLiga
+
 // Sección «Equipos» de los resultados: tarjetas con escudo, puesto y enlace a la ficha
+// teams: los de GET /api/teams ({ ...equipo, standing })
 export default function TeamResults({ teams, query }) {
   return (
     <section className="search-results__section" aria-labelledby="search-teams-title">
@@ -14,12 +17,12 @@ export default function TeamResults({ teams, query }) {
         {teams.map((team) => (
           <li key={team.id}>
             <Link className="search-results__card" to={`/equipos/${team.id}`}>
-              <Crest teamId={team.id} size={48} className="search-results__desktop-flex" />
-              <Crest teamId={team.id} size={40} className="search-results__mobile-flex" />
+              <Crest team={team} size={48} className="search-results__desktop-flex" />
+              <Crest team={team} size={40} className="search-results__mobile-flex" />
               <span className="search-results__card-text">
                 <Highlighted name={team.name} query={query} className="search-results__card-name" />
                 <span className="search-results__card-meta">
-                  {team.competition} · España · {team.position}.º
+                  {COMPETITION} · España{team.standing && ` · ${team.standing.position}.º`}
                 </span>
               </span>
               <span className="search-results__see search-results__desktop">Ver ficha →</span>

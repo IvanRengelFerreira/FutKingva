@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { getTeam } from '../../data/mockData.js';
 import './Crest.css';
 
 // Escudo de un equipo: muestra la imagen oficial del club (`crestUrl`) si está disponible y, como respaldo,
@@ -8,14 +7,12 @@ import './Crest.css';
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=44-194
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=48-367
 // Uso:
-//   <Crest teamId="real-madrid" />              → 28 px (tablas con mockData)
-//   <Crest team={row.team} />                   → equipo de la API ({ name, code, color, crestUrl })
+//   <Crest team={row.team} />                   → equipo de la API ({ name, code, color, crestUrl }), 28 px
 //   <Crest team={team} size={128} />            → cabecera de la ficha de equipo
 // Va al lado del nombre del equipo, así que los lectores de pantalla lo saltan.
 // Si va solo (sin el nombre al lado), pasa labelled para que lean el nombre del equipo.
-export default function Crest({ team: apiTeam, teamId, size = 28, labelled = false, className = '' }) {
+export default function Crest({ team, size = 28, labelled = false, className = '' }) {
   const [failedSrc, setFailedSrc] = useState(null);
-  const team = apiTeam ?? getTeam(teamId);
   const code = team?.code ?? '?';
   const src = team?.crestUrl ?? null;
   const showImage = Boolean(src) && failedSrc !== src;
