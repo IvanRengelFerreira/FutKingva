@@ -1,12 +1,17 @@
+import Button from '../../components/Button/Button.jsx';
 import { shortTime } from '../../services/format.js';
 import { shortDay } from './playerDataFields.js';
+import syncIcon from '../../assets/icon-sync.svg';
 
 // Última sincronización con el proveedor de datos (la última ejecución correcta del importador, sync_runs).
-// El botón «Sincronizar ahora» de Figma no está: el importador se lanza desde el servidor, no desde la web.
+// El botón «Sincronizar ahora» del mockup se queda, pero desactivado: la sincronización solo la lanza
+// el administrador (20 · Panel de administración), no el editor.
 const SOURCE_NAMES = {
   FOOTBALL_DATA: 'football-data.org',
   API_FOOTBALL: 'API-Football',
   TRANSFERMARKT: 'Transfermarkt',
+  FOTMOB: 'FotMob',
+  FBREF: 'FBref',
 };
 
 function syncDate(iso) {
@@ -30,6 +35,17 @@ export default function SyncStatus({ sync }) {
           <span className="player-data__capital">{sync ? syncDate(sync.finishedAt) : 'todavía ninguna'}</span>
         </p>
       </div>
+      <Button
+        variant="tertiary"
+        className="player-data__button"
+        disabled
+        title="Solo el administrador puede lanzar la sincronización"
+      >
+        <img src={syncIcon} alt="" width="16" height="16" />
+        <span>
+          Sincronizar<span className="player-data__more"> ahora</span>
+        </span>
+      </Button>
     </div>
   );
 }

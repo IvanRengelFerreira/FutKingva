@@ -12,6 +12,8 @@ export const STAT_FIELDS = [
   { key: 'minutes', column: 'minutes', label: 'Minutos', max: 9999 },
   { key: 'goals', column: 'goals', label: 'Goles', max: 99 },
   { key: 'assists', column: 'assists', label: 'Asistencias', max: 99 },
+  { key: 'xg', column: 'xg', label: 'xG', max: 99.99, decimals: 2 }, // numeric(5,2) en la BD
+  { key: 'shotsOnTarget', column: 'shots_on_target', label: 'Tiros a puerta', short: 'Tiros a puerta', max: 999 },
   { key: 'yellowCards', column: 'yellow_cards', label: 'Tarjetas amarillas', short: 'Amarillas', max: 99 },
   { key: 'redCards', column: 'red_cards', label: 'Tarjetas rojas', short: 'Rojas', max: 99 },
 ];
@@ -53,8 +55,14 @@ function onlyErrors(errors) {
 }
 
 function statError(field, value) {
-  if (!Number.isInteger(value) || value < 0) return 'Escribe un número entero (0 o más)';
-  if (value > field.max) return `No puede ser mayor que ${field.max}`;
+  if (field.decimals) {
+    const factor = 10 ** field.decimals;
+    const valid = Number.isFinite(value) && value >= 0 && Math.abs(Math.round(value * factor) - value * factor) < 1e-6;
+    if (!valid) return `Escribe un número (0 o más, con hasta ${field.decimals} decimales)`;
+  } else if (!Number.isInteger(value) || value < 0) {
+    return 'Escribe un número entero (0 o más)';
+  }
+  if (value > field.max) return `No puede ser mayor que ${String(field.max).replace('.', ',')}`;
   return null;
 }
 
@@ -65,7 +73,7 @@ function reasonError(reason) {
   return null;
 }
 
-/** Corrección: { values: { matches?, minutes?, goals?, assists?, yellowCards?, redCards?, position? }, reason } */
+/** Corrección: { values: { matches?, minutes?, goals?, assists?, xg?, shotsOnTarget?, yellowCards?, redCards?, position? }, reason } */
 export function validatePlayerData({ values, reason } = {}) {
   const isObject = values !== null && typeof values === 'object' && !Array.isArray(values);
   const keys = isObject ? Object.keys(values) : [];

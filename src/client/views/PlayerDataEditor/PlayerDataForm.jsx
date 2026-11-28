@@ -111,20 +111,13 @@ export default function PlayerDataForm({ initialData, showReport, onDirtyChange,
 
       <div className="player-data__fields">
         {FORM_FIELDS.map((field) => {
-          if (field.readOnly) {
-            return (
-              <div key={field.key} className="player-data__field">
-                <TextField label={field.label} placeholder="—" value="" hint={field.hint} disabled readOnly />
-              </div>
-            );
-          }
           const isChanged = changedSet.has(field.key);
           const fieldClassName = isChanged ? 'player-data__field player-data__field--changed' : 'player-data__field';
           return (
             <div key={field.key} className={fieldClassName}>
               <TextField
                 label={field.label}
-                inputMode="numeric"
+                inputMode={field.decimals ? 'decimal' : 'numeric'}
                 placeholder="—"
                 value={values[field.key]}
                 onChange={(event) => handleFieldChange(field.key, event.target.value)}
