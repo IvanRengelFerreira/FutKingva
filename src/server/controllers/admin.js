@@ -1,9 +1,11 @@
 // 20 · Panel de administración (RF8): estadísticas, gestión de usuarios y moderación de reportes.
 // Todas las rutas exigen rol de administrador (middleware/auth.js).
 
+import { Prisma } from '../generated/prisma/client.ts';
 import { prisma } from '../db.js';
 import { AppError } from '../errors/AppError.js';
 import { readId } from '../utils/params.js';
+import { toLikePattern, foldedLike } from '../utils/search.js';
 import { publicUser } from '../utils/users.js';
 import { disconnectUser } from '../realtime/socket.js';
 import { REPORT_STATUSES, USER_ROLES, USER_STATUSES } from '../../shared/validation/admin.js';
@@ -74,7 +76,7 @@ function readSearch(value) {
   return trimmed || null;
 }
 
-function buildUsersWhere(query) {
+async function buildUsersWhere(query) {
   const search = readSearch(query.search);
   const role = readEnumFilter(query.role, USER_ROLES, 'role', 'rol');
   const status = readEnumFilter(query.status, USER_STATUSES, 'status', 'estado');
@@ -82,15 +84,18 @@ function buildUsersWhere(query) {
   return {
     ...(role ? { role } : {}),
     ...(status ? { status } : {}),
-    ...(search
-      ? {
-          OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
-          ],
-        }
-      : {}),
+    ...(search ? { id: { in: await findUserIdsMatching(search) } } : {}),
   };
+}
+
+// Ids de los usuarios cuyo nombre o email contiene lo buscado, sin distinguir mayúsculas ni tildes («jose» → «José»)
+async function findUserIdsMatching(search) {
+  const pattern = toLikePattern(search);
+  const rows = await prisma.$queryRaw`
+    SELECT id FROM users
+    WHERE ${foldedLike(Prisma.sql`name`, pattern)} OR ${foldedLike(Prisma.sql`email`, pattern)}
+  `;
+  return rows.map((row) => row.id);
 }
 
 function adminUser(user, currentUserId) {
@@ -131,7 +136,7 @@ export async function stats(req, res) {
 /** GET /api/admin/users → listado paginado y filtrable por búsqueda, rol y estado */
 export async function listUsers(req, res) {
   const { limit, offset } = readPagination(req.query);
-  const where = buildUsersWhere(req.query);
+  const where = await buildUsersWhere(req.query);
 
   const [rows, total] = await Promise.all([
     prisma.users.findMany({

@@ -85,8 +85,11 @@ async function loadExistingPlayers(ids) {
   return ids.map((id) => byId.get(id));
 }
 
-// Si el usuario ya guardó el mismo conjunto de jugadores (en cualquier orden), se sustituye en la misma transacción
+// Si el usuario ya guardó el mismo conjunto de jugadores (en cualquier orden), se sustituye en la misma transacción.
+// El bloqueo por usuario (se suelta al acabar la transacción) pone en fila dos guardados a la vez: sin él, los dos
+// verían que no hay duplicado y crearían dos comparativas iguales.
 async function replaceComparison(tx, userId, ids, name) {
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(${userId})`;
   const targetKey = playerSetKey(ids);
   const existing = await tx.comparisons.findMany({
     where: { user_id: userId },

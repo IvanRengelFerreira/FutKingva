@@ -11,7 +11,7 @@
 
 import { prisma, findSeasonTeams } from '../db.js';
 import { AppError } from '../errors/AppError.js';
-import { resolveSeason, seasonSummary } from '../utils/seasons.js';
+import { resolveSeason, listSeasons, seasonSummary } from '../utils/seasons.js';
 import { TEAM_SUMMARY_FIELDS, teamSummary } from '../utils/teams.js';
 import { standingRow } from '../utils/standings.js';
 import { playerSummary, bySquadOrder } from '../utils/players.js';
@@ -36,8 +36,9 @@ export async function list(req, res) {
   const sort = readSort(req.query.sort, Object.keys(TEAM_ORDERS));
   const matchesName = readNameFilter(req.query.q);
   const { season, isCurrent } = await resolveSeason(req.query.season);
+  const [seasonTeams, seasons] = await Promise.all([findSeasonTeams(season.id), listSeasons()]);
 
-  const teams = (await findSeasonTeams(season.id))
+  const teams = seasonTeams
     .filter((team) => matchesName(team.name, team.short_name))
     .map(teamListItem)
     .sort(TEAM_ORDERS[sort]);
@@ -48,6 +49,7 @@ export async function list(req, res) {
     limit,
     offset,
     season: { ...seasonSummary(season), isCurrent },
+    seasons, // Las que se pueden elegir en el desplegable de 02 · Equipos y jugadores
   });
 }
 

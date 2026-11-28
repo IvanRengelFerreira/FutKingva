@@ -7,7 +7,7 @@ import useIsMobile from '../PlayerProfile/useIsMobile.js';
 // Resultados de 02 · Equipos y jugadores, pedidos a la API por tramos.
 //   Escritorio: la página `page` (offset = páginas anteriores).
 //   Móvil: cada «Cargar más» pide el tramo siguiente y lo añade a los ya cargados.
-// Al cambiar de pestaña, búsqueda u orden se vuelve a la primera página.
+// Al cambiar de pestaña, temporada, búsqueda u orden se vuelve a la primera página.
 
 // /api/teams busca con ?q= y /api/players (de Ivan) con ?search=
 const REQUESTS = {
@@ -18,12 +18,12 @@ const PER_PAGE = { teams: 12, players: 10 };
 const MOBILE_STEP = 7;
 const START = { page: 1, loaded: [] }; // loaded: tramos de móvil anteriores al que se está pidiendo
 
-export function useTeamsResults({ tab, search, sort }) {
+export function useTeamsResults({ tab, season, search, sort }) {
   const isMobile = useIsMobile();
   const [{ page, loaded }, setPosition] = useState(START);
 
   // Se vuelve al principio en el mismo render: así no se llega a pedir la página anterior con los filtros nuevos
-  const filters = JSON.stringify([tab, search, sort]);
+  const filters = JSON.stringify([tab, season, search, sort]);
   const [previousFilters, setPreviousFilters] = useState(filters);
   if (filters !== previousFilters) {
     setPreviousFilters(filters);
@@ -36,10 +36,10 @@ export function useTeamsResults({ tab, search, sort }) {
 
   const { data, error, loading, reload } = useApi(
     async (signal) => {
-      const result = await REQUESTS[tab]({ q: search, sort, limit, offset }, { signal });
+      const result = await REQUESTS[tab]({ q: search, season, sort, limit, offset }, { signal });
       return { ...result, tab, search };
     },
-    [tab, search, sort, limit, offset],
+    [tab, season, search, sort, limit, offset],
   );
 
   // Mientras llega otra respuesta se siguen viendo los datos anteriores, pero nunca los de la otra pestaña

@@ -13,7 +13,7 @@ import { useIdealTeamData } from './useIdealTeamData.js';
 //   favoriteTeamItems / favoritePlayerItems → datos completos para las tarjetas de 12 · Mi perfil
 //   favoritesLoading / favoritesError / reloadFavorites · toggleFavoriteTeam(id) · toggleFavoritePlayer(id)
 //   savedComparisons → [{ id, name, playerIds, players, createdAt, date }] · saveComparison(playerIds) devuelve la comparativa guardada
-//   removeComparison(id)
+//   comparisonsLoading · comparisonsError · reloadComparisons() · removeComparison(id)
 //   idealTeam → { name, formation, updatedAt, season, players: [{ slot, playerId, player }] } (desde /api/me/ideal-team)
 //   idealTeamLoading · idealTeamError · reloadIdealTeam() · saveIdealTeam(team)
 

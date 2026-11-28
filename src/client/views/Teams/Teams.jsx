@@ -15,9 +15,10 @@ import './Teams.css';
 // 02 · Equipos y jugadores: buscador y fichas de equipos y jugadores (RF2).
 // Pestaña Equipos: rejilla de tarjetas (escudo, puesto, puntos, forma, «Ver ficha») con paginación;
 // en móvil, lista con «Cargar más». Pestaña Jugadores: tabla (tarjetas en móvil).
-// Los datos son de la API (GET /api/teams y /api/players), de la temporada actual: el servidor busca,
-// ordena y pagina. El buscador pide mientras se escribe (sin tildes ni mayúsculas). Solo hay datos de
-// LaLiga, así que los desplegables de liga y temporada tienen una sola opción.
+// Los datos son de la API (GET /api/teams y /api/players): el servidor busca, ordena y pagina. El buscador
+// pide mientras se escribe (sin tildes ni mayúsculas). Solo hay datos de LaLiga, así que el desplegable de liga
+// tiene una sola opción; el de temporada trae las de la API (por defecto la actual) y se mantiene al cambiar
+// de pestaña. En Jugadores salen solo los de la plantilla de esa temporada.
 // La estrella marca un equipo como favorito (sale en Mi perfil); sin sesión lleva a Acceso y al entrar vuelve aquí.
 // Diseño: Figma › Mockups › 02 · Equipos y jugadores
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=43-87
@@ -52,8 +53,9 @@ const LALIGA_TEAMS = 20;
 export default function Teams() {
   const [tab, setTab] = useState('teams');
   const [sort, setSort] = useState({ teams: SORTS.teams[0].value, players: SORTS.players[0].value });
+  const [season, setSeason] = useState(''); // '' = la que elija la API (la actual)
   const { query, search, changeQuery, clearQuery } = useDebouncedSearch();
-  const results = useTeamsResults({ tab, search, sort: sort[tab] });
+  const results = useTeamsResults({ tab, season, search, sort: sort[tab] });
   const { data } = results;
 
   // Cada pestaña empieza sin búsqueda
@@ -89,6 +91,10 @@ export default function Teams() {
         searchLabel="Buscar por nombre"
         query={query}
         onQueryChange={changeQuery}
+        seasons={data?.seasons ?? []}
+        shownSeason={data?.season}
+        season={season}
+        onSeasonChange={setSeason}
         sortOptions={SORTS[tab].map((item) => ({ value: item.value, label: `Ordenar: ${item.label}` }))}
         sortValue={sort[tab]}
         onSortChange={changeSort}

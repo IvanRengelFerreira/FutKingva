@@ -1,6 +1,26 @@
-// ?q= y ?sort= de los listados (Equipos y jugadores).
-// El filtro por nombre se hace aquí y no en la consulta: Postgres no ignora las tildes sin la extensión unaccent.
+// Búsquedas por nombre sin distinguir mayúsculas ni tildes, y ?sort= de los listados.
+//   · readNameFilter: filtra en memoria (Equipos y artículos).
+//   · toLikePattern + foldedLike: filtran en SQL con translate() (Jugadores y usuarios de Admin), porque Postgres
+//     no ignora las tildes sin la extensión unaccent.
+import { Prisma } from '../generated/prisma/client.ts';
 import { AppError } from '../errors/AppError.js';
+
+// Caracteres con tilde o diacrítico que se pliegan en SQL en los dos lados de la búsqueda
+const ACCENTS_FROM = 'áéíóúüñàèìòùâêîôûäëïöãõçćčšžýțșă';
+const ACCENTS_TO = 'aeiouunaeiouaeiouaeioaocccszytsa';
+
+/** «  Díaz » → «%Díaz%» con los comodines de LIKE escapados; sin texto, null */
+export function toLikePattern(raw) {
+  const text = String(raw ?? '').trim();
+  if (!text) return null;
+  return `%${text.replace(/[\\%_]/g, '\\$&')}%`;
+}
+
+/** Condición SQL: la columna contiene el patrón sin distinguir mayúsculas ni tildes (column: Prisma.sql`p.name`) */
+export function foldedLike(column, pattern) {
+  return Prisma.sql`translate(lower(${column}), ${ACCENTS_FROM}, ${ACCENTS_TO})
+    LIKE translate(lower(${pattern}), ${ACCENTS_FROM}, ${ACCENTS_TO}) ESCAPE '\\'`;
+}
 
 /** Sin tildes, mayúsculas ni espacios en los extremos («  Díaz » → «diaz») */
 function toSearchText(text) {

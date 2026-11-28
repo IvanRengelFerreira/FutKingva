@@ -2,6 +2,7 @@
 
 import { teamSummary } from './teams.js';
 import { teamMatch } from './matches.js';
+import { countryName } from '../../shared/countries.js';
 
 // Grupo de posición de la BD → texto en español (si el jugador no tiene posición detallada)
 const POSITION_LABELS = {
@@ -66,7 +67,7 @@ export function playerProfile(player) {
     number: player.shirt_number,
     position: positionLabel(player),
     positionGroup: player.position,
-    nationality: player.nationality,
+    nationality: countryName(player.nationality), // En la BD va en inglés («France» → «Francia»)
     age: ageFromBirthDate(player.date_of_birth),
     heightCm: player.height_cm,
     foot: FOOT_LABELS[player.foot] ?? null,
@@ -81,11 +82,12 @@ export function playerProfile(player) {
  * @param player fila de players con teams incluido
  * @param stats salida de aggregateSeasonStats (en camelCase) o null
  */
-export function playerListItem(player, stats) {
+// team: el club que se enseña (por defecto el de ahora; en una temporada pasada, el de esa temporada)
+export function playerListItem(player, stats, team = player.teams) {
   return {
     ...playerSummary(player, stats),
     age: ageFromBirthDate(player.date_of_birth),
-    team: teamSummary(player.teams),
+    team: teamSummary(team),
     minutes: stats?.minutes ?? null,
     xg: stats?.xg ?? null,
     shotsOnTarget: stats?.shotsOnTarget ?? null,

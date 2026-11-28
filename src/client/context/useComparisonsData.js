@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSession } from './SessionContext.jsx';
 import { listComparisons, createComparison, deleteComparison } from '../services/comparisons.js';
 import { shortDate } from '../services/format.js';
@@ -6,6 +6,7 @@ import { shortDate } from '../services/format.js';
 // Comparativas guardadas del usuario en la API (/api/me/comparisons). Responsable: Ivan.
 // Se mezcla en UserDataContext para mantener la interfaz de useUserData():
 //   savedComparisons → [{ id, name, playerIds, players, createdAt, date }]
+//   comparisonsLoading · comparisonsError · reloadComparisons()
 //   saveComparison(playerIds) → guarda en la API y devuelve la comparativa guardada
 //   removeComparison(id) → borra en la API y la quita de la lista
 
@@ -32,12 +33,18 @@ export function useComparisonsData() {
   const { user } = useSession();
   const userId = user?.id ?? null;
   const [savedComparisons, setSavedComparisons] = useState([]);
+  // Con sesión empieza cargando: así Mi perfil no enseña «0 comparativas» antes de la primera respuesta
+  const [loading, setLoading] = useState(Boolean(userId));
+  const [error, setError] = useState(null);
+  const [reloadCount, setReloadCount] = useState(0);
 
   // Al cambiar de usuario o cerrar sesión se vacía la lista en el mismo render para no enseñar datos ajenos
   const [lastUserId, setLastUserId] = useState(userId);
   if (lastUserId !== userId) {
     setLastUserId(userId);
     setSavedComparisons([]);
+    setLoading(Boolean(userId));
+    setError(null);
   }
 
   useEffect(() => {
@@ -46,17 +53,25 @@ export function useComparisonsData() {
 
     listComparisons({ limit: MAX_FETCH }, { signal: controller.signal })
       .then((result) => {
-        if (!controller.signal.aborted) {
-          setSavedComparisons(result.items.map(normalizeComparison));
-        }
+        if (controller.signal.aborted) return;
+        setSavedComparisons(result.items.map(normalizeComparison));
+        setError(null);
+        setLoading(false);
       })
-      .catch((error) => {
-        if (error.name === 'AbortError') return;
-        console.warn('[comparativas] No se han podido cargar las comparativas:', error.message);
+      .catch((caught) => {
+        if (caught.name === 'AbortError' || controller.signal.aborted) return;
+        setError(caught);
+        setLoading(false);
       });
 
     return () => controller.abort();
-  }, [userId]);
+  }, [userId, reloadCount]);
+
+  const reloadComparisons = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    setReloadCount((count) => count + 1);
+  }, []);
 
   async function saveComparison(playerIds) {
     if (!userId) return null;
@@ -76,5 +91,12 @@ export function useComparisonsData() {
     setSavedComparisons((current) => current.filter((item) => item.id !== id));
   }
 
-  return { savedComparisons, saveComparison, removeComparison };
+  return {
+    savedComparisons,
+    comparisonsLoading: Boolean(userId) && loading,
+    comparisonsError: userId ? error : null,
+    reloadComparisons,
+    saveComparison,
+    removeComparison,
+  };
 }

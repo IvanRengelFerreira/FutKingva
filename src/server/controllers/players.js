@@ -10,6 +10,7 @@ import { resolveSeason, listSeasons, seasonSummary } from '../utils/seasons.js';
 import { TEAM_SUMMARY_FIELDS, teamSummary } from '../utils/teams.js';
 import { MATCH_TEAMS } from '../utils/matches.js';
 import { readId, readPagination } from '../utils/params.js';
+import { toLikePattern, foldedLike } from '../utils/search.js';
 import {
   VALID_POSITIONS,
   aggregateSeasonStats,
@@ -24,39 +25,41 @@ const MIN_RANK_MATCHES = 3; // Mínimo de partidos en la temporada para entrar e
 const TEAM_INCLUDE = { select: TEAM_SUMMARY_FIELDS };
 const SORTS = ['rating', 'goals', 'assists', 'name']; // El primero es el orden por defecto
 
-// Caracteres con tilde o diacrítico que se pliegan en SQL en ambos lados de la búsqueda (sin depender de unaccent)
-const ACCENTS_FROM = 'áéíóúüñàèìòùâêîôûäëïöãõçćčšžýțșă';
-const ACCENTS_TO = 'aeiouunaeiouaeiouaeioaocccszytsa';
-
 /**
  * GET /api/players
- * Si llega ?ids=1,2,3 (máx. 4), devuelve esos jugadores en ese orden e ignora search, limit y offset.
+ * El listado solo trae a los jugadores de la plantilla de la temporada, con la misma regla que la ficha de
+ * equipo (findSquad en teams.js): en la actual, los de los clubes que la juegan; en una pasada, los que tienen
+ * estadísticas con un club ese año. El club que se enseña es el de esa temporada (pickSeasonClub).
+ * Si llega ?ids=1,2,3 (máx. 4), devuelve esos jugadores en ese orden e ignora search, limit, offset y la
+ * plantilla (una comparativa guardada puede tener jugadores que ya no están).
  * Cada elemento de `items` sigue la forma de `playerListItem` (reutilizada por 10 · Comparador y 11 · Equipo ideal):
  *   { id, name, number, position, positionGroup, age, team, matches, minutes, goals, assists,
  *     xg, shotsOnTarget, passAccuracy, keyPasses, yellowCards, redCards, rating }
  */
 export async function list(req, res) {
-  const { season } = await resolveSeason(req.query.season);
+  const { season, isCurrent } = await resolveSeason(req.query.season);
   const position = parsePosition(req.query.position);
 
   if (req.query.ids !== undefined) {
     const ids = parseIds(req.query.ids);
-    const items = await loadPlayerItems(ids, season.id, position);
+    const items = await loadPlayerItems(ids, season.id, isCurrent, position);
     res.json({ items, total: items.length, limit: MAX_IDS, offset: 0 });
     return;
   }
 
   const { limit, offset } = readPagination(req.query);
-  const pattern = buildSearchPattern(req.query.search);
+  const filter = playerFilter(season.id, isCurrent, toLikePattern(req.query.search), position);
   const sort = parseSort(req.query.sort);
 
-  const [total, ids] = await Promise.all([
-    countFilteredPlayers(pattern, position),
-    findRankedPlayerIds(season.id, pattern, position, sort, limit, offset),
+  const [total, ids, seasons] = await Promise.all([
+    countFilteredPlayers(filter),
+    findRankedPlayerIds(season.id, filter, sort, limit, offset),
+    listSeasons(),
   ]);
-  const items = await loadPlayerItems(ids, season.id);
+  const items = await loadPlayerItems(ids, season.id, isCurrent);
 
-  res.json({ items, total, limit, offset, season: seasonSummary(season) });
+  // seasons: las temporadas que se pueden elegir en el desplegable de 02 · Equipos y jugadores
+  res.json({ items, total, limit, offset, season: { ...seasonSummary(season), isCurrent }, seasons });
 }
 
 /** GET /api/players/:id */
@@ -145,34 +148,37 @@ function parseIds(value) {
   return ids;
 }
 
-// Solo escapa comodines LIKE; el plegado de mayúsculas y tildes se hace en SQL en los dos lados
-function buildSearchPattern(raw) {
-  const text = String(raw ?? '').trim();
-  if (!text) return null;
-  return `%${text.replace(/[\\%_]/g, '\\$&')}%`;
-}
-
-// Filtro común para countFilteredPlayers y findRankedPlayerIds (mismo translate en nombre y patrón)
-function playerFilter(pattern, position) {
+// Filtro común para countFilteredPlayers y findRankedPlayerIds: plantilla de la temporada, nombre (sin
+// distinguir mayúsculas ni tildes) y posición
+function playerFilter(seasonId, isCurrent, pattern, position) {
   return Prisma.sql`
-    WHERE (${pattern}::text IS NULL
-           OR translate(lower(p.name), ${ACCENTS_FROM}, ${ACCENTS_TO})
-              LIKE translate(lower(${pattern}), ${ACCENTS_FROM}, ${ACCENTS_TO}) ESCAPE '\\')
+    WHERE ${squadFilter(seasonId, isCurrent)}
+      AND (${pattern}::text IS NULL OR ${foldedLike(Prisma.sql`p.name`, pattern)})
       AND (${position}::text IS NULL OR p.position::text = ${position})
   `;
 }
 
+// Misma regla que findSquad (teams.js): players.team_id es solo el club de ahora
+function squadFilter(seasonId, isCurrent) {
+  return isCurrent
+    ? Prisma.sql`p.team_id IN (SELECT team_id FROM season_teams WHERE season_id = ${seasonId})`
+    : Prisma.sql`EXISTS (
+        SELECT 1 FROM player_season_stats ps
+        WHERE ps.player_id = p.id AND ps.season_id = ${seasonId} AND ps.team_id IS NOT NULL
+      )`;
+}
+
 // SQL directo: Prisma no puede ordenar players por agregados de player_season_stats ni plegar tildes
-async function countFilteredPlayers(pattern, position) {
+async function countFilteredPlayers(filter) {
   const [row] = await prisma.$queryRaw`
     SELECT COUNT(*)::int AS total
     FROM players p
-    ${playerFilter(pattern, position)}
+    ${filter}
   `;
   return row.total;
 }
 
-async function findRankedPlayerIds(seasonId, pattern, position, sort, limit, offset) {
+async function findRankedPlayerIds(seasonId, filter, sort, limit, offset) {
   const rows = await prisma.$queryRaw`
     WITH season_totals AS (
       SELECT
@@ -196,7 +202,7 @@ async function findRankedPlayerIds(seasonId, pattern, position, sort, limit, off
     SELECT p.id
     FROM players p
     LEFT JOIN season_totals st ON st.player_id = p.id
-    ${playerFilter(pattern, position)}
+    ${filter}
     ORDER BY
       ${sortPrefix(sort)}
       st.rating DESC NULLS LAST,
@@ -211,20 +217,31 @@ async function findRankedPlayerIds(seasonId, pattern, position, sort, limit, off
   return rows.map((row) => row.id);
 }
 
-async function loadPlayerItems(ids, seasonId, position = null) {
+async function loadPlayerItems(ids, seasonId, isCurrent, position = null) {
   if (ids.length === 0) return [];
   const rows = await prisma.players.findMany({
     where: { id: { in: ids }, ...(position ? { position } : {}) },
     include: {
       teams: TEAM_INCLUDE,
-      player_season_stats: { where: { season_id: seasonId } },
+      // Mismo orden que findPlayerSeasonRows, para que pickSeasonClub elija igual que en la ficha
+      player_season_stats: {
+        where: { season_id: seasonId },
+        orderBy: [{ played: 'desc' }, { minutes: 'desc' }, { team_id: 'asc' }],
+        include: { teams: TEAM_INCLUDE },
+      },
     },
   });
   const byId = new Map(rows.map((player) => [player.id, player]));
   return ids
     .map((id) => byId.get(id))
     .filter(Boolean)
-    .map((player) => playerListItem(player, aggregateSeasonStats(player.player_season_stats)));
+    .map((player) =>
+      playerListItem(
+        player,
+        aggregateSeasonStats(player.player_season_stats),
+        pickSeasonClub(player, player.player_season_stats, isCurrent),
+      ),
+    );
 }
 
 // Ordenado por partidos y minutos (desempate por team_id) para que pickSeasonClub sea determinista si cambió de club

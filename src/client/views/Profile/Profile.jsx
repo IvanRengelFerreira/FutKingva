@@ -26,8 +26,8 @@ const ROLE_LABELS = {
 };
 
 // 12 · Mi perfil (RF3): datos del usuario, favoritos, comparativas guardadas, equipo ideal y notificaciones.
-// Solo con sesión (RequireRole en App.jsx). Los datos del perfil llegan de GET /api/me/profile y los favoritos
-// de GET /api/me/favorites (a través de UserDataContext).
+// Solo con sesión (RequireRole en App.jsx). Los datos del perfil llegan de GET /api/me/profile; los favoritos,
+// las comparativas y el equipo ideal, de /api/me/* a través de UserDataContext. Espera a todos antes de pintar.
 // Pestaña Favoritos: el resumen del mockup (todo); las demás enseñan solo su bloque.
 // Diseño: Figma › Mockups › 12 · Mi perfil
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=56-781
@@ -45,7 +45,13 @@ export default function Profile() {
     favoritesError,
     reloadFavorites,
     savedComparisons: comparisons,
+    comparisonsLoading,
+    comparisonsError,
+    reloadComparisons,
     idealTeam,
+    idealTeamLoading,
+    idealTeamError,
+    reloadIdealTeam,
     toggleFavoriteTeam,
     toggleFavoritePlayer,
     removeComparison,
@@ -58,18 +64,19 @@ export default function Profile() {
   } = useApi((signal) => getProfile({ signal }), [user.id]);
   const [editNotice, setEditNotice] = useState(false);
 
-  if (profileLoading || favoritesLoading) {
+  if (profileLoading || favoritesLoading || comparisonsLoading || idealTeamLoading) {
     return <LoadingState label="Cargando perfil…" />;
   }
 
-  if (profileError || favoritesError) {
+  const loadError = profileError ?? favoritesError ?? comparisonsError ?? idealTeamError;
+  if (loadError) {
     const retry = () => {
       if (profileError) reloadProfile();
       if (favoritesError) reloadFavorites();
+      if (comparisonsError) reloadComparisons();
+      if (idealTeamError) reloadIdealTeam();
     };
-    return (
-      <ErrorState error={profileError ?? favoritesError} title="No se ha podido cargar tu perfil" onRetry={retry} />
-    );
+    return <ErrorState error={loadError} title="No se ha podido cargar tu perfil" onRetry={retry} />;
   }
 
   const tabs = [

@@ -6,8 +6,9 @@ export const MAX_LIMIT = 100;
 
 /** Id numérico de la URL o error 400 («El id del equipo no es válido») */
 export function readId(value, label = 'id') {
-  const id = Number(value);
-  if (!Number.isInteger(id) || id <= 0) {
+  // Solo dígitos («1e3» o «0x1A» no valen) y dentro del rango seguro: así un id enorme da 400 y no 500 en la BD
+  const id = /^\d+$/.test(String(value).trim()) ? Number(value) : NaN;
+  if (!Number.isSafeInteger(id) || id <= 0) {
     throw AppError.badRequest(`El ${label} no es válido`, { id: 'Tiene que ser un número' });
   }
   return BigInt(id);
