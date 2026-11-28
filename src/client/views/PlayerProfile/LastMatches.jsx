@@ -8,7 +8,6 @@ const MOBILE_MATCHES_COUNT = 4;
 const DESKTOP_MATCHES_COUNT = 5;
 
 // Últimos partidos del jugador: tabla en escritorio (5) y lista en móvil (4, como el mockup).
-// La valoración por partido es la del mockup; la BD aún no la tiene, así que sale «—» hasta tener una fuente.
 function opponentName(match) {
   const name = match.opponent?.shortName ?? match.opponent?.name ?? MISSING;
   return match.venue ? `${name} (${match.venue})` : name;

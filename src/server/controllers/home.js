@@ -116,9 +116,15 @@ async function findFeaturedArticle() {
   };
 }
 
-function findLastFinishedMatchday(seasonId) {
+function findLastRatedMatchday(seasonId) {
   return prisma.matches.findFirst({
-    where: { season_id: seasonId, status: 'FINISHED', matchday: { not: null }, is_simulated: false },
+    where: {
+      season_id: seasonId,
+      status: 'FINISHED',
+      matchday: { not: null },
+      is_simulated: false,
+      appearances: { some: { rating: { not: null } } },
+    },
     orderBy: [{ matchday: 'desc' }, { utc_date: 'desc' }],
     select: { matchday: true },
   });
@@ -127,11 +133,11 @@ function findLastFinishedMatchday(seasonId) {
 function findRoundTopAppearance(seasonId, matchday) {
   return prisma.appearances.findFirst({
     where: {
-      goals: { gt: 0 },
+      rating: { not: null },
       matches: { season_id: seasonId, matchday, status: 'FINISHED', is_simulated: false },
     },
-    // Desempate: más goles, menos minutos jugados y menor id
-    orderBy: [{ goals: 'desc' }, { minutes: 'asc' }, { player_id: 'asc' }],
+    // Mejor valoración de la jornada; desempate por goles, asistencias, minutos jugados y menor id
+    orderBy: [{ rating: 'desc' }, { goals: 'desc' }, { assists: 'desc' }, { minutes: 'desc' }, { player_id: 'asc' }],
     include: {
       players: { select: { id: true, name: true, photo_url: true } },
       teams: { select: TEAM_SUMMARY_FIELDS },
@@ -140,10 +146,10 @@ function findRoundTopAppearance(seasonId, matchday) {
 }
 
 async function findTopScorerOfRound(seasonId) {
-  const lastFinished = await findLastFinishedMatchday(seasonId);
-  if (!lastFinished) return null;
+  const lastRated = await findLastRatedMatchday(seasonId);
+  if (!lastRated) return null;
 
-  const appearance = await findRoundTopAppearance(seasonId, lastFinished.matchday);
+  const appearance = await findRoundTopAppearance(seasonId, lastRated.matchday);
   if (!appearance) return null;
 
   return {
@@ -152,6 +158,9 @@ async function findTopScorerOfRound(seasonId) {
     photoUrl: appearance.players.photo_url,
     team: teamSummary(appearance.teams),
     goals: appearance.goals,
-    round: lastFinished.matchday,
+    assists: appearance.assists,
+    minutes: appearance.minutes,
+    rating: Number(appearance.rating),
+    round: lastRated.matchday,
   };
 }

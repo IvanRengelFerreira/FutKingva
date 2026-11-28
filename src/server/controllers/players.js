@@ -21,7 +21,6 @@ import {
 } from '../utils/players.js';
 
 const MAX_IDS = 4; // Límite del Comparador (RF4: de 2 a 4 jugadores)
-const LAST_MATCHES_COUNT = 5;
 const MIN_RANK_MATCHES = 3; // Mínimo de partidos en la temporada para entrar en los rankings
 const TEAM_INCLUDE = { select: TEAM_SUMMARY_FIELDS };
 const SORTS = ['rating', 'goals', 'assists', 'name']; // El primero es el orden por defecto
@@ -270,11 +269,12 @@ function pickSeasonClub(player, seasonRows, isCurrent) {
   return isCurrent ? (player.teams ?? mainSeasonTeam) : (mainSeasonTeam ?? player.teams);
 }
 
+// Todas las apariciones de la temporada (máx. 38), de más reciente a más antigua: LastMatches muestra 5/4
+// y PerformanceChart las últimas jornadas con valoración
 function findLastAppearances(playerId, seasonId) {
   return prisma.appearances.findMany({
     where: { player_id: playerId, matches: { season_id: seasonId, status: 'FINISHED', is_simulated: false } },
     orderBy: { matches: { utc_date: 'desc' } },
-    take: LAST_MATCHES_COUNT,
     include: { matches: { include: MATCH_TEAMS } },
   });
 }

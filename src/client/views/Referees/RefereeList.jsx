@@ -11,7 +11,7 @@ export default function RefereeList({ referees, season }) {
       {referees.map((referee) => (
         <li key={referee.id}>
           <Link className="referees__item" to={`/arbitros/${referee.id}?season=${season?.year ?? ''}`}>
-            <Avatar name={referee.name} size={44} />
+            <Avatar name={referee.name} src={referee.photoUrl} size={44} />
             <span className="referees__item-text">
               <span className="referees__item-name">{referee.name}</span>
               <span className="referees__item-meta">

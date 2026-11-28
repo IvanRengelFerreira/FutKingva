@@ -9,8 +9,18 @@ export default function RefereeHero({ referee, season, cardsPerMatch, leagueCard
 
   return (
     <header className="referee-hero">
-      <Avatar name={referee.name} size={132} className="referee-hero__avatar referee-profile__desktop-flex" />
-      <Avatar name={referee.name} size={96} className="referee-hero__avatar referee-profile__mobile-flex" />
+      <Avatar
+        name={referee.name}
+        src={referee.photoUrl}
+        size={132}
+        className="referee-hero__avatar referee-profile__desktop-flex"
+      />
+      <Avatar
+        name={referee.name}
+        src={referee.photoUrl}
+        size={96}
+        className="referee-hero__avatar referee-profile__mobile-flex"
+      />
       <div className="referee-hero__text">
         <p className="referee-hero__eyebrow">
           Árbitro{referee.fifa ? ' FIFA' : ''} · LaLiga {season.label}

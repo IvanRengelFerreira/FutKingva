@@ -120,6 +120,7 @@ function refereeSummary(referee) {
     id: referee.id,
     name: referee.name,
     shortName: referee.short_name ?? referee.name,
+    photoUrl: referee.photo_url ?? null,
     committee: referee.committee,
     fifa: referee.is_fifa,
   };

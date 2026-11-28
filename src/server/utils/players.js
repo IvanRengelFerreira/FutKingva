@@ -136,6 +136,7 @@ export function playerAppearance(appearance) {
     goals: appearance.goals,
     assists: appearance.assists,
     minutes: appearance.minutes,
+    rating: appearance.rating != null ? Number(appearance.rating) : null,
   };
 }
 

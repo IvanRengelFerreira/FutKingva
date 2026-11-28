@@ -54,8 +54,18 @@ function EmptyTopScorerCard() {
   );
 }
 
+function formatPerformanceSummary(player) {
+  const parts = [];
+  if (player.goals > 0) parts.push(`${player.goals} ${player.goals === 1 ? 'gol' : 'goles'}`);
+  if (player.assists > 0) {
+    const label = player.goals > 0 ? 'asist.' : player.assists === 1 ? 'asistencia' : 'asistencias';
+    parts.push(`${player.assists} ${label}`);
+  }
+  if (parts.length === 0 && player.minutes != null) parts.push(`${player.minutes}' jugados`);
+  return [player.team?.name ?? '—', ...parts].join(' · ');
+}
+
 function TopScorerCard({ player }) {
-  const goalsLabel = `${player.goals} ${player.goals === 1 ? 'gol' : 'goles'}`;
   const roundLabel = player.round ? `Jugador de la jornada ${player.round}` : 'Jugador de la jornada';
 
   return (
@@ -67,9 +77,7 @@ function TopScorerCard({ player }) {
           <span className="home__mobile">Jugador de la jornada</span>
         </span>
         <span className="home-star__name">{player.name}</span>
-        <span className="home-star__note">
-          {player.team?.name ?? '—'} · {goalsLabel}
-        </span>
+        <span className="home-star__note">{formatPerformanceSummary(player)}</span>
       </span>
       <Rating value={player.rating} size="lg" className="home-star__rating" />
     </Link>

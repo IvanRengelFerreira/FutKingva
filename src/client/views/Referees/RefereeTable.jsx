@@ -39,7 +39,7 @@ export default function RefereeTable({ referees, season }) {
             <tr key={referee.id}>
               <th scope="row">
                 <span className="referees__name">
-                  <Avatar name={referee.name} size={36} />
+                  <Avatar name={referee.name} src={referee.photoUrl} size={36} />
                   <span>{referee.name}</span>
                   {referee.fifa && <span className="referees__fifa">FIFA</span>}
                 </span>
