@@ -11,6 +11,7 @@ import MatchList from './MatchList.jsx';
 import Featured from './Featured.jsx';
 import { toResultRow, toUpcomingRow } from './matchRows.js';
 import { COMPETITION_FILTERS, matchesFilter } from './filters.js';
+import { useLiveHome } from './useLiveHome.js';
 import './Home.css';
 
 const RESULTS_SHOWN = 6; // Escritorio; en móvil se ven 4
@@ -21,14 +22,16 @@ const STANDINGS_SHOWN = 5;
 // 01 · Inicio: resumen del día desde GET /api/home. Partidos en juego, últimos resultados,
 // clasificación rápida, próximos partidos y destacados (análisis, jugador de la jornada y favoritos).
 // Chips de competición del mockup arriba; las competiciones sin datos en la BD salen vacías.
+// Los marcadores y la clasificación se actualizan en directo (Socket.IO, useLiveHome).
 // Diseño: Figma › Mockups › 01 · Inicio
 // https://www.figma.com/design/jxq2ktu8XWk06sm5n6F8CP?node-id=40-20
 export default function Home() {
   const { data, error, loading, reload } = useApi((signal) => getHome({ signal }), []);
+  const liveData = useLiveHome(data);
 
   if (loading) return <LoadingState label="Cargando inicio…" />;
   if (error) return <ErrorState error={error} title="No se ha podido cargar el inicio" onRetry={reload} />;
-  return <HomeContent data={data} />;
+  return <HomeContent data={liveData ?? data} />;
 }
 
 function HomeContent({ data }) {

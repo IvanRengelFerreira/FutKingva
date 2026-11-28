@@ -21,4 +21,6 @@ export const config = {
   // Firma la cookie de sesión. Texto largo y aleatorio (ver .env.example)
   sessionSecret: required('SESSION_SECRET'),
   isProduction: process.env.NODE_ENV === 'production',
+  // Simulador de partidos de la demo: milisegundos reales que dura cada minuto de partido
+  simulatorTickMs: Number(process.env.SIMULATOR_TICK_MS) || 3000,
 };

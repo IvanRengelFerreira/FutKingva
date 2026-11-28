@@ -9,6 +9,7 @@ import { useApi } from '../../services/useApi.js';
 import UsersPanel from './UsersPanel.jsx';
 import ReportsPanel from './ReportsPanel.jsx';
 import SyncPanel from './SyncPanel.jsx';
+import SimulatorPanel from './SimulatorPanel.jsx';
 import './AdminDashboard.css';
 
 // 20 · Panel de administración (RF8): gestión de usuarios y moderación de contenido.
@@ -95,6 +96,7 @@ export default function AdminDashboard() {
           <Tabs label="Secciones del panel" tabs={tabs} active={tab} onChange={setTab} />
           {tab === 'users' ? <UsersPanel onStatsChange={reloadStats} /> : <ReportsPanel onStatsChange={reloadStats} />}
           <SyncPanel />
+          <SimulatorPanel />
         </>
       )}
     </section>

@@ -6,6 +6,7 @@ import { AppError } from '../errors/AppError.js';
 import { publicUser } from '../utils/users.js';
 import { regenerateSession, destroySession } from '../middleware/session.js';
 import { hashPassword, verifyPassword, verifyAgainstDummy } from '../utils/password.js';
+import { disconnectUser } from '../realtime/socket.js';
 
 const REMEMBER_MS = 7 * 24 * 60 * 60 * 1000; // «Recordarme»: 7 días
 const UNIQUE_VIOLATION = 'P2002'; // Código de Prisma cuando choca con un índice único
@@ -58,7 +59,10 @@ export async function login(req, res) {
 
 /** POST /api/auth/logout → 204. Sin sesión también responde 204: el resultado es el mismo */
 export async function logout(req, res) {
+  const userId = req.user?.id;
   await destroySession(req, res);
+  // Las demás pestañas abiertas dejan de recibir los avisos de esta cuenta
+  if (userId != null) disconnectUser(userId);
   res.status(204).end();
 }
 

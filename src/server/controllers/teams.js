@@ -135,7 +135,13 @@ async function findSquad(seasonId, teamId, isCurrentSquad) {
 
 function findMatches(seasonId, teamId, where, order, count) {
   return prisma.matches.findMany({
-    where: { season_id: seasonId, OR: [{ home_team_id: teamId }, { away_team_id: teamId }], ...where },
+    // Sin los partidos simulados de la demo: nunca cuentan en los datos del equipo
+    where: {
+      season_id: seasonId,
+      is_simulated: false,
+      OR: [{ home_team_id: teamId }, { away_team_id: teamId }],
+      ...where,
+    },
     orderBy: { utc_date: order },
     take: count,
     include: MATCH_TEAMS,

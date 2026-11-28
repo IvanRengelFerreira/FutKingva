@@ -188,3 +188,23 @@ Lo comprueba el agente revisor antes de cada commit.
 | **Sin restos**                    | Ni código comentado, ni `console.log` de depuración, ni imports o variables sin usar. `console.warn` solo para fallos que se recuperan solos.                                                                                               |
 | **Lint y formato**                | Antes de cada commit, `npm run lint` sin errores y `npm run format` (Prettier, configuración en `src/.prettierrc.json`) en `src/client` y `src/server`.                                                                                     |
 | **Cada uno, lo suyo**             | Solo tocas tus archivos y tu línea de `app.js`. Si algo común no te vale, se habla antes de cambiarlo.                                                                                                                                      |
+
+## 9. Tiempo real (Socket.IO)
+
+Socket.IO va en el mismo servidor y con la misma cookie de sesión (`realtime/socket.js`). Cada navegador con sesión entra en la sala de su usuario. Para enviar algo desde el servidor:
+
+```js
+import { emitToAll, emitToUser } from '../realtime/socket.js';
+
+emitToAll('match:update', { match, lastEvent }); // a todos, también a los invitados
+emitToUser(userId, 'notification:new', aviso); // solo a las pestañas de ese usuario
+```
+
+- Los BigInt se convierten solos a número, igual que en las respuestas de la API.
+- Para avisar a quien sigue a un equipo, usa `notifyFollowers` (`realtime/events.js`). Guarda el aviso en `notifications` y lo envía. No hagas un `emitToUser` suelto: al recargar, el aviso se perdería.
+- Eventos actuales: `match:update`, `match:finished`, `match:removed`, `standings:update`, `notification:new` y `sync:done` (lista completa en `realtime/socket.js`).
+- En el front, `onEvent(nombre, función)` de `services/realtime.js`, dentro de un `useEffect`. Devuelve la función para dejar de escuchar:
+
+```js
+useEffect(() => onEvent('standings:update', ({ standings }) => setTable(standings)), []);
+```

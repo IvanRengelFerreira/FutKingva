@@ -244,7 +244,7 @@ function pickSeasonClub(player, seasonRows, isCurrent) {
 
 function findLastAppearances(playerId, seasonId) {
   return prisma.appearances.findMany({
-    where: { player_id: playerId, matches: { season_id: seasonId, status: 'FINISHED' } },
+    where: { player_id: playerId, matches: { season_id: seasonId, status: 'FINISHED', is_simulated: false } },
     orderBy: { matches: { utc_date: 'desc' } },
     take: LAST_MATCHES_COUNT,
     include: { matches: { include: MATCH_TEAMS } },

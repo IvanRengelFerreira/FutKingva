@@ -16,15 +16,18 @@ import settingsIcon from '../../assets/icon-settings.svg';
 // Va dentro de la Navbar solo cuando hay sesión: <Notifications />
 // Los avisos salen de useNotifications (notifications, unreadCount, markAllRead).
 
-// Icono y color de cada tipo de aviso (data/mockData.js › NOTIFICATIONS)
+// Icono y color de cada tipo de aviso (type de GET /api/me/notifications y de notification:new)
 const TYPES = {
   goal: { icon: ballIcon, tone: 'gold' },
+  match_start: { icon: ballIcon, tone: 'gold' },
+  match_end: { icon: ballIcon, tone: 'gold' },
+  card: { icon: trendIcon, tone: 'loss' },
   standings: { icon: trendIcon, tone: 'win' },
   rival: { icon: trendIcon, tone: 'loss' },
 };
 
 export default function Notifications() {
-  const { notifications, unreadCount, markAllRead } = useNotifications();
+  const { notifications, unreadCount, markAllRead, connected } = useNotifications();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
@@ -75,11 +78,12 @@ export default function Notifications() {
             </button>
           </header>
 
-          <p className="notifications__live">
+          <p className="notifications__live" role="status">
             <span className="notifications__live-dot" aria-hidden="true" />
-            EN DIRECTO · equipos y jugadores que sigues
+            {connected ? 'EN DIRECTO · equipos y jugadores que sigues' : 'Reconectando…'}
           </p>
 
+          {notifications.length === 0 && <p className="notifications__empty">No tienes notificaciones.</p>}
           <ul className="notifications__list">
             {notifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />

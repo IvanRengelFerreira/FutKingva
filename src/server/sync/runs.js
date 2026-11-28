@@ -6,6 +6,7 @@ import { AppError } from '../errors/AppError.js';
 import { FOOTBALL_DATA_SOURCE, createFootballDataClient } from './footballData.js';
 import { syncMatches } from './matches.js';
 import { syncScorers } from './scorers.js';
+import { emitToAll } from '../realtime/socket.js';
 
 // Evita lanzar dos ejecuciones solapadas del mismo recurso (y deja caducar bloqueos huérfanos tras un reinicio)
 const RUNNING_LOCK_MINUTES = 5;
@@ -94,6 +95,8 @@ export async function executeSync(resource, season) {
     api = createFootballDataClient();
     const result = await runner(season, api);
     const finished = await finishRun(run, result);
+    // «Última actualización» al momento en las páginas abiertas
+    emitToAll('sync:done', { resource, finishedAt: finished.finished_at });
     return { run: finished, skipped: result.skipped };
   } catch (error) {
     if (run) await markRunError(run, api ? api.requestCount() : 0, error);

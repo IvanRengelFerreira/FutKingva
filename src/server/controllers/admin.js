@@ -5,6 +5,7 @@ import { prisma } from '../db.js';
 import { AppError } from '../errors/AppError.js';
 import { readId } from '../utils/params.js';
 import { publicUser } from '../utils/users.js';
+import { disconnectUser } from '../realtime/socket.js';
 import { REPORT_STATUSES, USER_ROLES, USER_STATUSES } from '../../shared/validation/admin.js';
 
 const DEFAULT_LIMIT = 20;
@@ -167,6 +168,8 @@ export async function updateUser(req, res) {
   if (req.body.status !== undefined) data.status = req.body.status.toUpperCase();
 
   const updated = await prisma.users.update({ where: { id }, data, select: ADMIN_USER_FIELDS });
+  // Bloqueado: sus pestañas abiertas dejan de recibir avisos en directo al momento
+  if (updated.status === 'BLOCKED') disconnectUser(id);
   res.json(adminUser(updated, req.user.id));
 }
 
@@ -176,6 +179,7 @@ export async function deleteUser(req, res) {
   await ensureOtherUser(id, req.user.id, 'No puedes eliminar tu propia cuenta');
 
   await prisma.users.delete({ where: { id } });
+  disconnectUser(id);
   res.status(204).end();
 }
 

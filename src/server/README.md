@@ -125,6 +125,17 @@ npm install
 npm run dev
 ```
 
+### 11. Probar el tiempo real (opcional)
+
+Los avisos en directo van por Socket.IO, en el mismo puerto que la API. Vite lo reenvía con el mismo proxy que `/api`.
+
+1. Entra con `usuario@futkingva.es` y sigue a un equipo (★ en su ficha).
+2. En otra ventana (o en privado), entra con `admin@futkingva.es` y ve a **Panel de administración › Simulador de partidos**.
+3. Empieza un partido de ese equipo y pulsa **Gol**. Al usuario le sale el aviso emergente y la campana se marca; el marcador de **Inicio** cambia para todos.
+4. Al terminar, el partido sale de «Partidos en juego». Los partidos simulados **nunca** cuentan en la clasificación, los resultados ni las estadísticas. **Borrar** lo quita del panel.
+
+Cada minuto simulado dura `SIMULATOR_TICK_MS` milisegundos (3000 si no se pone en el `.env`).
+
 ## Cada día
 
 1. Abrir Docker Desktop (la base de datos arranca sola; si no, `docker compose up -d --wait db`).

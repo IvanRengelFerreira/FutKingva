@@ -46,6 +46,8 @@ export default defineConfig({
     },
     proxy: {
       '/api': `http://localhost:${serverPort()}`,
+      // Conexión en directo (Socket.IO, RF9): mismo servidor, con WebSocket
+      '/socket.io': { target: `http://localhost:${serverPort()}`, ws: true },
     },
   },
   build: {

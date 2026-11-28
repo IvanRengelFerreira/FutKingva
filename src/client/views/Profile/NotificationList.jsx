@@ -4,6 +4,9 @@ import trendIcon from '../../assets/icon-trend.svg';
 // Icono y color de cada tipo de aviso (como en el panel de la campana)
 const NOTIFICATION_TYPES = {
   goal: { icon: ballIcon, tone: 'gold' },
+  match_start: { icon: ballIcon, tone: 'gold' },
+  match_end: { icon: ballIcon, tone: 'gold' },
+  card: { icon: trendIcon, tone: 'loss' },
   standings: { icon: trendIcon, tone: 'win' },
   rival: { icon: trendIcon, tone: 'loss' },
 };

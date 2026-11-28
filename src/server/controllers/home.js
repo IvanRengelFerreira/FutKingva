@@ -52,7 +52,8 @@ async function findLiveMatches(seasonId) {
 
 async function findLatestResults(seasonId) {
   const rows = await prisma.matches.findMany({
-    where: { season_id: seasonId, status: 'FINISHED' },
+    // Los partidos simulados de la demo solo se ven en directo, nunca como resultado
+    where: { season_id: seasonId, status: 'FINISHED', is_simulated: false },
     orderBy: { utc_date: 'desc' },
     take: LATEST_RESULTS_LIMIT,
     include: MATCH_TEAMS,
@@ -62,7 +63,12 @@ async function findLatestResults(seasonId) {
 
 async function findUpcomingMatches(seasonId) {
   const rows = await prisma.matches.findMany({
-    where: { season_id: seasonId, status: { in: UPCOMING_STATUSES }, utc_date: { gte: new Date() } },
+    where: {
+      season_id: seasonId,
+      status: { in: UPCOMING_STATUSES },
+      utc_date: { gte: new Date() },
+      is_simulated: false,
+    },
     orderBy: { utc_date: 'asc' },
     take: UPCOMING_MATCHES_LIMIT,
     include: MATCH_TEAMS,
@@ -112,7 +118,7 @@ async function findFeaturedArticle() {
 
 function findLastFinishedMatchday(seasonId) {
   return prisma.matches.findFirst({
-    where: { season_id: seasonId, status: 'FINISHED', matchday: { not: null } },
+    where: { season_id: seasonId, status: 'FINISHED', matchday: { not: null }, is_simulated: false },
     orderBy: [{ matchday: 'desc' }, { utc_date: 'desc' }],
     select: { matchday: true },
   });
@@ -122,7 +128,7 @@ function findRoundTopAppearance(seasonId, matchday) {
   return prisma.appearances.findFirst({
     where: {
       goals: { gt: 0 },
-      matches: { season_id: seasonId, matchday, status: 'FINISHED' },
+      matches: { season_id: seasonId, matchday, status: 'FINISHED', is_simulated: false },
     },
     // Desempate: más goles, menos minutos jugados y menor id
     orderBy: [{ goals: 'desc' }, { minutes: 'asc' }, { player_id: 'asc' }],

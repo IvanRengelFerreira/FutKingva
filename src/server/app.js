@@ -22,6 +22,8 @@ import { comparisonsRouter } from './routes/comparisons.js';
 import { idealTeamRouter } from './routes/idealTeam.js';
 import { articlesRouter } from './routes/articles.js';
 import { savedArticlesRouter } from './routes/savedArticles.js';
+import { notificationsRouter } from './routes/notifications.js';
+import { simulatorRouter } from './routes/simulator.js';
 
 export function createApp() {
   const app = express();
@@ -58,6 +60,8 @@ export function createApp() {
   app.use('/api/me/ideal-team', idealTeamRouter); // Ivan · 11 Mi equipo ideal
   app.use('/api/articles', articlesRouter); // Carlota · 08 Análisis, 09 Artículo, 17 Panel de editor, 18 Editor
   app.use('/api/me/saved-articles', savedArticlesRouter); // Carlota · 09 Artículo (guardar)
+  app.use('/api/me/notifications', notificationsRouter); // Ivan · tiempo real (campana, 12 Mi perfil)
+  app.use('/api/admin/simulator', simulatorRouter); // Ivan · tiempo real (20 Administración, demo)
   // ---------------------------------------------------------------------------
 
   // Cualquier otra ruta de la API → 404 en el formato común
