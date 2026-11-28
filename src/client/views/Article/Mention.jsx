@@ -17,7 +17,7 @@ export default function Mention({ type, item }) {
 
   return (
     <Link className="article__mention" to={`/jugadores/${item.id}`}>
-      <Avatar name={item.name} size={26} />
+      <Avatar name={item.name} src={item.photoUrl} size={26} />
       {item.name}
       <img src={arrowIcon} alt="" width="14" height="14" />
     </Link>

@@ -310,7 +310,7 @@ function PlayerCard({ player, index, onRemove }) {
           <span className="comparator__desktop">Quitar</span>
         </button>
       </div>
-      <Avatar name={player.name} size={84} className="comparator-player__avatar" />
+      <Avatar name={player.name} src={player.photoUrl} size={84} className="comparator-player__avatar" />
       <p className="comparator-player__name">
         <span className="comparator__desktop">{player.name}</span>
         <span className="comparator__mobile">{compactName(player)}</span>

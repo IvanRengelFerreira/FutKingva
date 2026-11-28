@@ -336,6 +336,7 @@ async function loadPlayers(ids) {
         {
           id: summary.id,
           name: summary.name,
+          photoUrl: summary.photoUrl,
           position: summary.position,
           team: teamSummary(row.teams),
           rating: summary.rating,

@@ -43,7 +43,7 @@ export default function PlayerList({ players }) {
               <tr key={player.id}>
                 <th scope="row">
                   <Link className="teams__player" to={`/jugadores/${player.id}`}>
-                    <Avatar name={player.name} size={34} color={player.team?.color} />
+                    <Avatar name={player.name} src={player.photoUrl} size={34} color={player.team?.color} />
                     <span>{player.name}</span>
                   </Link>
                 </th>
@@ -74,7 +74,7 @@ export default function PlayerList({ players }) {
         {players.map((player) => (
           <li key={player.id}>
             <Link className="teams__item" to={`/jugadores/${player.id}`}>
-              <Avatar name={player.name} size={44} color={player.team?.color} />
+              <Avatar name={player.name} src={player.photoUrl} size={44} color={player.team?.color} />
               <span className="teams__item-text">
                 <span className="teams__item-name">{player.name}</span>
                 <span className="teams__item-meta">

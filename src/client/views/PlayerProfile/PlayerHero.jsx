@@ -47,7 +47,7 @@ export default function PlayerHero({ player, team, stats, ranks, isMobile }) {
   return (
     <header className="player-hero" style={team?.color ? { '--team-color': team.color } : undefined}>
       <div className="player-hero__photo">
-        <Avatar name={player.name} size={isMobile ? 100 : 140} className="player-hero__avatar" />
+        <Avatar name={player.name} src={player.photoUrl} size={isMobile ? 100 : 140} className="player-hero__avatar" />
         {team && (
           <span className="player-hero__crest">
             <Crest team={team} size={isMobile ? 34 : 44} labelled />

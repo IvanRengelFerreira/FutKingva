@@ -21,3 +21,17 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
+.crest--image {
+  border: none;
+  border-radius: 0;
+  background: none;
+  overflow: visible;
+}
+
+.crest__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}

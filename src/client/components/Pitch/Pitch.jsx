@@ -65,7 +65,7 @@ function PitchSlot({ slot, player, active, onClick }) {
     >
       {player ? (
         <span className="pitch__token">
-          <Avatar name={player.name} size={58} className="pitch__avatar" />
+          <Avatar name={player.name} src={player.photoUrl} size={58} className="pitch__avatar" />
           <Rating value={player.rating} size="sm" className="pitch__rating" />
         </span>
       ) : (

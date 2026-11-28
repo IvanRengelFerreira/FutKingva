@@ -6,6 +6,9 @@ import { AppError } from '../errors/AppError.js';
 
 const LEAGUE_ID = 87;
 const LEAGUE_OVERVIEW_URL = `https://www.fotmob.com/api/data/leagues?id=${LEAGUE_ID}`;
+const TEAM_DATA_URL = 'https://www.fotmob.com/api/data/teams?id=';
+const SUGGEST_URL = 'https://apigw.fotmob.com/searchapi/suggest?lang=es&term=';
+const PLAYER_IMAGE_BASE_URL = 'https://images.fotmob.com/image_resources/playerimages';
 const REQUEST_TIMEOUT_MS = 15000;
 const MINUTES_PER_MATCH = 90;
 
@@ -166,4 +169,71 @@ export async function fetchFotmobSeasonStats(startYear) {
   for (const [name, entries] of loaded) applyFeed(records, name, entries);
 
   return { records: [...records.values()], requests };
+}
+
+/** URL pública en el CDN de FotMob del retrato recortado (PNG) de un futbolista. */
+export function fotmobPlayerPhotoUrl(fmPlayerId) {
+  return `${PLAYER_IMAGE_BASE_URL}/${fmPlayerId}.png`;
+}
+
+function parseBirthYear(rawDate) {
+  if (!rawDate) return null;
+  const year = new Date(rawDate).getUTCFullYear();
+  return Number.isInteger(year) && year > 1950 ? year : null;
+}
+
+/** Descarga la plantilla actual de un club en FotMob (incluye suplentes y canteranos sin minutos). */
+export async function fetchFotmobTeamSquad(fmTeamId) {
+  const payload = await fetchJson(`${TEAM_DATA_URL}${fmTeamId}`);
+  const groups = payload?.squad?.squad;
+  if (!Array.isArray(groups)) return [];
+
+  const members = [];
+  for (const group of groups) {
+    if (group?.title === 'coach' || !Array.isArray(group?.members)) continue;
+    for (const member of group.members) {
+      if (member?.role?.key === 'coach') continue;
+      const fmPlayerId = Number(member?.id);
+      const name = String(member?.name ?? '').trim();
+      if (!Number.isInteger(fmPlayerId) || fmPlayerId <= 0 || !name) continue;
+      members.push({ fmPlayerId, fmTeamId, name, bornYear: parseBirthYear(member.dateOfBirth) });
+    }
+  }
+  return members;
+}
+
+/** Busca un futbolista por nombre en el autocompletado de FotMob para enlazar históricos o fichajes sin minutos. */
+export async function suggestFotmobPlayers(term) {
+  const payload = await fetchJson(`${SUGGEST_URL}${encodeURIComponent(term)}`);
+  const blocks = payload?.squadMemberSuggest;
+  if (!Array.isArray(blocks)) return [];
+
+  const options = [];
+  for (const block of blocks) {
+    for (const opt of block?.options ?? []) {
+      if (opt?.payload?.isCoach) continue;
+      const fmPlayerId = Number(opt?.payload?.id);
+      const [rawName] = String(opt?.text ?? '').split('|');
+      const name = rawName.trim();
+      if (!Number.isInteger(fmPlayerId) || fmPlayerId <= 0 || !name) continue;
+      const fmTeamId = Number(opt?.payload?.teamId);
+      options.push({ fmPlayerId, fmTeamId: Number.isInteger(fmTeamId) && fmTeamId > 0 ? fmTeamId : null, name });
+    }
+  }
+  return options;
+}
+
+/** Comprueba con HEAD si FotMob sirve un retrato real (`200 image/*`; devuelve `403` cuando no tiene foto). */
+export async function checkFotmobPhotoExists(fmPlayerId) {
+  const url = fotmobPlayerPhotoUrl(fmPlayerId);
+  try {
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    const contentType = response.headers.get('content-type') ?? '';
+    return response.ok && contentType.startsWith('image/');
+  } catch {
+    return false;
+  }
 }

@@ -14,7 +14,7 @@ const ELLIPSIS = '…';
 const COMPARISON_INCLUDE = {
   comparison_players: {
     orderBy: { sort_order: 'asc' },
-    include: { players: { select: { id: true, name: true } } },
+    include: { players: { select: { id: true, name: true, photo_url: true } } },
   },
 };
 
@@ -66,6 +66,7 @@ function formatComparison(comparison) {
     players: comparison.comparison_players.map((entry) => ({
       id: entry.players.id,
       name: entry.players.name,
+      photoUrl: entry.players.photo_url,
     })),
   };
 }

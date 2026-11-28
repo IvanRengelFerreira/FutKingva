@@ -56,7 +56,7 @@ export function FavoritePlayers({ players, onRemove }) {
 
         return (
           <li key={player.id} className="profile-card">
-            <Avatar name={player.name} size={44} color={player.team?.color} />
+            <Avatar name={player.name} src={player.photoUrl} size={44} color={player.team?.color} />
             <Link className="profile-card__text" to={`/jugadores/${player.id}`}>
               <span className="profile-card__name">{player.name}</span>
               <span className="profile-card__meta">{meta}</span>

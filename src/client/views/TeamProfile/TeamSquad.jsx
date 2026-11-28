@@ -48,7 +48,7 @@ export function TeamSquadTable({ players, className = '' }) {
               <td className="team-squad__number">{player.number ?? '—'}</td>
               <th scope="row" className="team-squad__player">
                 <Link className="team-squad__player-link" to={`/jugadores/${player.id}`}>
-                  <Avatar name={player.name} size={32} />
+                  <Avatar name={player.name} src={player.photoUrl} size={32} />
                   <span>{player.name}</span>
                 </Link>
               </th>
@@ -77,7 +77,7 @@ export function TeamSquadList({ players, className = '' }) {
       {players.map((player) => (
         <li key={player.id}>
           <Link className="team-squad-list__item" to={`/jugadores/${player.id}`}>
-            <Avatar name={player.name} size={44} />
+            <Avatar name={player.name} src={player.photoUrl} size={44} />
             <span className="team-squad-list__text">
               <span className="team-squad-list__name">{player.name}</span>
               <span className="team-squad-list__meta">

@@ -1,6 +1,6 @@
 // Formato común de un equipo en las respuestas de la API (escudos, tablas, partidos…).
-// La web no usa escudos reales: pinta un círculo con las siglas (code) y el borde del color del club (color).
-//   teamSummary(team) → { id, name, shortName, code, color }
+// Incluye el escudo real (crestUrl) y, como respaldo o acento visual, las siglas (code) y el color del club (color).
+//   teamSummary(team) → { id, name, shortName, code, color, crestUrl }
 
 // Color del borde del escudo según el primer color del club en la BD (club_colors = «Red / White»)
 const CLUB_COLORS = {
@@ -28,7 +28,14 @@ export function teamCode(team) {
 }
 
 /** Campos que hay que pedir a Prisma (select) para poder usar teamSummary */
-export const TEAM_SUMMARY_FIELDS = { id: true, name: true, short_name: true, tla: true, club_colors: true };
+export const TEAM_SUMMARY_FIELDS = {
+  id: true,
+  name: true,
+  short_name: true,
+  tla: true,
+  crest_url: true,
+  club_colors: true,
+};
 
 /** Equipo tal como se envía al front para pintar escudos y nombres */
 export function teamSummary(team) {
@@ -39,5 +46,6 @@ export function teamSummary(team) {
     shortName: team.short_name,
     code: teamCode(team),
     color: teamColor(team.club_colors),
+    crestUrl: team.crest_url ?? null,
   };
 }

@@ -60,7 +60,7 @@ function TopScorerCard({ player }) {
 
   return (
     <Link to={`/jugadores/${player.id}`} className="home-star">
-      <Avatar name={player.name} size={60} className="home-star__avatar" />
+      <Avatar name={player.name} src={player.photoUrl} size={60} className="home-star__avatar" />
       <span className="home-star__text">
         <span className="home-star__eyebrow">
           <span className="home__desktop">{roundLabel}</span>

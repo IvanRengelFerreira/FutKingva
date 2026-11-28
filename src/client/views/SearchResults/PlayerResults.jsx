@@ -63,7 +63,7 @@ function PlayerRow({ player, query }) {
     <tr>
       <th scope="row">
         <span className="search-results__player">
-          <Avatar name={player.name} size={34} color={team?.color} />
+          <Avatar name={player.name} src={player.photoUrl} size={34} color={team?.color} />
           <Highlighted name={player.name} query={query} className="search-results__player-name" />
         </span>
       </th>
@@ -91,7 +91,7 @@ function PlayerCard({ player, query }) {
   return (
     <li>
       <Link className="search-results__card" to={`/jugadores/${player.id}`}>
-        <Avatar name={player.name} size={40} color={team?.color} />
+        <Avatar name={player.name} src={player.photoUrl} size={40} color={team?.color} />
         <span className="search-results__card-text">
           <Highlighted name={player.name} query={query} className="search-results__card-name" />
           <span className="search-results__card-meta">

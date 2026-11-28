@@ -25,6 +25,7 @@ const QUERY_MAX = 60;
 const PLAYER_FIELDS = {
   id: true,
   name: true,
+  photo_url: true,
   position: true,
   detailed_position: true,
   team_id: true,
@@ -129,7 +130,7 @@ export async function history(req, res) {
       orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
       take: limit,
       skip: offset,
-      include: { players: { select: { id: true, name: true } }, users: { select: { name: true } } },
+      include: { players: { select: { id: true, name: true, photo_url: true } }, users: { select: { name: true } } },
     }),
     prisma.player_data_changes.count(),
   ]);
@@ -138,7 +139,7 @@ export async function history(req, res) {
     items: rows.map((row) => ({
       id: row.id,
       createdAt: row.created_at,
-      player: { id: row.players.id, name: row.players.name },
+      player: { id: row.players.id, name: row.players.name, photoUrl: row.players.photo_url },
       field: row.field,
       oldValue: row.old_value,
       newValue: row.new_value,
@@ -177,6 +178,7 @@ function playerProfile(player) {
   return {
     id: player.id,
     name: player.name,
+    photoUrl: player.photo_url,
     team: teamSummary(player.teams),
     position: player.detailed_position,
     positionGroup: player.position,

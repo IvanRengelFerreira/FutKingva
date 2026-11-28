@@ -42,7 +42,7 @@ export default function ChangeHistoryTable({ history }) {
                   <td className="player-data__date">{shortDay(entry.createdAt)}</td>
                   <td>
                     <span className="player-data__entry">
-                      <Avatar name={entry.player.name} size={26} />
+                      <Avatar name={entry.player.name} src={entry.player.photoUrl} size={26} />
                       <span>
                         <span className="player-data__entry-name">{entry.player.name}</span>
                         <span className="player-data__entry-field">{fieldLabel(entry.field)}</span>

@@ -64,5 +64,5 @@ export default function RelatedField({ related, onChange }) {
 // Círculo del jugador (iniciales) o escudo del equipo
 function RelatedBadge({ item }) {
   if (item.type === 'team') return <Crest team={item} size={22} />;
-  return <Avatar name={item.name} size={22} />;
+  return <Avatar name={item.name} src={item.photoUrl} size={22} />;
 }

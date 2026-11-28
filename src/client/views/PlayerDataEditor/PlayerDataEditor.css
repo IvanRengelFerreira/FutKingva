@@ -167,6 +167,13 @@
   bottom: -2px;
 }
 
+.player-data__crest.crest--image {
+  padding: 3px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-surface);
+}
+
 .player-data__who-text {
   flex: 1;
   min-width: 0;

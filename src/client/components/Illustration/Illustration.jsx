@@ -143,6 +143,18 @@ function resolveTeam(team) {
 }
 
 function Crest({ team, cx, cy, r, size }) {
+  if (team?.crestUrl) {
+    return (
+      <image
+        href={team.crestUrl}
+        x={cx - r}
+        y={cy - r}
+        width={r * 2}
+        height={r * 2}
+        preserveAspectRatio="xMidYMid meet"
+      />
+    );
+  }
   // El color es un dato del club (mockData.js), no un color de la web: va en línea
   return (
     <g>

@@ -153,7 +153,7 @@ function Candidate({ player, fits, position, highlighted, mobileExtra, onAdd }) 
 
   return (
     <li className={classes}>
-      <Avatar name={player.name} size={44} className="ideal-team-candidate__avatar" />
+      <Avatar name={player.name} src={player.photoUrl} size={44} className="ideal-team-candidate__avatar" />
       <div className="ideal-team-candidate__text">
         <p className="ideal-team-candidate__name">{player.name}</p>
         <p className="ideal-team-candidate__meta">

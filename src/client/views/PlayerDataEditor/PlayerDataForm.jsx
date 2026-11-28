@@ -93,7 +93,7 @@ export default function PlayerDataForm({ initialData, showReport, onDirtyChange,
     <form className="player-data__card" onSubmit={handleSubmit} noValidate>
       <div className="player-data__who">
         <span className="player-data__badge">
-          <Avatar className="player-data__avatar" name={player.name} size={68} />
+          <Avatar className="player-data__avatar" name={player.name} src={player.photoUrl} size={68} />
           <Crest className="player-data__crest" team={player.team} size={24} />
         </span>
         <div className="player-data__who-text">

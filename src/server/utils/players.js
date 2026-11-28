@@ -33,6 +33,7 @@ export function playerSummary(player, stats) {
   return {
     id: player.id,
     name: player.name,
+    photoUrl: player.photo_url ?? null,
     number: player.shirt_number,
     position: positionLabel(player),
     positionGroup: player.position,

@@ -101,7 +101,7 @@ function ComparisonPlayers({ players }) {
   return (
     <span className="profile-comparison__players">
       {players.map((player, i) => (
-        <Avatar key={player.id} name={player.name} size={30} color={SERIES[i]} />
+        <Avatar key={player.id} name={player.name} src={player.photoUrl} size={30} color={SERIES[i]} />
       ))}
     </span>
   );

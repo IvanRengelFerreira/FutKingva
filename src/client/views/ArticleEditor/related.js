@@ -47,12 +47,20 @@ export function useSuggestions(query, chosen = [], { withTeams = true } = {}) {
       type: 'player',
       id: player.id,
       name: player.name,
+      photoUrl: player.photoUrl,
       team: player.team,
       position: player.position,
       rating: player.rating,
     }));
   const teams = data.teams
     .filter((team) => !isChosen('team', team.id))
-    .map((team) => ({ type: 'team', id: team.id, name: team.name, code: team.code, color: team.color }));
+    .map((team) => ({
+      type: 'team',
+      id: team.id,
+      name: team.name,
+      code: team.code,
+      color: team.color,
+      crestUrl: team.crestUrl,
+    }));
   return [...players, ...teams].slice(0, MAX_SUGGESTIONS);
 }

@@ -127,7 +127,7 @@ function findRoundTopAppearance(seasonId, matchday) {
     // Desempate: más goles, menos minutos jugados y menor id
     orderBy: [{ goals: 'desc' }, { minutes: 'asc' }, { player_id: 'asc' }],
     include: {
-      players: { select: { id: true, name: true } },
+      players: { select: { id: true, name: true, photo_url: true } },
       teams: { select: TEAM_SUMMARY_FIELDS },
     },
   });
@@ -143,6 +143,7 @@ async function findTopScorerOfRound(seasonId) {
   return {
     id: appearance.players.id,
     name: appearance.players.name,
+    photoUrl: appearance.players.photo_url,
     team: teamSummary(appearance.teams),
     goals: appearance.goals,
     round: lastFinished.matchday,

@@ -14,6 +14,8 @@
     "seed:articles": "node seed/articles.js",
     "import:stats": "node sync/importPlayerStats.js",
     "import:stats:dry": "node sync/importPlayerStats.js --dry-run",
+    "import:photos": "node sync/importPlayerPhotos.js",
+    "import:photos:dry": "node sync/importPlayerPhotos.js --dry-run",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

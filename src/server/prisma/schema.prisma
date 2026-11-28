@@ -307,6 +307,7 @@ model players {
   foot                                                 preferred_foot?
   height_cm                                            Int?                  @db.SmallInt
   photo_url                                            String?
+  photo_source                                         data_source?
   market_value_eur                                     BigInt?
   team_id                                              BigInt?
   shirt_number                                         Int?                  @db.SmallInt

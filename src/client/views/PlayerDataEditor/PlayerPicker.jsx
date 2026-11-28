@@ -91,7 +91,7 @@ export default function PlayerPicker({ currentPlayer, teams, season, onSelectPla
             {suggestions.map((item) => (
               <li key={item.id}>
                 <button type="button" className="player-data__suggestion" onClick={() => handleSelect(item.id)}>
-                  <Avatar name={item.name} size={24} />
+                  <Avatar name={item.name} src={item.photoUrl} size={24} />
                   {item.name}
                   <span className="player-data__suggestion-team">{item.team?.name}</span>
                 </button>

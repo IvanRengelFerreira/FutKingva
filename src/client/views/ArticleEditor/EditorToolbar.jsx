@@ -85,7 +85,7 @@ function PlayerPicker({ onPick }) {
           {suggestions.map((player) => (
             <li key={player.id}>
               <button type="button" className="article-editor__suggestion" onClick={() => onPick(player)}>
-                <Avatar name={player.name} size={22} />
+                <Avatar name={player.name} src={player.photoUrl} size={22} />
                 {player.name}
                 {player.team && <span className="article-editor__suggestion-team">{player.team.name}</span>}
               </button>

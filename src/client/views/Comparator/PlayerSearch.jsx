@@ -72,7 +72,7 @@ export default function PlayerSearch({ selectedIds, season, onSelect, autoFocus 
             results.map((player) => (
               <li key={player.id}>
                 <button type="button" className="comparator-search__result" onClick={() => choose(player)}>
-                  <Avatar name={player.name} size={32} />
+                  <Avatar name={player.name} src={player.photoUrl} size={32} />
                   <span className="comparator-search__text">
                     <span className="comparator-search__name">{player.name}</span>
                     <span className="comparator-search__meta">{playerMeta(player) || NO_TEAM_LABEL}</span>
