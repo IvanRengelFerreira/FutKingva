@@ -25,7 +25,7 @@ export default function LeagueSeasonFilters({
   seasons = [],
   shownSeason,
   season = '',
-  onSeasonChange,
+  onSeasonChange = () => {},
   sortOptions,
   sortValue,
   onSortChange,

@@ -91,8 +91,8 @@ export default function Teams() {
         searchLabel="Buscar por nombre"
         query={query}
         onQueryChange={changeQuery}
-        seasons={data?.seasons ?? []}
-        shownSeason={data?.season}
+        seasons={results.seasons}
+        shownSeason={results.shownSeason}
         season={season}
         onSeasonChange={setSeason}
         sortOptions={SORTS[tab].map((item) => ({ value: item.value, label: `Ordenar: ${item.label}` }))}

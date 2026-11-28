@@ -50,6 +50,10 @@ export function useTeamsResults({ tab, season, search, sort }) {
 
   return {
     data: current,
+    // Temporadas del desplegable: de la última respuesta, sea de la pestaña que sea (son las mismas en las dos),
+    // para que al cambiar de pestaña no se quede un instante sin opciones
+    seasons: data?.seasons ?? [],
+    shownSeason: data?.season,
     items,
     error,
     loading,

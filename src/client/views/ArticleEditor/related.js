@@ -4,7 +4,8 @@ import { listPlayers } from '../../services/players.js';
 import { listTeams } from '../../services/teams.js';
 
 // Buscador de jugadores y equipos de la BD para «Jugadores / equipos relacionados» y para «Jugador»
-// (GET /api/players?search= y GET /api/teams?q=). Espera a que se deje de escribir para no pedir en cada letra.
+// (GET /api/players?search=&scope=all y GET /api/teams?q=). Espera a que se deje de escribir para no pedir en
+// cada letra. scope=all: también jugadores de otras temporadas, que un análisis puede mencionar.
 
 const SEARCH_DELAY_MS = 250;
 const MAX_SUGGESTIONS = 5;
@@ -31,7 +32,7 @@ export function useSuggestions(query, chosen = [], { withTeams = true } = {}) {
     async (signal) => {
       if (text.length < 2) return NO_RESULTS;
       const [players, teams] = await Promise.all([
-        listPlayers({ search: text, limit: MAX_SUGGESTIONS }, { signal }),
+        listPlayers({ search: text, scope: 'all', limit: MAX_SUGGESTIONS }, { signal }),
         withTeams ? listTeams({ q: text, limit: MAX_SUGGESTIONS }, { signal }) : { items: [] },
       ]);
       return { players: players.items, teams: teams.items };

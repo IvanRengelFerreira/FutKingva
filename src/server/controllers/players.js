@@ -1,5 +1,6 @@
 // Jugadores de LaLiga (04 · Ficha de jugador, 10 · Comparador, 11 · Equipo ideal). Responsable: Ivan.
-//   GET /api/players?search=&ids=&position=&sort=&limit=&offset=  → listado paginado
+//   GET /api/players?search=&ids=&position=&sort=&scope=&limit=&offset=  → listado paginado
+//     ?scope=all: sin el filtro de plantilla (todo el histórico; lo usa el Editor de artículo para enlazar jugadores)
 //     ?sort=rating|goals|assists|name (por defecto rating; lo usa 02 · Equipos y jugadores, Angel)
 //   GET /api/players/:id?season=2025                        → ficha completa del jugador
 
@@ -24,10 +25,11 @@ const LAST_MATCHES_COUNT = 5;
 const MIN_RANK_MATCHES = 3; // Mínimo de partidos en la temporada para entrar en los rankings
 const TEAM_INCLUDE = { select: TEAM_SUMMARY_FIELDS };
 const SORTS = ['rating', 'goals', 'assists', 'name']; // El primero es el orden por defecto
+const SCOPES = ['squad', 'all']; // squad (por defecto): solo la plantilla de la temporada; all: todo el histórico
 
 /**
  * GET /api/players
- * El listado solo trae a los jugadores de la plantilla de la temporada, con la misma regla que la ficha de
+ * El listado solo trae a los jugadores de la plantilla de la temporada (salvo con ?scope=all), con la misma regla que la ficha de
  * equipo (findSquad en teams.js): en la actual, los de los clubes que la juegan; en una pasada, los que tienen
  * estadísticas con un club ese año. El club que se enseña es el de esa temporada (pickSeasonClub).
  * Si llega ?ids=1,2,3 (máx. 4), devuelve esos jugadores en ese orden e ignora search, limit, offset y la
@@ -48,7 +50,8 @@ export async function list(req, res) {
   }
 
   const { limit, offset } = readPagination(req.query);
-  const filter = playerFilter(season.id, isCurrent, toLikePattern(req.query.search), position);
+  const onlySquad = parseScope(req.query.scope) === 'squad';
+  const filter = playerFilter(season.id, isCurrent, onlySquad, toLikePattern(req.query.search), position);
   const sort = parseSort(req.query.sort);
 
   const [total, ids, seasons] = await Promise.all([
@@ -103,6 +106,14 @@ function parsePosition(value) {
   return normalized;
 }
 
+function parseScope(value) {
+  if (value === undefined || value === '') return SCOPES[0];
+  if (!SCOPES.includes(value)) {
+    throw AppError.badRequest('El alcance no es válido', { scope: `Usa uno de: ${SCOPES.join(', ')}` });
+  }
+  return value;
+}
+
 function parseSort(value) {
   if (value === undefined || value === '') return SORTS[0];
   if (!SORTS.includes(value)) {
@@ -148,11 +159,11 @@ function parseIds(value) {
   return ids;
 }
 
-// Filtro común para countFilteredPlayers y findRankedPlayerIds: plantilla de la temporada, nombre (sin
-// distinguir mayúsculas ni tildes) y posición
-function playerFilter(seasonId, isCurrent, pattern, position) {
+// Filtro común para countFilteredPlayers y findRankedPlayerIds: plantilla de la temporada (si onlySquad),
+// nombre (sin distinguir mayúsculas ni tildes) y posición
+function playerFilter(seasonId, isCurrent, onlySquad, pattern, position) {
   return Prisma.sql`
-    WHERE ${squadFilter(seasonId, isCurrent)}
+    WHERE ${onlySquad ? squadFilter(seasonId, isCurrent) : Prisma.sql`TRUE`}
       AND (${pattern}::text IS NULL OR ${foldedLike(Prisma.sql`p.name`, pattern)})
       AND (${position}::text IS NULL OR p.position::text = ${position})
   `;
