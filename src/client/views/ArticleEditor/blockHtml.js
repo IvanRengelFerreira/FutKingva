@@ -183,7 +183,11 @@ function cleanSpans(spans) {
 }
 
 const hasText = (spans) => spans.some((span) => span.text.trim());
-const plainText = (node) => node.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+const plainText = (node) =>
+  node.textContent
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 /** HTML del editor (el elemento contentEditable) → bloques para la API */
 export function htmlToBlocks(root) {
